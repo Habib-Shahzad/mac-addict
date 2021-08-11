@@ -1,55 +1,78 @@
 const router = require('express').Router();
 const City = require('../schema').city;
-const Province = require('../schema').province;
+const Area = require('../schema').area;
+const Address = require('../schema').address;
 
-router.get('/TableData', async (req, res) => {
-    const cities = await City.find({});
-    if (!cities) res.json({data: []});
-    else res.json({data: cities});
+router.get('/table-data', async (req, res) => {
+    const cities = await City.find({}).populate({
+        path: 'province',
+        populate: {
+            path: 'country',
+        }
+    });
+    if (!cities) res.json({ data: [] });
+    else res.json({ data: cities });
 });
 
-router.get('/getCities', async (req, res) => {
-    const cities = await City.find({}, {_id: 0});
-    if (!cities) res.json({data: []});
-    else res.json({data: cities});
+router.get('/table-data-auto', async (req, res) => {
+    const cities = await City.find({});
+    if (!cities) res.json({ data: [] });
+    else res.json({ data: cities });
+});
+
+router.get('/get-cities', async (req, res) => {
+    const cities = await City.find({}, { _id: 0 });
+    if (!cities) res.json({ data: [] });
+    else res.json({ data: cities });
 });
 
 router.post('/add', async (req, res) => {
     const data = req.body;
-    const province = await Province.findOne({_id: data.provinceID});
     const newCity = new City({
         name: data.name,
-        province:province,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
+        province: data.province,
+        active: data.active,
     });
     newCity.save();
-    res.json({data: 'success'});
+    res.json({ data: newCity });
 });
 
 router.post('/update', async (req, res) => {
     const data = req.body;
-    const province = await Province.findOne({_id: data.provinceID});
-    const city = await City.findOne({_id: data._id});
+    const city = await City.findOne({ _id: data._id });
     city.name = data.name;
-    city.province = province;
-    city.updatedAt = Date.now();
+    city.province = data.province;
+    city.active = data.active;
     city.save();
-    res.json({data: 'success'});
+    res.json({ data: city });
 });
 
-router.get('/getByIds', async (req, res) => {
+router.get('/get-by-ids', async (req, res) => {
     let id = '';
     if ('id' in req.query) id = req.query.id;
     const getIds = id.split(',');
-    const cities = await City.find({_id: getIds});
-    if (!cities) res.json({data: []});
-    else res.json({data: cities});
+    const cities = await City.find({ _id: getIds }).populate({
+        path: 'areas',
+    });
+    if (!cities) res.json({ data: [] });
+    else res.json({ data: cities });
 });
 
 router.post('/delete', async (req, res) => {
-    await City.deleteMany({_id: req.body.ids});
-    res.json({data: 'success'});
+    try {
+        const data = req.body.data;
+        data.forEach(async city => {
+            city.areas.forEach(async area => {
+                await Address.deleteMany({ area: area._id });
+            });
+            await Area.deleteMany({ city: city._id });
+        });
+        await City.deleteMany({ _id: req.body.ids });
+        res.json({ data: 'success' });
+    } catch (error) {
+        console.log(error);
+        res.json({ data: 'failed' });
+    }
 });
 
 module.exports = router;

@@ -2,28 +2,31 @@ const mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 const ProductSchema = new mongoose.Schema({
-    name:String,
-    slug:String,
+    name: { type: String, required: true },
+    slug: { type: String, required: true },
     keywords:String,
     description:String,
-    imagePath:String,
-    active:Boolean,
+    imagePath: { type: String, required: true },
+    active: { type: Boolean, required: true },
+    hasColor: { type: Boolean, required: true },
+    points: { type: Number, required: true },
     productDetails: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'productDetails'
+            ref: 'productDetails',
+            required: true
         }
     ],
     furtherSubCategory: {
         type: Schema.Types.ObjectId,
-        ref: 'furtherSubCategories'
+        ref: 'furtherSubCategories',
+        required: true
     },
-    brands: {
+    brand: {
         type: Schema.Types.ObjectId,
-        ref: 'brands'
+        ref: 'brands',
+        required: true
     },
-    createdAt:Date,
-    updatedAt:Date,
 });
 
 const Product = mongoose.model('products', ProductSchema);

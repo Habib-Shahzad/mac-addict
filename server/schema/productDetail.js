@@ -1,24 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+  , Schema = mongoose.Schema;
 
 const productDetailSchema = new mongoose.Schema({
-    imagePath:String,
-    quantity:Number,
-    price:Number,
-    preOrder:Boolean,
-    sizes: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'sizes'
-        }
-    ],
-    colors: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'colors'
-        }
-    ],
-    createdAt:Date,
-    updatedAt:Date,
+    imagePath: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true },
+    preOrder: { type: Boolean, required: true },
+    size: {
+        type: Schema.Types.ObjectId,
+        ref: 'sizes',
+        required: true
+    },
+    color: {
+        type: Schema.Types.ObjectId,
+        ref: 'colors'
+    },
 });
 
 const ProductDetail = mongoose.model('productDetails', productDetailSchema);

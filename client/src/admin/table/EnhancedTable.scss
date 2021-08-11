@@ -1,0 +1,51 @@
+.table-admin {
+    .order-container {
+        margin: 1.5rem 0;
+        .order-no {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 0;
+            line-height: 2rem;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        }
+        .order-date {
+            font-size: 1.4rem;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        }
+        .order-contact {
+            p {
+                font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+                margin-bottom: 0;
+            }
+        }
+        .reciept-table-cell {
+            padding: 1rem;
+        }
+        .table-cell-no {
+            width: 1rem;
+        }
+        .table-cell-name {
+            width: 12rem;
+        }
+        .table-cell-description {
+            width: 40rem;
+        }
+        .text-capatalize {
+            text-transform: capitalize;
+        }
+        .margin-bottom-0 {
+            p {
+                margin-bottom: 0;
+            }
+        }
+        .line-through {
+            text-decoration: line-through;
+        }
+    }
+    .circle-db {
+        width: 3rem;
+        height: 3rem;
+        margin: 1rem 0;
+        border-radius: 100%;
+    }
+}

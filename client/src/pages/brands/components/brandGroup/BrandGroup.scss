@@ -1,0 +1,35 @@
+.brand-group {
+    .group {
+        div {
+            background-color: #cf993d;
+            width: fit-content;
+            height: 3rem;
+            width: 3rem;
+            text-align: center;
+            font-size: 1.7rem;
+            line-height: 3rem;
+            border-radius: 100%;
+            color: white;
+        }
+    }
+    .list {
+        div {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            a {
+                cursor: pointer;
+                font-weight: 400;
+                font-size: 1.3rem;
+                width: 16rem;
+                margin: 0 1rem 2rem 1rem;
+                color: black;
+                text-decoration: none;
+                transition: .3s ease-in-out;
+                &:hover {
+                    color: #cf993d;
+                }
+            }
+        }
+    }
+}

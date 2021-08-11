@@ -1,0 +1,30 @@
+.link-button {
+    text-decoration: none;
+    background-color: #cf993d;
+    color: black !important;
+    text-align: center;
+    outline: 1px solid #cf993d;
+    width: 10rem;
+    padding: 0.5rem 0;
+    border-radius: 100px;
+    font-size: 1.1rem;
+    display: block;
+    transition: .3s ease-in-out;
+    &:hover {
+        background-color: transparent;
+        color: black;
+    }
+    &:active {
+        background-color: #f5d9aa;
+    }
+}
+
+.small-width {
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.active {
+    background-color: transparent;
+}

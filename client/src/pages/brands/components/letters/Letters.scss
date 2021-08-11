@@ -1,0 +1,14 @@
+.letters {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    .col {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    p {
+        margin: 0 1rem;
+        font-size: 2.3rem;
+        font-weight: 300;
+        cursor: pointer;
+    }
+}

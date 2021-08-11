@@ -1,0 +1,21 @@
+.shop-button {
+    text-decoration: none;
+    background-color: #cf993d;
+    color: white !important;
+    text-align: center;
+    font-weight: 600;
+    outline: 1px solid #cf993d;
+    padding: 0.5rem 0;
+    width: 13rem;
+    border-radius: 100px;
+    font-size: 1.5rem;
+    display: block;
+    transition: .3s ease-in-out;
+    &:hover {
+        background-color: transparent;
+        color: #cf993d !important;
+    }
+    &:active {
+        background-color: #f5d9aa;
+    }
+}

@@ -1,0 +1,224 @@
+// .coming-soon {
+//     position: relative;
+//     height: 100vh;
+//     &::before {
+//         content: " ";
+//         display: block;
+//         position: absolute;
+//         left: 0;
+//         top: 0;
+//         width: 100%;
+//         height: 100%;
+//         z-index: 0;
+//         // opacity: 0.3;;
+//         filter: blur(0px) grayscale(0%);
+//         background-image: url(/assets/background.jpg);
+//         background-repeat: no-repeat;
+//         background-position: 50% 0;
+//         -ms-background-size: cover;
+//         -o-background-size: cover;
+//         -moz-background-size: cover;
+//         -webkit-background-size: cover;
+//         background-size: cover;
+//     }
+//     h1 {
+//         position: absolute;
+//         text-align: center;
+//         width: fit-content;
+//         left: 50%;
+//         top: 64%;
+//         transform: translateX(-50%);
+//         text-transform: uppercase;
+//         font-weight: 200;
+//         font-size: 4rem;
+//         margin-top: 2rem;
+//     }
+// }
+
+.coming-soon {
+    color: black;
+    text-align: center;
+    font-weight: 200;
+    &::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        // opacity: 0.3;;
+        filter: blur(0px) grayscale(0%);
+        background-image: url(/assets/background.jpg);
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    .logo-cont {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-52%);
+        top: 5rem;
+    }
+    .logo {
+        // position: absolute;
+        width: 24rem;
+        height: 100%;
+        z-index: 1;
+    }
+    .h-b-logo {
+        width: 24rem;
+    }
+    .message {
+        z-index: 1;
+        position: absolute;
+        width: 100%;
+        font-size: 12rem;
+        margin: 0;
+        text-transform: uppercase;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .powered-by {
+        width: fit-content;
+        font-size: 2.77rem;
+        z-index: 1;
+        line-height: 2rem;
+        position: absolute;
+        bottom: 5rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    // .container-fluid {
+    //     position: relative;
+    //     top: 50%;
+    //     transform: translateY(-50%);
+    // }
+    position: relative;
+    height: 100vh;
+    .insta-box {
+        line-height: 4.6rem;
+        height: 4.5rem;
+        border-radius: 100%;
+        background-color: black;
+        width: 4.5rem;
+        position: absolute;
+        right: 5rem;
+        top: 5rem;
+        a {
+            font-size: 3rem;
+            i {
+                color: white;
+            }
+        }
+    }
+}
+
+// Devices (less than 1700px)
+@media (max-width: 106.1875em) {
+}
+
+// Devices (less than 1600px)
+@media (max-width: 99.9375em) {
+    .coming-soon {
+        .logo,
+        .h-b-logo {
+            width: 20rem;
+        }
+        .message {
+            font-size: 9.51rem;
+            // margin: 7rem 0;
+        }
+        .powered-by {
+            font-size: 2.26rem;
+            line-height: 1.58rem;
+        }
+    }
+}
+
+// Devices (less than 1500px)
+@media (max-width: 93.6875em) {
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+    .coming-soon {
+        .logo,
+        .h-b-logo {
+            width: 17rem;
+        }
+        .message {
+            font-size: 7.76rem;
+        }
+        .powered-by {
+            font-size: 1.96rem;
+            line-height: 1.29rem;
+        }
+    }
+}
+
+// Devices (less than 1300px)
+@media (max-width: 81.1875em) {
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+    .coming-soon {
+        .message {
+            font-size: 6.74rem;
+            // margin: 5rem 0;
+        }
+        .powered-by {
+            font-size: 1.48rem;
+            line-height: 1.12rem;
+        }
+    }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .coming-soon {
+        .logo-cont {
+            top: 10rem;
+        }
+        .message {
+            font-size: 5.07rem;
+        }
+        .powered-by {
+            font-size: 1.21rem;
+            line-height: 0.84rem;
+            bottom: 10rem;
+        }
+        .insta-box {
+            left: 50%;
+            top: 5%;
+            transform: translateX(-50%);
+        }
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+    .coming-soon {
+        .message {
+            font-size: 4.15rem;
+        }
+        .powered-by {
+            font-size: 1.21rem;
+            line-height: 0.69rem;
+        }
+    }
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+}
+
+// XX-Large devices (larger desktops)
+// No media query since the xxl breakpoint has no upper bound on its width

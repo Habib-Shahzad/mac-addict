@@ -2,10 +2,8 @@ const mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 const orderItemSchema = new mongoose.Schema({
-    productDetail: { type: Schema.Types.ObjectId, ref: 'productDetails' },
-    quantity:Number,
-    createdAt:Date,
-    updatedAt:Date,
+    productDetail: { type: Schema.Types.ObjectId, ref: 'productDetails', required: true },
+    quantity: { type: Number, required: true },
 });
 
 const OrderItem = mongoose.model('orderItems', orderItemSchema);

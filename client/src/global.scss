@@ -1,0 +1,161 @@
+.page {
+    position: absolute;
+    background-color: white;
+    width: 100%;
+}
+
+.page-enter {
+    opacity: 0;
+    // transform: scale(1.1);
+}
+
+.page-enter-active {
+    opacity: 1;
+    // transform: scale(1);
+    transition: opacity 250ms;
+}
+
+.page-exit {
+    opacity: 1;
+    // transform: scale(1);
+}
+
+.page-exit-active {
+    opacity: 0;
+    // transform: scale(0.9);
+    transition: opacity 250ms;
+}
+
+.center-absolute {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.center-relative {
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.inline-block {
+    width: fit-content;
+    display: inline-block;
+    position: relative;
+}
+
+.hide-992 {
+    display: block;
+}
+
+.unhide-992 {
+    display: none;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.center-relative-horizontal {
+    left: 50%;
+    transform: translateX(-50%);
+    position: relative;
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0 !important;
+}
+
+.bold-300 {
+    font-weight: 300;
+}
+
+.bold-400 {
+    font-weight: 400;
+}
+
+.margin-global-top-1 {
+    margin-top: 1rem;
+}
+
+.margin-global-top-2 {
+    margin-top: 2rem;
+}
+
+.margin-global-top-3 {
+    margin-top: 3rem;
+}
+
+.margin-global-top-4 {
+    margin-top: 4rem;
+}
+
+.margin-global-top-5 {
+    margin-top: 5rem;
+}
+
+.margin-global-top-6 {
+    margin-top: 6rem;
+}
+
+.margin-global-top-7 {
+    margin-top: 7rem;
+}
+
+.margin-global-top-8 {
+    margin-top: 8rem;
+}
+
+.margin-global-top-9 {
+    margin-top: 9rem;
+}
+
+.margin-global-top-10 {
+    margin-top: 10rem;
+}
+
+// Devices (less than 1700px)
+@media (max-width: 106.1875em) {
+}
+
+// Devices (less than 1600px)
+@media (max-width: 99.9375em) {
+}
+
+// Devices (less than 1500px)
+@media (max-width: 93.6875em) {
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+}
+
+// Devices (less than 1300px)
+@media (max-width: 81.1875em) {
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .hide-992 {
+        display: none;
+    }
+    .unhide-992 {
+        display: block;
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+}
+
+// XX-Large devices (larger desktops)
+// No media query since the xxl breakpoint has no upper bound on its width

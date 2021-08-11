@@ -1,34 +1,30 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+  , Schema = mongoose.Schema;
 
 const userSchema = new mongoose.Schema({
-    firstName:String,
-    lastName:String,
-    email:String,
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true },
+    contactNumber: { type: String, required: true },
     addresses: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'addresses'
+            ref: 'addresses',
+            required: true
         }
     ],
-    contactNumber:String,
-    salt:String,
-    hash:String,
-    staff: {
+    admin: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true
     },
     active: {
         type: Boolean,
-        default: false
+        default: true,
+        required: true
     },
-    emailVerified: {
-        type: Boolean,
-        default: false
-    },
-    token:String,
-    totalPoints:Number,
-    createdAt:Date,
-    updatedAt:Date,
+    totalPoints:{ type: Number, required: true, default: 0 },
+    uid: { type: String, required: true },
 });
 
 const User = mongoose.model('users', userSchema);

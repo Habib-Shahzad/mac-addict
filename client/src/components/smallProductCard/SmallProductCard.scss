@@ -1,0 +1,42 @@
+.small-product-card {
+    width: 17rem;
+    position: relative;
+    img {
+        width: 90%;
+    }
+    .img-cont {
+        position: relative;
+        &:hover {
+            .btn-cont {
+                opacity: 1;
+            }
+        }
+        .btn-cont {
+            width: 90%;
+            position: absolute;
+            bottom: 0;
+            opacity: 0;
+            transition: 0.3s ease-in-out;
+        }
+    }
+    .product-details {
+        text-align: center;
+        margin-top: 0.5rem;
+        .brand-name {
+            font-weight: 500;
+            color: #cf993d;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+        }
+        .product-name {
+            font-weight: 300;
+        }
+        .product-price-points {
+            font-weight: 500;
+        }
+        .product-btn {
+            position: relative;
+            z-index: 1;
+        }
+    }
+}

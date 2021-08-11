@@ -1,0 +1,91 @@
+.slick-slider-style {
+    padding: 0 4rem;
+    // .slick-arrow1 {
+    //     background-color: #cf993d;
+    //     width: fit-content;
+    //     color: white;
+    //     width: 3rem;
+    //     height: 3rem;
+    //     &::before {
+    //         background-color: white;
+    //         font-size: 4rem;
+    //     }
+    // }
+    .slick-arrow {
+        position: absolute;
+        // bottom: -40px;
+        // left: 50%;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        text-indent: -9999px;
+        background-repeat: no-repeat;
+        background: #cf993d;
+        border-radius: 100%;
+        
+        &:after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          z-index: 2;
+          display: inline-block;
+          width: 0;
+          height: 0;
+          border-style: solid;
+        }
+        &.slick-prev {
+        //   transform: translateX(-50%);
+          z-index: 2;
+          &:after {
+            transform: translateX(-50%) translateX(-2px) translateY(-50%);
+            border-width: 9px 12px 9px 0;
+            border-color: transparent #fff transparent transparent;
+          }
+        }
+        &.slick-next {
+        //   transform: translateX(-50%);
+          z-index: 1;
+          &:after {
+            transform: translateX(-50%) translateX(2px) translateY(-50%);
+            border-width: 9px 0 9px 12px;
+            border-color: transparent transparent transparent #fff;
+          }
+        }
+        &.slick-disabled {
+          cursor: default;
+          background: #cf993d;
+          opacity: 0.5;
+        }
+      }
+    // .slick-prev, .slick-next {
+    //     font-size: 0;
+    //     line-height: 0;
+    //     position: absolute;
+    //     top: 50%;
+    //     display: block;
+    //     width: 30px;
+    //     height: 30px;
+    //     padding: 0;
+    //     transform: translate(0, -50%);
+    //     cursor: pointer;
+    //     color: transparent;
+    //     border: none;
+    //     outline: none;
+    //     background: transparent;
+    //         background-color: transparent;
+    // }
+    // .slick-arrow {
+    //     background-color: black;
+    //     color: white;
+    // }
+    // .slick-prev::before, .slick-next::before {
+    //     font-family: 'slick';
+    //     font-size: 30px;
+    //     line-height: 1;
+    //     opacity: 1;
+    //     color: white;
+    //     -webkit-font-smoothing: antialiased;
+    //     -moz-osx-font-smoothing: grayscale;
+    // }
+}

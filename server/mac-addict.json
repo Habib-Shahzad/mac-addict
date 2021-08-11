@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mac-addict",
+  "private_key_id": "78e0ebe1fc17411fa586ff5a057304a5849a3b85",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDaWR/WyZyYQ4is\nMrVzdeMGeIotcT4KvaQ4+2sSmHYoSUpxO+UZ7+mGbClmkB7NcsbnCBuNjYzgtOSg\nGfeNPN1bs95vjLh7AxjWxib3F5PA5KA+iTBpMdwCGE6D87S/t+B7YugdB0rHd7vA\nC6uY4IkQ+hFt1CsfGm/j3KuOkJUoN2C2rkbuAlr0AMAuX9goZwggNFH/vQZuCZGY\nXyfDNsT0WjA0sI1yJAOQ6BE9QtjB6VTbVJnrBCSErqYAUDrOZ7sA62aw4xKoH4bh\nrg2ZTcitt5f1woM7YKMgqy+x3AEazCoQlNg88PqvazDh0O4XiA5syiAh2+AUAE6y\nqXVBH977AgMBAAECggEAUcQaVja9u49euQ1sQcads6ikJgxILYGC5AvStu39IW0A\nwZKqYqIjE0Gh51SFFG6s6YtxtfqSDPvwubu/plZqlpKu85sA4p/wR02A/fsIS63S\nDFkXle0j9GzhyiwTPdA/8jTBs00txbCi0HIOWnuLGJ5stHJFi6o8yFm0rPibwqj5\nLGfQShGWCUqh61cDjPehT1Cnq9A+is3X1wbjRLzRss7a35dVDPmAduBBQS46+Crd\nfDWLKVre12BIdvjMG7FfBVh2iCm5Yy0hp10OATt6IrUoeREEawqSPXtRhNMwRxlr\nRRR23pdeEbjYlITJrBksCsj7BK8072w65O28jbeEEQKBgQDuQJ8dZhUrLxlXafBq\nzrjlviFY5e3dWhdTJgWPYmfydeLzfbCxIuEpkDlCbLAJphG4vBQud/A6fDPLQ71m\n7rcpWEWHdsRZOw9l31s/8Ck1CDn+q7hTlaaOYznXLUGlgLSzXUtl53cQmF6HxEkW\ntwLWGxhTUEImIkx1zWD3HiAPRQKBgQDqnO+h2C9G5WvPGMAiOcpbo9UF3RSLXqD/\n9JBwWPZ6CszL3de8YyMVlMasQIEodRepEPieXWF6UEFGxNJiK3Ie+Mj2phRG7Mak\nxQCHijWrYr0sqEzt/lF8R04EAPSDQgkV9QbFhXTxPAH529JBOPpME3kJPTnpBgfw\nf+LmM/r5PwKBgHebn4W9yuDMG1fECntEXpSP1+PuQnT+lnkavG3YRED3p8D/l6XF\n0e3wxp4vPE0LvxfT6/nMIqDp24Ku9jXnn7I062rvV/FH8hn9gKzfn4BNKfhNMxNb\nLKuM6uu4f51buNvW+VQmWKLPK53TD7JEnDrqjVK+FwdX7rSxL32/9O5VAoGBAJed\nM37zphm6ySDcbc2wawUtqsxPQqeOT50Y/v6bfyz/LbnRc0lbB6E6s+k9BjqO8Otg\n/EnbLtNMaeLB7vNiAC3juHsseI4dFYIFjYIJ3wUSmg3x9UUXxLD7o38S3vC0DAsU\nfXvH8vqyPNSrKgTcPWRMcTt3RaVBMIBLJOZ/UQEhAoGBAJxeVT8qnv3kBrM5B4RT\nFjBXwe2zAlq8l5raenLrVdNW+g5NtxSMKuNPymSedWs628JuuZUw4ToOGLxAafaz\ntEIGOJr4+XbcJTxqs+vaVs87V7jizIKwB0dmIvozIvlj6rpolcA6u9psHsm5M/xr\nA2kks2MMlIOmHlyQ857vOm+a\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-jpzgo@mac-addict.iam.gserviceaccount.com",
+  "client_id": "109654301241891161777",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-jpzgo%40mac-addict.iam.gserviceaccount.com"
+}

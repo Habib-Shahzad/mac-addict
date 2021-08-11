@@ -1,0 +1,111 @@
+.main-navbar {
+    background-color: #cf993d;
+    a {
+        text-decoration: none;
+        color: black;
+    }
+    .main-font {
+        font-size: 1.3rem;
+    }
+    .submain-font {
+        font-size: 1.3rem;
+        font-weight: 400;
+    }
+    .subsubmain-font {
+        font-size: 1.3rem;
+        font-weight: 300;
+    }
+    .main-link {
+        width: fit-content;
+        margin: 0 0.9rem;
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+    }
+    .hover {
+        &:hover > .dropdown {
+            display: block;
+        }
+    }
+    .dropdown {
+        display: none;
+        margin-top: 0.3rem;
+        padding: 1rem 0;
+        background-color: white;
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px 0px;
+        z-index: 1;
+        width: 100%;
+        position: absolute;
+        color: black;
+        left: 0;
+        // height: 30rem;
+    }
+    .dropdown-cont {
+        width: 100%;
+        max-width: 85rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 30rem;
+        flex-wrap: wrap;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .dropdown-list-cont {
+        position: relative;
+        margin-bottom: 1.5rem;
+        width: 23rem;
+    }
+    .dropdown-list {
+        columns: 2;
+    }
+    li {
+        list-style: none;
+    }
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+    .main-navbar {
+        .main-link {
+            margin: 0 0.3rem;
+        }
+        .main-font {
+            font-size: 1.2rem;
+        }
+        .submain-font {
+            font-size: 1.2rem;
+        }
+        .subsubmain-font {
+            font-size: 1.2rem;
+        }
+        .dropdown-cont {
+            max-width: 75rem;
+            height: 28rem;
+        }
+    }
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+    .main-navbar {
+        .main-link {
+            margin: 0;
+            padding-left: 0.6rem;
+            padding-right: 0.6rem;
+        }
+    }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+}

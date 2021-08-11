@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 
 const sizeSchema = new mongoose.Schema({
-    name:String,
-    createdAt:Date,
-    updatedAt:Date,
+    name: { type: String, required: true },
 });
 
 const Size = mongoose.model('sizes', sizeSchema);

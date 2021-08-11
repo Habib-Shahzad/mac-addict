@@ -1,50 +1,55 @@
 const router = require('express').Router();
 const Color = require('../schema').color;
 
-router.get('/TableData', async (req, res) => {
+router.get('/table-data', async (req, res) => {
     const colors = await Color.find({});
-    if (!colors) res.json({data: []});
-    else res.json({data: colors});
+    if (!colors) res.json({ data: [] });
+    else res.json({ data: colors });
 });
 
-router.get('/getColors', async (req, res) => {
-    const colors = await Color.find({}, {_id: 0});
-    if (!colors) res.json({data: []});
-    else res.json({data: colors});
+router.get('/table-data-auto', async (req, res) => {
+    const colors = await Color.find({});
+    if (!colors) res.json({ data: [] });
+    else res.json({ data: colors });
+});
+
+router.get('/get-Color', async (req, res) => {
+    const colors = await Color.find({}, { _id: 0 });
+    if (!colors) res.json({ data: [] });
+    else res.json({ data: colors });
 });
 
 router.post('/add', async (req, res) => {
     const data = req.body;
     const newColor = new Color({
         name: data.name,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
+        hexCode: data.hexCode
     });
     newColor.save();
-    res.json({data: 'success'});
+    res.json({ data: newColor });
 });
 
 router.post('/update', async (req, res) => {
     const data = req.body;
-    const color = await Color.findOne({_id: data._id});
+    const color = await Color.findOne({ _id: data._id });
     color.name = data.name;
-    color.updatedAt = Date.now();
+    color.hexCode = data.hexCode;
     color.save();
-    res.json({data: 'success'});
+    res.json({ data: color });
 });
 
-router.get('/getByIds', async (req, res) => {
+router.get('/get-by-ids', async (req, res) => {
     let id = '';
     if ('id' in req.query) id = req.query.id;
     const getIds = id.split(',');
-    const colors = await Color.find({_id: getIds});
-    if (!colors) res.json({data: []});
-    else res.json({data: colors});
+    const colors = await Color.find({ _id: getIds });
+    if (!colors) res.json({ data: [] });
+    else res.json({ data: colors });
 });
 
 router.post('/delete', async (req, res) => {
-    await Color.deleteMany({_id: req.body.ids});
-    res.json({data: 'success'});
+    await Color.deleteMany({ _id: req.body.ids });
+    res.json({ data: 'success' });
 });
 
 module.exports = router;
