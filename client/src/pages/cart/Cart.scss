@@ -1,0 +1,89 @@
+.cart {
+    .cart-circles {
+        // text-align: center;
+        .icon-size {
+            font-size: 5rem;
+            cursor: pointer;
+        }
+    }
+    .circle {
+        width: 3.75rem;
+        height: 3.75rem;
+        line-height: 3.75rem;
+        border-radius: 100px;
+        border: 1px solid black;
+        color: black;
+        text-align: center;
+        font-size: 2.2rem;
+        font-weight: 500;
+        display: inline-block;
+        background-size: 8rem;
+        border-style: solid;
+        border-color: black;
+    }
+    .active {
+        background-color: black;
+        color: white;
+    }
+}
+.hide {
+    display: none;
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+    .cart {
+        .cart-heading {
+            .heading1 {
+                line-height: 2.5rem;
+            }
+        }
+    }
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .cart {
+        .cart-circles {
+            .col-lg-1 {
+                width: 15.333%;
+                margin: 0 2rem;
+            }
+            .arrow {
+                width: 7rem;
+            }
+        }
+        .circle {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+    .cart {
+        .cart-circles {
+            .col-lg-1 {
+                width: 27.333%;
+                margin: 0rem;
+            }
+        }
+        .circle {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+    }
+}

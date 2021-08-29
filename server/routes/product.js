@@ -1,10 +1,13 @@
 const router = require('express').Router();
 const Product = require('../schema').product;
+const Category = require('../schema').category;
+const SubCategory = require('../schema').subCategory;
+const FurtherSubCategory = require('../schema').furtherSubCategory;
 const ProductDetail = require('../schema').productDetail;
 const slugify = require('slugify');
 
 router.get('/table-data', async (req, res) => {
-    const products = await Product.find({}).populate('furtherSubCategory').populate('brand').populate({
+    const products = await Product.find({}).populate('category').populate('subCategory').populate('furtherSubCategory').populate('brand').populate({
         path: 'productDetails',
         populate: [
             { path: 'size' },
@@ -41,65 +44,83 @@ router.get('/get-product-slug', async (req, res) => {
 
 router.post('/add', async (req, res) => {
     const data = req.body;
-    const productDetails = [];
-    data.productDetails.forEach(async productDetail => {
-        const newProductDetail = new ProductDetail({
-            imagePath: productDetail.imagePath,
-            quantity: productDetail.qty,
-            price: productDetail.price,
-            preOrder: productDetail.preOrder,
-            size: productDetail.size,
-            color: productDetail.color,
-        });
-        newProductDetail.save()
-        productDetails.push(newProductDetail);
-    });
+    let i = 0;
+    let slug = '';
+    while (true) {
+        slug = `${slugify(data.name, { lower: true })}-${i}`;
+        const objExists = await Product.exists({ slug: slug });
+        if (objExists) i += 1;
+        else break;
+    }
     const newProduct = new Product({
         name: data.name,
-        slug: slugify(data.name, { lower: true }),
+        slug: slug,
         keywords: data.keywords,
         description: data.description,
         imagePath: data.imagePath,
         active: data.active,
         hasColor: data.hasColor,
-        points: data.points,
-        productDetails: productDetails,
+        category: data.category,
+        subCategory: data.subCategory,
         furtherSubCategory: data.furtherSubCategory,
         brand: data.brand,
     });
     newProduct.save();
+    data.productDetails.forEach(async productDetail => {
+        const newProductDetail = new ProductDetail({
+            imagePath: productDetail.imagePath,
+            product: newProduct,
+            quantity: productDetail.qty,
+            price: productDetail.price,
+            points: productDetail.points,
+            preOrder: productDetail.preOrder,
+            size: productDetail.size,
+            color: productDetail.color,
+        });
+        newProductDetail.save()
+    });
     res.json({ data: newProduct });
 });
 
 router.post('/update', async (req, res) => {
     const data = req.body;
     const product = await Product.findOne({ _id: data._id });
+    let slug = '';
+    if (product.name === data.name) slug = product.slug;
+    else {
+        let i = 0;
+        while (true) {
+            slug = `${slugify(data.name, { lower: true })}-${i}`;
+            const objExists = await Product.exists({ slug: slug });
+            if (objExists) i += 1;
+            else break;
+        }
+    }
+    await ProductDetail.deleteMany({ product: product });
     product.name = data.name;
-    product.slug = slugify(data.name, { lower: true });
+    product.slug = slug;
     product.keywords = data.keywords;
     product.description = data.description;
     product.imagePath = data.imagePath;
     product.active = data.active;
-    product.points = data.points;
+    product.category = data.category;
+    product.subCategory = data.subCategory;
     product.furtherSubCategory = data.furtherSubCategory;
     product.brand = data.brand;
-    const oldProductDetails = data.oldProductDetails;
-    await ProductDetail.deleteMany({ _id: oldProductDetails });
-    const newProductDetails = [];
+    product.save();
     data.productDetails.forEach(async productDetail => {
         const newProductDetail = new ProductDetail({
             imagePath: productDetail.imagePath,
+            product: product,
             quantity: productDetail.qty,
             price: productDetail.price,
+            points: productDetail.points,
             preOrder: productDetail.preOrder,
             size: productDetail.size,
             color: productDetail.color,
         });
-        newProductDetail.save()
-        newProductDetails.push(newProductDetail);
+        newProductDetail.save();
     });
-    product.productDetails = newProductDetails;
-    product.save();
     res.json({ data: 'success' });
 });
 
@@ -114,13 +135,83 @@ router.get('/get-by-ids', async (req, res) => {
 
 router.post('/delete', async (req, res) => {
     try {
-        const data = req.body.data;
+        // const data = req.body.data;
         await Product.deleteMany({ _id: req.body.ids });
         res.json({ data: 'success' });
     } catch (error) {
         console.log(error);
         res.json({ data: 'failed' });
     }
+});
+
+router.get('/client-product', async (req, res) => {
+    const product = await Product.findOne({ slug: req.query.productSlug, active: true }).populate('brand').populate(
+        {
+            path: 'productDetails',
+            populate: [
+                {
+                    path: 'size',
+                },
+                {
+                    path: 'color',
+                },
+            ]
+        }
+    )
+    res.json({ data: product })
+});
+
+router.get('/client-all-products', async (req, res) => {
+    const size = parseInt(req.query.size);
+    const number = size * (parseInt(req.query.page) - 1);
+    const subCategory = await SubCategory.findOne({ slug: req.query['sub-category'] });
+    let furtherSubCategory = null;
+    let products = [];
+    if (req.query['further-sub-category'] !== 'undefined') {
+        furtherSubCategory = await FurtherSubCategory.findOne({ slug: req.query['further-sub-category'] });
+        products = await Product.find({ subCategory: subCategory, furtherSubCategory: furtherSubCategory, active: true }, {}, {skip: number, limit: size}).populate('brand').populate(
+            {
+                path: 'productDetails'
+            }
+        ).sort('name');
+    } else {
+        products = await Product.find({ subCategory: subCategory, active: true }, {}, {skip: number, limit: size}).populate('brand').populate(
+            {
+                path: 'productDetails'
+            }
+        ).sort('name');
+    }
+    res.json({ subCategory: subCategory, furtherSubCategory: furtherSubCategory, products: products });
+});
+
+router.get('/total-pages', async (req, res) => {
+    const subCategory = await SubCategory.findOne({ slug: req.query['sub-category'] });
+    let furtherSubCategory = null;
+    const size = parseInt(req.query.size);
+    let count = 0;
+    if (req.query['further-sub-category'] !== 'undefined') {
+        furtherSubCategory = await FurtherSubCategory.findOne({ slug: req.query['further-sub-category'] });
+        count = await Product.countDocuments({ subCategory: subCategory, furtherSubCategory: furtherSubCategory, active: true });
+    } else {
+        count = await Product.countDocuments({ subCategory: subCategory, active: true });
+    }
+    res.json({data: Math.ceil(count / size)});
+});
+
+router.get('/client-category-products', async (req, res) => {
+    const category = await Category.find({ slug: req.query.category });
+    const subCategories = await SubCategory.find({ category: category });
+    const products = {};
+    for (let i = 0; i < subCategories.length; i++) {
+        const subCategory = subCategories[i];
+        const productsFromCategory = await Product.find({ subCategory: subCategory, active: true }).populate('brand').populate(
+            {
+                path: 'productDetails'
+            }
+        ).limit(4);
+        products[subCategory.name] = { name: subCategory.name, slug: subCategory.slug, products: productsFromCategory };
+    }
+    res.json({ data: products })
 });
 
 module.exports = router;

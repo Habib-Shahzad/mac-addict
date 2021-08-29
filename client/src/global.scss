@@ -63,6 +63,47 @@
     position: relative;
 }
 
+.center-relative {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.center-relative-fit-content {
+  width: fit-content;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.horizontal-center-relative {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.center-absolute {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vertical-center-relative {
+  position: relative;
+  width: fit-content;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.horizontal-center-margin {
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+}
+
 .margin-bottom-0 {
     margin-bottom: 0 !important;
 }
@@ -73,6 +114,10 @@
 
 .bold-400 {
     font-weight: 400;
+}
+
+.margin-global-right-05 {
+    margin-right: 0.5rem;
 }
 
 .margin-global-top-1 {
@@ -115,6 +160,10 @@
     margin-top: 10rem;
 }
 
+.padding-left-0-5 {
+    padding-left: 0.5rem;
+}
+
 // Devices (less than 1700px)
 @media (max-width: 106.1875em) {
 }
@@ -137,10 +186,19 @@
 
 // Large devices (desktops, less than 1200px)
 @media (max-width: 74.99875em) {
+    .hide-1200 {
+        display: none;
+    }
 }
 
 // Medium devices (tablets, less than 992px)
 @media (max-width: 61.99875em) {
+    .center-relative-992 {
+      position: relative;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
     .hide-992 {
         display: none;
     }
@@ -151,6 +209,9 @@
 
 // Small devices (landscape phones, less than 768px)
 @media (max-width: 47.99875em) {
+    .hide-768 {
+        display: none;
+    }
 }
 
 // X-Small devices (portrait phones, less than 576px)

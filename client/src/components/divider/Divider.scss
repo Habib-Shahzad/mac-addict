@@ -1,0 +1,45 @@
+.divider {
+    height: 0.125rem;
+    background-color: black;
+}
+
+.margin-auto {
+    margin: auto 0 !important;
+}
+
+.margin-specified {
+    // margin-top: 3.125rem;
+    margin-top: 3.75rem;
+    margin-bottom: 3.75rem;
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .margin-specified {
+        margin-top: 3rem;
+        margin-bottom: 2.375rem;
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+    .margin-specified {
+        margin-top: 2rem;
+        margin-bottom: 1.375rem;
+    }
+    .divider {
+        max-width: 60%;
+    }
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+}

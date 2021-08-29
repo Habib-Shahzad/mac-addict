@@ -6,7 +6,7 @@ import {
 import './App.scss';
 import Routes from './Routes';
 import { Admin } from './admin';
-// import api from "./api";
+import api from "./api";
 import React, { useState, useEffect } from 'react';
 import UserContext from "./contexts/user";
 
@@ -17,24 +17,23 @@ function App() {
   useEffect(() => {
     (
       async () => {
-        // const response = await fetch(`${api}/user/loggedIn`, {
-        //   method: 'GET',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'Cache-Control': 'no-store'
-        //   },
-        //   credentials: 'include',
-        //   withCredentials: true,
-        // });
-        // const content = await response.json();
+        const response = await fetch(`${api}/user/loggedIn`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-store'
+          },
+          credentials: 'include',
+          withCredentials: true,
+        });
+        const content = await response.json();
         try {
-          // const user = content.data;
-          // setUserState(user);
-          setUserState(null);
+          const user = content.data;
+          setUserState(user);
         } catch (error) {
           setUserState(null);
         }
-        setLoading(false)
+        setLoading(false);
       })();
   }, []);
 

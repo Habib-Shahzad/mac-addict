@@ -26,6 +26,15 @@ router.get('/get-cities', async (req, res) => {
     else res.json({ data: cities });
 });
 
+router.get('/get-cities-search', async (req, res) => {
+    const cityText = req.query.cityText;
+    const province = JSON.parse(req.query.province);
+    if (cityText.trim() !== '') {
+        const cities = await City.find({ "name": { "$regex": cityText, "$options": "i" }, province: province[0] });
+        res.json({ data: cities });
+    } else res.json({ data: [] });
+});
+
 router.post('/add', async (req, res) => {
     const data = req.body;
     const newCity = new City({

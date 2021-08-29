@@ -1,0 +1,22 @@
+.dash-nav {
+    // display: flex;
+    .link {
+        display: inline;
+        width: fit-content;
+        a {
+            color: black;
+            font-size: 1.3rem;
+            font-weight: 300;
+            transition: .3s ease-in-out;
+            &:hover {
+                color: #cf993d;
+            }
+        }
+    }
+    .active {
+        a {
+            color: #cf993d;
+            font-weight: 500;
+        }
+    }
+}

@@ -1,6 +1,57 @@
 .product-card {
     background-color: #f9f9f9;
     padding: 3rem 5rem;
+    position: relative;
+    .ribbon {
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        z-index: 1;
+        overflow: hidden;
+        width: 100px;
+        height: 100px;
+        text-align: right;
+        span {
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 20px;
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+            width: 125px;
+            display: block;
+            background: #79a70a;
+            background: linear-gradient(#cf993d 0%, #8f5408 100%);
+            box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+            position: absolute;
+            top: 27px;
+            right: -25px;
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0px;
+                top: 100%;
+                z-index: -1;
+                border-left: 3px solid #8f5408;
+                border-right: 3px solid transparent;
+                border-bottom: 3px solid transparent;
+                border-top: 3px solid #8f5408;
+            }
+            &::after {
+                content: "";
+                position: absolute;
+                right: 0px;
+                top: 100%;
+                z-index: -1;
+                border-left: 3px solid transparent;
+                border-right: 3px solid #8f5408;
+                border-bottom: 3px solid transparent;
+                border-top: 3px solid #8f5408;
+            }
+        }
+    }
     .img-cont {
         img {
             width: 100%;
@@ -13,8 +64,8 @@
             color: #cf993d;
         }
         .arrow-right {
-            width: 0; 
-            height: 0; 
+            width: 0;
+            height: 0;
             border-top: 1rem solid transparent;
             border-bottom: 1rem solid transparent;
             border-left: 1.5rem solid #cf993d;
@@ -24,13 +75,13 @@
             transform: translateY(-50%);
             cursor: pointer;
         }
-          
-          .arrow-left {
-            width: 0; 
-            height: 0; 
+
+        .arrow-left {
+            width: 0;
+            height: 0;
             border-top: 1rem solid transparent;
-            border-bottom: 1rem solid transparent; 
-            border-right: 1.5rem solid #cf993d; 
+            border-bottom: 1rem solid transparent;
+            border-right: 1.5rem solid #cf993d;
             position: absolute;
             left: 0;
             top: 50%;
@@ -96,5 +147,52 @@
         .MuiIconButton-root:hover {
             background-color: transparent;
         }
+    }
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+    .product-card {
+        padding: 3rem 3rem;
+    }
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+    .product-card {
+        padding: 3rem 1.5rem;
+    }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+    .product-card {
+        padding: 3rem 5rem;
+        .product-btns {
+            .inline-block {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+        }
+    }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+    .product-card {
+        padding: 3rem 3rem;
+        .product-btns {
+            .inline-block {
+                padding-left: 0rem;
+                padding-right: 0rem;
+            }
+        }
+    }
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+    .product-card {
+        padding: 3rem 1.5rem;
     }
 }

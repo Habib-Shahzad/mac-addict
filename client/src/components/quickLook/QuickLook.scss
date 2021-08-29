@@ -16,3 +16,32 @@
         box-shadow: 10px 10px 4px -8px rgba(0, 0, 0, 0.25);
     }
 }
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+    .quick-look {
+        font-size: 1.24rem;
+    }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+    .quick-look {
+        font-size: 1.12rem;
+    }
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+    .quick-look {
+        font-size: 1rem;
+    }
+}

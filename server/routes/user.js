@@ -117,8 +117,8 @@ router.post('/login', async (req, res) => {
         const admin = idTokenResult.claims.admin;
         if (emailVerified === false) {
             await firebase.auth().signOut();
-            res.json({ data: false })
-        } else res.json({ data: { firstName: user.firstName, email: email, emailVerified: emailVerified, admin: admin } });
+            res.json({ data: null })
+        } else res.json({ data: { firstName: user.displayName, email: email, emailVerified: emailVerified, admin: admin } });
     } catch (error) {
         res.json({ data: null, error: error });
     }
@@ -132,7 +132,7 @@ router.get('/loggedIn', async (req, res) => {
             const email = user.email;
             const emailVerified = user.emailVerified;
             const admin = idTokenResult.claims.admin;
-            res.json({ data: { firstName: user.firstName, email: email, emailVerified: emailVerified, admin: admin } });
+            res.json({ data: { firstName: user.displayName, email: email, emailVerified: emailVerified, admin: admin } });
         } else res.json({ data: null })
     } catch (error) {
         res.json({ data: null, error: error });
@@ -149,7 +149,6 @@ router.post('/logout', async (req, res) => {
 });
 
 router.post('/change-profile', async (req, res) => {
-    console.log(req.body);
     const user = firebase.auth().currentUser;
     const email = user.email;
     const newEmail = req.body.email;
@@ -166,7 +165,7 @@ router.post('/change-profile', async (req, res) => {
         dbUser.firstName = req.body.firstName;
         dbUser.lastName = req.body.lastName;
         dbUser.contactNumber = req.body.contactNumber;
-        const emailChange = false;
+        let emailChange = false;
         if (email !== newEmail) {
             await user.updateEmail(newEmail);
             user.sendEmailVerification();
@@ -179,8 +178,18 @@ router.post('/change-profile', async (req, res) => {
         const admin = idTokenResult.claims.admin;
         res.json({ data: 'success', emailChange: emailChange, user: { firstName: req.body.firstName, lastName: req.body.lastName, email: user.email, emailVerified: emailVerified, contactNumber: req.body.contactNumber, admin: admin } });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.json({ data: 'failed' });
+    }
+});
+
+router.get('/get-personal-info', async (req, res) => {
+    const user = firebase.auth().currentUser;
+    try {
+        const dbUser = await User.findOne({ uid: user.uid }, { _id: 0 });
+        res.json({ data: dbUser });
+    } catch (error) {
+        res.json({ data: null });
     }
 });
 

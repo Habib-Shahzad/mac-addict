@@ -28,6 +28,15 @@ router.get('/get-areas', async (req, res) => {
     else res.json({ data: areas });
 });
 
+router.get('/get-areas-search', async (req, res) => {
+    const areaText = req.query.areaText;
+    const city = JSON.parse(req.query.city);
+    if (areaText.trim() !== '') {
+        const areas = await Area.find({ "name": { "$regex": areaText, "$options": "i" }, city: city[0] });
+        res.json({ data: areas });
+    } else res.json({ data: [] });
+});
+
 router.post('/add', async (req, res) => {
     const data = req.body;
     const newArea = new Area({

@@ -10,10 +10,14 @@ router.get('/table-data', async (req, res) => {
     else res.json({ data: subCategories });
 });
 
-router.get('/table-data-auto', async (req, res) => {
-    const subCategories = await SubCategory.find({});
-    if (!subCategories) res.json({ data: [] });
-    else res.json({ data: subCategories });
+router.post('/table-data-auto', async (req, res) => {
+    if (Object.keys(req.body).length !== 0) {
+        const subCategories = await SubCategory.find({ category: req.body });
+        res.json({ data: subCategories });
+    } else {
+        const subCategories = await SubCategory.find({});
+        res.json({ data: subCategories });
+    }
 });
 
 router.get('/get-sub-categories', async (req, res) => {
@@ -24,9 +28,17 @@ router.get('/get-sub-categories', async (req, res) => {
 
 router.post('/add', async (req, res) => {
     const data = req.body;
+    let i = 0;
+    let slug = '';
+    while (true) {
+        slug = `${slugify(data.name, { lower: true })}-${i}`;
+        const objExists = await SubCategory.exists({ slug: slug });
+        if (objExists) i += 1;
+        else break;
+    }
     const newSubCategory = new SubCategory({
         name: data.name,
-        slug: slugify(data.name, { lower: true }),
+        slug: slug,
         active: data.active,
         keywords: data.keywords,
         description: data.description,
@@ -39,8 +51,19 @@ router.post('/add', async (req, res) => {
 router.post('/update', async (req, res) => {
     const data = req.body;
     const subCategory = await SubCategory.findOne({ _id: data._id });
+    let slug = '';
+    if (subCategory.name === data.name) slug = subCategory.slug;
+    else {
+        let i = 0;
+        while (true) {
+            slug = `${slugify(data.name, { lower: true })}-${i}`;
+            const objExists = await SubCategory.exists({ slug: slug });
+            if (objExists) i += 1;
+            else break;
+        }
+    }
     subCategory.name = data.name;
-    subCategory.slug = slugify(data.name, { lower: true });
+    subCategory.slug = slug;
     subCategory.keywords = data.keywords;
     subCategory.description = data.description;
     subCategory.category = data.category;

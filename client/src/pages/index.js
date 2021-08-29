@@ -4,3 +4,6 @@ export { default as Brands } from './brands/Brands';
 export { default as Product } from './product/Product';
 export { default as Category } from './category/Category';
 export { default as AllProducts } from './allProducts/AllProducts';
+export { default as Signup } from './signup/Signup';
+export { default as Signin } from './signin/Signin';
+export { default as Cart } from './cart/Cart';

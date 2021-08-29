@@ -180,6 +180,7 @@ export default function EnhancedTable(props) {
         setOpen([]);
         setLoading(true);
         setSelected([]);
+        setPage(0);
         const rows = [];
         const response = await fetch(apiURL, {
           method: 'GET',

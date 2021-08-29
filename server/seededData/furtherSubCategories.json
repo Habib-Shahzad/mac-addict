@@ -1,0 +1,356 @@
+[
+    {
+      "Name1": "primer",
+      "Name": "Primer",
+      "Sub Category": "Face",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "foundation",
+      "Name": "Foundation",
+      "Sub Category": "Face",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "concealer",
+      "Name": "Concealer",
+      "Sub Category": "Face",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "blush",
+      "Name": "Blush",
+      "Sub Category": "Cheek",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "bronzer/contour",
+      "Name": "Bronzer/Contour",
+      "Sub Category": "Cheek",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "lipstick",
+      "Name": "Lipstick",
+      "Sub Category": "Lips",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "mascara",
+      "Name": "Mascara",
+      "Sub Category": "Eyes",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "eyeliner",
+      "Name": "Eyeliner",
+      "Sub Category": "Eyes",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "eye shadow",
+      "Name": "Eye Shadow",
+      "Sub Category": "Eyes",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "powder",
+      "Name": "Powder",
+      "Sub Category": "Face",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "eyebrow pencil",
+      "Name": "Eyebrow Pencil",
+      "Sub Category": "Eyes",
+      "Category": "Make Up"
+    },
+    {
+      "Name1": "facewash",
+      "Name": "Facewash",
+      "Sub Category": "Cleanser",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "exfoliator",
+      "Name": "Exfoliator",
+      "Sub Category": "Cleanser",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "makeup remover",
+      "Name": "Makeup Remover",
+      "Sub Category": "Cleanser",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "toner",
+      "Name": "Toner",
+      "Sub Category": "Cleanser",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "creams",
+      "Name": "Creams",
+      "Sub Category": "Moisturiser",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "oils",
+      "Name": "Oils",
+      "Sub Category": "Moisturiser",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "mists",
+      "Name": "Mists",
+      "Sub Category": "Moisturiser",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "face mask",
+      "Name": "Face Mask",
+      "Sub Category": "Mask",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "sheet mask",
+      "Name": "Sheet Mask",
+      "Sub Category": "Mask",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "eye mask",
+      "Name": "Eye Mask",
+      "Sub Category": "Mask",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "eye cream",
+      "Name": "Eye Cream",
+      "Sub Category": "Eye Treatment",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "face sunscreen",
+      "Name": "Face Sunscreen",
+      "Sub Category": "Sunscreen",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "body sunscreen",
+      "Name": "Body Sunscreen",
+      "Sub Category": "Sunscreen",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "face serum",
+      "Name": "Face Serum",
+      "Sub Category": "Treatment",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "treatment",
+      "Name": "Treatment",
+      "Sub Category": "Treatment",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "peel",
+      "Name": "Peel",
+      "Sub Category": "Treatment",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "tools",
+      "Name": "Tools",
+      "Sub Category": "Treatment",
+      "Category": "Skin Care"
+    },
+    {
+      "Name1": "shampoo",
+      "Name": "Shampoo",
+      "Sub Category": "Shampoo & Conditioner",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "conditioner",
+      "Name": "Conditioner",
+      "Sub Category": "Shampoo & Conditioner",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "scrub",
+      "Name": "Scrub",
+      "Sub Category": "Shampoo & Conditioner",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "mask",
+      "Name": "Mask",
+      "Sub Category": "Treatment",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "oils",
+      "Name": "Oils",
+      "Sub Category": "Treatment",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "serum",
+      "Name": "Serum",
+      "Sub Category": "Treatment",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "primer",
+      "Name": "Primer",
+      "Sub Category": "Styling",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "heat protectant",
+      "Name": "Heat Protectant",
+      "Sub Category": "Styling",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "box dye",
+      "Name": "Box Dye",
+      "Sub Category": "Dye and Root Touch Up",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "root touch up",
+      "Name": "Root Touch Up",
+      "Sub Category": "Dye and Root Touch Up",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "dryer",
+      "Name": "Dryer",
+      "Sub Category": "Tools",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "straightener",
+      "Name": "Straightener",
+      "Sub Category": "Tools",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "curling iron",
+      "Name": "Curling Iron",
+      "Sub Category": "Tools",
+      "Category": "Hair & Fragrance"
+    },
+    {
+      "Name1": "polos",
+      "Name": "Polos",
+      "Sub Category": "Men's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "tshirts",
+      "Name": "Tshirts",
+      "Sub Category": "Men's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "loungewear",
+      "Name": "Loungewear",
+      "Sub Category": "Men's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "pants",
+      "Name": "Pants",
+      "Sub Category": "Men's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "socks/undergarments",
+      "Name": "Socks/Undergarments",
+      "Sub Category": "Men's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "tops",
+      "Name": "Tops",
+      "Sub Category": "Women's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "loungewear",
+      "Name": "Loungewear",
+      "Sub Category": "Women's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "pants",
+      "Name": "Pants",
+      "Sub Category": "Women's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "tights",
+      "Name": "Tights",
+      "Sub Category": "Women's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "coats/sweaters",
+      "Name": "Coats/Sweaters",
+      "Sub Category": "Women's Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "tshirts",
+      "Name": "Tshirts",
+      "Sub Category": "Kids Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "frocks",
+      "Name": "Frocks",
+      "Sub Category": "Kids Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "pants",
+      "Name": "Pants",
+      "Sub Category": "Kids Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "socks/undergarments",
+      "Name": "Socks/Undergarments",
+      "Sub Category": "Kids Clothing",
+      "Category": "Footwear & Apparel"
+    },
+    {
+      "Name1": "rings",
+      "Name": "Rings",
+      "Sub Category": "Jewellery",
+      "Category": "Accessories"
+    },
+    {
+      "Name1": "bracelet/cuff",
+      "Name": "Bracelet/Cuff",
+      "Sub Category": "Jewellery",
+      "Category": "Accessories"
+    },
+    {
+      "Name1": "earrings",
+      "Name": "Earrings",
+      "Sub Category": "Jewellery",
+      "Category": "Accessories"
+    },
+    {
+      "Name1": "necklace",
+      "Name": "Necklace",
+      "Sub Category": "Jewellery",
+      "Category": "Accessories"
+    }
+  ]

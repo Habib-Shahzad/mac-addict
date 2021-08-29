@@ -1,6 +1,14 @@
 .poster {
     img {
         width: 100%;
-        height: 35rem;
+        // height: 35rem;
     }
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+    .poster {
+        padding: 0;
+    }
+    
 }

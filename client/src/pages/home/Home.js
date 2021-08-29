@@ -32,12 +32,12 @@ function Home(props) {
                 <Banner
                     src="https://www.sephora.com/contentimages/homepage/072021/Homepage/DesktopMweb/2021-07-31-hp-marketing-banner-onesize-us-ca-d-slice.jpeg"
                     alt="Banner"
-                    md={4}
+                    lg={5}
                 />
                 <Banner
                     src="https://www.sephora.com/contentimages/homepage/072021/Homepage/DesktopMweb/2021-07-22-july-clean+pp-site-desktop-home-page-marketing-banner-us-can-handoff-1280x1280.jpeg"
                     alt="Banner"
-                    md={4}
+                    lg={5}
                 />
             </Row>
             <div className="margin-global-top-5" />

@@ -7,10 +7,10 @@ import api from '../api';
 import TreeItem from '@material-ui/lab/TreeItem';
 
 const createTableData = (data) => {
-    const { _id, name, subCategory, active } = data;
+    const { _id, name, slug, subCategory, active } = data;
     const subCategoryName = subCategory.name
     const categoryName = subCategory.category.name
-    return { _id, name, subCategoryName, categoryName, active };
+    return { _id, name, slug, subCategoryName, categoryName, active };
 }
 
 const startAction = async (obj, selected, setOriginalTableRows, setTableRows) => {
@@ -32,10 +32,10 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
     }
 }
 
-const editObjCheck = (data, value, editObj) => {
-    if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
-    else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
-}
+// const editObjCheck = (data, value, editObj) => {
+//     if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
+//     else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
+// }
 
 const furtherSubCategoryObj = {
     apiTable: `${api}/further-sub-category/table-data`,
@@ -44,6 +44,7 @@ const furtherSubCategoryObj = {
     headCells: [
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
         { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
+        { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' },
         { id: 'subCategoryName', numeric: false, disablePadding: false, label: 'Sub category' },
         { id: 'categoryName', numeric: false, disablePadding: false, label: 'Category' },
         { id: 'active', numeric: false, disablePadding: false, label: 'Active' },
@@ -130,10 +131,14 @@ const furtherSubCategoryObj = {
             (
                 async () => {
                     const response = await fetch(`${api}/sub-category/table-data-auto`, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Cache-Control': 'no-store'
-                        },
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Cache-Control': 'no-store'
+                            },
+                            credentials: 'include',
+                            withCredentials: true,
+                            body: JSON.stringify({})
                     });
                     const content = await response.json();
                     setSubCategoriesArray(content.data)
@@ -159,10 +164,10 @@ const furtherSubCategoryObj = {
         function changeNameState(event) {
             const { value } = event.target;
             setNameState(prevState => ({ ...prevState, name: value }));
-            let obj = editObjCheck(furtherSubCategoriesArray, value, editObj);
-            if (obj) setNameState(prevState => ({ ...prevState, helperText: `${obj.name} already exists!`, error: true }));
-            else if (value === '') setNameState(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
-            else setNameState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Foundation', error: false }));
+            // let obj = editObjCheck(furtherSubCategoriesArray, value, editObj);
+            // if (obj) setNameState(prevState => ({ ...prevState, helperText: `${obj.name} already exists!`, error: true }));
+            // else if (value === '') setNameState(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
+            // else setNameState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Foundation', error: false }));
         };
         function changeSubCategoryState(event) {
             const { value } = event.target;

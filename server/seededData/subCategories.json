@@ -1,0 +1,154 @@
+[
+    {
+        "Name": "Face",
+        "Category": "Make Up"
+    },
+    {
+        "Name": "Eyes",
+        "Category": "Make Up"
+    },
+    {
+        "Name": "Cheek",
+        "Category": "Make Up"
+    },
+    {
+        "Name": "Lips",
+        "Category": "Make Up"
+    },
+    {
+        "Name": "Cleanser",
+        "Category": "Skin Care"
+    },
+    {
+        "Name": "Mask",
+        "Category": "Skin Care"
+    },
+    {
+        "Name": "Moisturiser",
+        "Category": "Skin Care"
+    },
+    {
+        "Name": "Eyecare",
+        "Category": "Skin Care"
+    },
+    {
+        "Name": "Sunscreen",
+        "Category": "Skin Care"
+    },
+    {
+        "Name": "Treatment",
+        "Category": "Skin Care"
+    },
+    {
+        "Name": "Shampoo & Conditioner",
+        "Category": "Hair & Fragrance"
+    },
+    {
+        "Name": "Treatment",
+        "Category": "Hair & Fragrance"
+    },
+    {
+        "Name": "Styling",
+        "Category": "Hair & Fragrance"
+    },
+    {
+        "Name": "Dye and Root Touch Up",
+        "Category": "Hair & Fragrance"
+    },
+    {
+        "Name": "Tools",
+        "Category": "Hair & Fragrance"
+    },
+    {
+        "Name": "Perfume",
+        "Category": "Hair & Fragrance"
+    },
+    {
+        "Name": "Mist",
+        "Category": "Hair & Fragrance"
+    },
+    {
+        "Name": "Candle",
+        "Category": "Hair & Fragrance"
+    },
+    {
+        "Name": "Flipflop",
+        "Category": "Footwear & Apparel"
+    },
+    {
+        "Name": "Sandals",
+        "Category": "Footwear & Apparel"
+    },
+    {
+        "Name": "Slides",
+        "Category": "Footwear & Apparel"
+    },
+    {
+        "Name": "Wedges",
+        "Category": "Footwear & Apparel"
+    },
+    {
+        "Name": "Pumps",
+        "Category": "Footwear & Apparel"
+    },
+    {
+        "Name": "Men's Clothing",
+        "Category": "Footwear & Apparel"
+    },
+    {
+        "Name": "Women's Clothing",
+        "Category": "Footwear & Apparel"
+    },
+    {
+        "Name": "Kids Clothing",
+        "Category": "Footwear & Apparel"
+    },
+    {
+        "Name": "Totes",
+        "Category": "Bags"
+    },
+    {
+        "Name": "Wallets",
+        "Category": "Bags"
+    },
+    {
+        "Name": "Crossbody",
+        "Category": "Bags"
+    },
+    {
+        "Name": "Satchel",
+        "Category": "Bags"
+    },
+    {
+        "Name": "Clutch/Evening Bag",
+        "Category": "Bags"
+    },
+    {
+        "Name": "Bagpack",
+        "Category": "Bags"
+    },
+    {
+        "Name": "Jewellery",
+        "Category": "Accessories"
+    },
+    {
+        "Name": "Scarves",
+        "Category": "Accessories"
+    },
+    {
+        "Name": "Masks",
+        "Category": "Accessories"
+    },
+    {
+        "Name": "Watch",
+        "Category": "Accessories"
+    },
+    {
+        "Name": "Sunglasses",
+        "Category": "Accessories"
+    },
+    {
+        "Name": "Belt",
+        "Category": "Accessories"
+    }
+]

@@ -17,17 +17,30 @@ router.get('/table-data-auto', async (req, res) => {
     else res.json({ data: categories });
 });
 
-router.get('/get-categories', async (req, res) => {
-    const categories = await Category.find({}, { _id: 0 });
+router.get('/client-categories', async (req, res) => {
+    const categories = await Category.find({}).populate({
+        path: 'subCategories',
+        populate: {
+            path: 'furtherSubCategories'
+        }
+    });
     if (!categories) res.json({ data: [] });
     else res.json({ data: categories });
 });
 
 router.post('/add', async (req, res) => {
     const data = req.body;
+    let i = 0;
+    let slug = '';
+    while (true) {
+        slug = `${slugify(data.name, { lower: true })}-${i}`;
+        const objExists = await Category.exists({ slug: slug });
+        if (objExists) i += 1;
+        else break;
+    }
     const newCategory = new Category({
         name: data.name,
-        slug: slugify(data.name, { lower: true }),
+        slug: slug,
         active: data.active,
         keywords: data.keywords,
         description: data.description,
@@ -39,8 +52,19 @@ router.post('/add', async (req, res) => {
 router.post('/update', async (req, res) => {
     const data = req.body;
     const category = await Category.findOne({ _id: data._id });
+    let slug = '';
+    if (category.name === data.name) slug = category.slug;
+    else {
+        let i = 0;
+        while (true) {
+            slug = `${slugify(data.name, { lower: true })}-${i}`;
+            const objExists = await Category.exists({ slug: slug });
+            if (objExists) i += 1;
+            else break;
+        }
+    }
     category.name = data.name;
-    category.slug = slugify(data.name, { lower: true });
+    category.slug = slug;
     category.keywords = data.keywords;
     category.description = data.description;
     category.active = data.active;

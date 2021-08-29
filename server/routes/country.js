@@ -23,6 +23,14 @@ router.get('/get-countries', async (req, res) => {
     else res.json({ data: countries });
 });
 
+router.get('/get-countries-search', async (req, res) => {
+    const countryText = req.query.countryText;
+    if (countryText.trim() !== '') {
+        const countries = await Country.find({ "name": { "$regex": countryText, "$options": "i" } });
+        res.json({ data: countries });
+    } else res.json({ data: [] });
+});
+
 router.post('/add', async (req, res) => {
     const data = req.body;
     const newCountry = new Country({

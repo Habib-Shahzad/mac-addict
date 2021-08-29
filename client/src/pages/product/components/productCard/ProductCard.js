@@ -4,9 +4,11 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { FourthHeading, MainHeading, DescriptionText, SubHeading, ThirdHeading, LinkButton, ShopButton } from '../../../../components';
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import Checkbox from '@material-ui/core/Checkbox';
-import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FormControlLabel } from '@material-ui/core';
 import './ProductCard.scss';
+import { useParams } from 'react-router-dom';
+import api from '../../../../api';
 
 function ProductCard(props) {
     const [data, setData] = useState(null);
@@ -16,6 +18,8 @@ function ProductCard(props) {
     const [sizeList, setSizeList] = useState([]);
     const [currentImage, setCurrentImage] = useState(0);
     const [product, setProduct] = useState(null);
+
+    const { productSlug } = useParams();
 
     const lightTheme = createTheme({
         palette: {
@@ -39,25 +43,37 @@ function ProductCard(props) {
         (
             async () => {
 
-                const productGet = {
-                    name: 'Instant Look All Over Face Palette Look of Love Collection',
-                    price: 11520,
-                    points: 350,
-                    brand: 'Charlotte Tilbury',
-                    mainImg: 'https://www.sephora.com/productimages/sku/s2432946-main-zoom.jpg',
-                    img1: 'https://www.sephora.com/productimages/sku/s2432946-av-04-zoom.jpg',
-                    img2: 'https://www.sephora.com/productimages/sku/s2432946-av-05-zoom.jpg',
-                    img3: 'https://www.sephora.com/productimages/sku/s2432946-av-06-zoom.jpg',
-                    description: 'Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem',
-                    hasColor: true,
-                    productDetails: [
-                        { _id: '61044598217db513f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2070571-main-zoom.jpg", preOrder: true, price: 1000, points: 100, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Red', hexCode: '#FF0000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Small' } },
-                        { _id: '6104459821349243f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2449908-main-zoom.jpg", preOrder: true, price: 1000, points: 100, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Red', hexCode: '#FF0000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Small' } },
-                        { _id: '61044598217db513f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2432946-main-zoom.jpg", preOrder: true, price: 2000, points: 300, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Maroon', hexCode: '#800000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Small' } },
-                        { _id: '61044598217db513f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2432946-av-06-zoom.jpg", preOrder: true, price: 3000, points: 400, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Yellow', hexCode: '#FFFF00' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Medium' } },
-                        { _id: '61044598217db513f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2432946-av-05-zoom.jpg", preOrder: true, price: 4000, points: 500, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Olive', hexCode: '#808000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Large' } },
-                    ],
-                }
+                const response = await fetch(`${api}/product/client-product?productSlug=${productSlug}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-store'
+                    },
+                    credentials: 'include',
+                    withCredentials: true,
+                });
+                const content = await response.json();
+                const productGet = content.data;
+                productGet.description = productGet.description.split('\n');
+                // const productGet = {
+                //     name: 'Instant Look All Over Face Palette Look of Love Collection',
+                //     // price: 11520,
+                //     // points: 350,
+                //     brand: { name: "Sephora" },
+                //     imagePath: 'https://www.sephora.com/productimages/sku/s2432946-main-zoom.jpg',
+                //     img1: 'https://www.sephora.com/productimages/sku/s2432946-av-04-zoom.jpg',
+                //     img2: 'https://www.sephora.com/productimages/sku/s2432946-av-05-zoom.jpg',
+                //     img3: 'https://www.sephora.com/productimages/sku/s2432946-av-06-zoom.jpg',
+                //     description: ['Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem'],
+                //     hasColor: true,
+                //     productDetails: [
+                //         { _id: '61044598217db513f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2070571-main-zoom.jpg", preOrder: true, price: 1000, points: 100, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Red', hexCode: '#FF0000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Small' } },
+                //         { _id: '6104459821349243f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2449908-main-zoom.jpg", preOrder: true, price: 1000, points: 100, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Red', hexCode: '#FF0000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Small' } },
+                //         { _id: '61044598217db513f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2432946-main-zoom.jpg", preOrder: true, price: 2000, points: 300, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Maroon', hexCode: '#800000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Small' } },
+                //         { _id: '61044598217db513f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2432946-av-06-zoom.jpg", preOrder: true, price: 3000, points: 400, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Yellow', hexCode: '#FFFF00' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Medium' } },
+                //         { _id: '61044598217db513f839d483', imagePath: " https://www.sephora.com/productimages/sku/s2432946-av-05-zoom.jpg", preOrder: true, price: 4000, points: 500, quantity: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Olive', hexCode: '#808000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Large' } },
+                //     ],
+                // }
                 const data = {};
                 if (!productGet.hasColor) {
                     productGet.productDetails.forEach(obj => {
@@ -79,74 +95,6 @@ function ProductCard(props) {
                         }
                     });
                 }
-                // productGet.productDetails.forEach(obj => {
-                //     const sizeName = obj.size.name;
-                //     if (!data[sizeName]) {
-                //         if (productGet.hasColor) {
-                //             data[sizeName] = [{ _id: obj._id, size: obj.size, color: obj.color, imagePath: obj.imagePath, price: obj.price, quantity: obj.quantity, preOrder: obj.preOrder }];
-                //         }
-                //         data[sizeName] = [{ _id: obj._id, size: obj.size, color: obj.color, imagePath: obj.imagePath, price: obj.price, quantity: obj.quantity, preOrder: obj.preOrder }];
-                //     }
-                //     else data[sizeName].push({ _id: obj._id, size: obj.size, color: obj.color, imagePath: obj.imagePath, price: obj.price, quantity: obj.quantity, preOrder: obj.preOrder });
-                // });
-                // productGet.productDetails.forEach(obj => {
-                //     const sizeName = obj.size.name;
-                //     if (!data[sizeName]) {
-                //         if (productGet.hasColor) {
-                //             data[sizeName] = {};
-                //             const colorName = obj.color.name;
-                //             if (!data[sizeName][colorName]) data[sizeName][colorName] = [obj.imagePath]
-                //             else data[sizeName][colorName].push(obj.imagePath);
-                //         } else {
-                //             data[sizeName] = [obj.imagePath]
-                //         }
-                //     } else {
-                //         if (productGet.hasColor) {
-                //             const colorName = obj.color.name;
-                //             if (!data[sizeName][colorName]) data[sizeName][colorName] = [obj.imagePath]
-                //             else data[sizeName][colorName].push(obj.imagePath);
-                //         } else {
-                //             data[sizeName].push(obj.imagePath);
-                //         }
-                //     }
-                // });
-                // if (activeKeyList.length > 0) {
-                //     setKeyList(activeKeyList);
-                //     setActive({ key: activeKeyList[0], data: data[activeKeyList[0]] });
-                //     console.log({ key: activeKeyList[0], data: data[activeKeyList[0]] });
-                // }
-                // setProduct(productGet);
-                // setActive(newData[Object.keys(newData)[0]])
-                // const productDetailHTML = '';
-                // const flag = true;
-                // let active = null;
-                // for (const key in data) {
-                //     if (Object.hasOwnProperty.call(data, key)) {
-                //         const element = data[key];
-                //         if (!active) {
-                //             if (element.length > 0) active = element[0];
-                //         }
-                //     }
-                // }
-                // console.log(active);
-                // console.log([].concat.apply([], Object.values(data)));
-                // setSizeList(Object.keys(data))
-                // setColorList([].concat.apply([], Object.values(data)));
-                // setActive(active);
-                // setProduct(productGet);
-                // console.log(active);
-                // setProduct(productGet);
-                // const response = await fetch(`${api}/product/get-product-slug`, {
-                //     method: 'GET',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //         'Cache-Control': 'no-store'
-                //     },
-                //     credentials: 'include',
-                //     withCredentials: true,
-                // });
-                // const content = await response.json();
-                // console.log(content.data.productDetails)
                 const sizeList = Object.keys(data);
                 setSizeList(sizeList);
                 setActiveSize(sizeList[0]);
@@ -158,7 +106,7 @@ function ProductCard(props) {
                 setData(data);
                 setProduct(productGet);
             })();
-    }, []);
+    }, [productSlug]);
 
     const changeActiveSize = (event, size) => {
         event.preventDefault();
@@ -171,6 +119,7 @@ function ProductCard(props) {
         setActiveSize(size);
     }
     const changeActiveColor = color => {
+        setCurrentImage(0);
         setActiveColor(color);
     }
     const changeImage = num => {
@@ -188,8 +137,9 @@ function ProductCard(props) {
 
     return (
         <Container className="product-card">
+            <div className="ribbon"><span>Pre Order</span></div>
             <Row>
-                <Col md={5}>
+                <Col lg={5}>
                     <div className="img-cont">
                         <Row>
                             {
@@ -206,13 +156,13 @@ function ProductCard(props) {
                         </Row>
                         <Row >
                             <Col>
-                                <img src={product.img1} alt={product.name} />
+                                {/* <img src={product.img1} alt={product.name} /> */}
                             </Col>
                             <Col>
-                                <img src={product.img2} alt={product.name} />
+                                {/* <img src={product.img2} alt={product.name} /> */}
                             </Col>
                             <Col>
-                                <img src={product.img3} alt={product.name} />
+                                {/* <img src={product.img3} alt={product.name} /> */}
                             </Col>
                         </Row>
                     </div>
@@ -221,7 +171,7 @@ function ProductCard(props) {
                     <div className="product-details">
                         <div className="brand-name">
                             <MainHeading
-                                text={product.brand}
+                                text={product.brand.name}
                                 classes="text-uppercase brand-color margin-bottom-0"
                             />
                         </div>
@@ -249,11 +199,17 @@ function ProductCard(props) {
                         </div>
                         {
                             product.hasColor ? (
-                                <div className="product-points">
-                                    <ThirdHeading
-                                        text={`Points: ${data[activeSize][activeColor].points}`}
-                                        classes="margin-bottom-0"
-                                    />
+                                <div>
+                                    {
+                                        data[activeSize][activeColor].points !== 0 ? (
+                                            <div className="product-points">
+                                                <ThirdHeading
+                                                    text={`Points: ${data[activeSize][activeColor].points}`}
+                                                    classes="margin-bottom-0"
+                                                />
+                                            </div>
+                                        ) : null
+                                    }
                                 </div>
                             ) : (
                                 <div className="product-points">
@@ -272,10 +228,17 @@ function ProductCard(props) {
                             />
                         </div>
                         <div className="product-description">
-                            <DescriptionText
-                                text={product.description}
-                                classes="margin-bottom-0"
-                            />
+                            {
+                                product.description.map((value, index) => (
+                                    <div key={index}>
+                                        <DescriptionText
+                                            to=""
+                                            text={value}
+                                            classes="margin-bottom-0"
+                                        />
+                                    </div>
+                                ))
+                            }
                         </div>
                         <div className="margin-global-top-2" />
                         <div className="product-description">
@@ -295,14 +258,14 @@ function ProductCard(props) {
                                                 size === activeSize ? (
                                                     <LinkButton
                                                         onClick={e => changeActiveSize(e, size)}
-                                                        classes="text-uppercase small-width active"
+                                                        classes="text-uppercase active product-card-size"
                                                         text={size}
                                                         button={true}
                                                     />
                                                 ) : (
                                                     <LinkButton
                                                         onClick={e => changeActiveSize(e, size)}
-                                                        classes="text-uppercase small-width"
+                                                        classes="text-uppercase product-card-size"
                                                         text={size}
                                                         button={true}
                                                     />
@@ -356,7 +319,7 @@ function ProductCard(props) {
                             <div className="inline-block">
                                 <ThemeProvider theme={lightTheme}>
                                     <FormControlLabel
-                                        control={<Checkbox disableRipple={true} icon={<BsHeart className="heart-icon" />} checkedIcon={<BsHeartFill className="heart-icon" />} name="checkedH" />}
+                                        control={<Checkbox disableRipple={true} icon={<IoMdHeartEmpty className="heart-icon" />} checkedIcon={<IoMdHeart className="heart-icon" />} name="checkedH" />}
                                     />
                                 </ThemeProvider>
                             </div>

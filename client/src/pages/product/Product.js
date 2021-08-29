@@ -20,6 +20,7 @@ function Product(props) {
                 mainHeading="Similar Products"
                 data={similar}
                 button=""
+                shouldHide={true}
             />
         </Container>
     );

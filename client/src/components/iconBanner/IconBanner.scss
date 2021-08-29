@@ -6,11 +6,12 @@
         width: fit-content;
         i {
             border-radius: 100px;
-            height: 3.438rem;
-            width: 3.438rem;
+            height: 3.4rem;
+            width: 3.4rem;
+            line-height: 2.2rem;
             text-align: center;
             background-color: black;
-            font-size: 2.188rem;
+            font-size: 2.2rem;
             padding: 0.625rem;
             color: white;
             transition: ease-in-out .3s;
@@ -32,6 +33,16 @@
 
 // Medium devices (tablets, less than 992px)
 @media (max-width: 61.99875em) {
+    .icon-banner {
+        .icon-cont {
+            i {
+                height: 3rem;
+                width: 3rem;
+                font-size: 1.8rem;
+                line-height: 1.8rem;
+            }
+        }
+    }
 }
 
 // Small devices (landscape phones, less than 768px)

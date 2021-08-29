@@ -9,10 +9,9 @@ import api from '../api';
 import TreeItem from '@material-ui/lab/TreeItem';
 
 const createTableData = (data) => {
-    const { _id, imagePath, name, points, furtherSubCategory, brand, active } = data;
-    const furtherSubCategoryName = furtherSubCategory.name;
+    const { _id, imagePath, name, brand, active } = data;
     const brandName = brand.name;
-    return { _id, imagePath, name, points, furtherSubCategoryName, brandName, active };
+    return { _id, imagePath, name, brandName, active };
 }
 
 const editObjCheck = (data, value, editObj) => {
@@ -47,8 +46,6 @@ const productObj = {
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
         { id: 'imagePath', numeric: false, disablePadding: true, label: 'Image' },
         { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-        { id: 'points', numeric: false, disablePadding: false, label: 'Points to avail' },
-        { id: 'furtherSubCategoryName', numeric: false, disablePadding: false, label: 'Further Sub Category' },
         { id: 'brandName', numeric: false, disablePadding: false, label: 'Brand' },
         { id: 'active', numeric: false, disablePadding: false, label: 'Active' },
     ],
@@ -86,15 +83,20 @@ const productObj = {
         const [editObj, setEditObj] = useState(null);
 
         const [nameState, setNameState] = useState({ name: '', helperText: 'Enter name Ex. BACKSTAGE Face & Body Foundation', error: false });
-        const [furtherSubCategoryState, setFurtherSubCategoryState] = useState({ name: '', obj: undefined, helperText: 'Enter name Ex. Face', error: false });
-        const [brandState, setBrandState] = useState({ name: '', obj: undefined, helperText: 'Enter name Ex. Dior', error: false });
-        const [pointsState, setPointsState] = useState({ name: '', helperText: 'Enter points Ex. 25', error: false });
+        const [categoryState, setCategoryState] = useState({ name: '', obj: null, helperText: 'Enter name Ex. Face', error: false });
+        const [subCategoryState, setSubCategoryState] = useState({ name: '', obj: null, helperText: 'Enter name Ex. Face' });
+        const [furtherSubCategoryState, setFurtherSubCategoryState] = useState({ name: '', obj: null, helperText: 'Enter name Ex. Face' });
+        const [brandState, setBrandState] = useState({ name: '', obj: null, helperText: 'Enter name Ex. Dior', error: false });
+        // const [pointsState, setPointsState] = useState({ name: '', helperText: 'Enter points Ex. 25', error: false });
         const [keywordsState, setKeywordsState] = useState({ name: '', helperText: 'Comma seperated SEO Keywords' });
         const [descriptionState, setDescriptionState] = useState({ name: '', helperText: 'Type a description Ex. This product is...', error: false });
         const [imagePathState, setImagePathState] = useState({ name: '', helperText: 'Please insert an image url Ex. https://www.sephora.com/productimages/sku/s2070571-main-zoom.jpg', error: false });
         const [checkboxes, setCheckboxes] = useState({ active: true, hasColor: true });
-        const [productDetails, setProductDetails] = useState([{ imagePath: '', imageError: false, imageHelper: 'Please insert an image url', color: undefined, colorError: false, colorHelper: 'Please select a color', size: undefined, sizeError: false, sizeHelper: 'Please sleect a size', price: 0, qty: 0, preOrder: false }]);
+        const [productDetails, setProductDetails] = useState([{ imagePath: '', imageError: false, imageHelper: 'Please insert an image url', color: null, colorError: false, colorHelper: 'Please select a color', size: null, sizeError: false, sizeHelper: 'Please sleect a size', price: 0, qty: 0, points: 0, preOrder: false }]);
         const [productsArray, setProductsArray] = useState([]);
+
+        const [categoriesArray, setCategoriesArray] = useState([]);
+        const [subCategoriesArray, setSubCategoriesArray] = useState([]);
         const [furtherSubCategoriesArray, setFurtherSubCategoriesArray] = useState([]);
         const [brandsArray, setBrandsArray] = useState([]);
         const [colorsArray, setColorsArray] = useState([]);
@@ -107,14 +109,12 @@ const productObj = {
             let flag = true;
             if (nameState.error === true) flag = true;
             else if (nameState.name.length === 0) flag = true;
-            else if (furtherSubCategoryState.error === true) flag = true;
-            else if (furtherSubCategoryState.name.length === 0) flag = true;
-            else if (furtherSubCategoryState.obj === undefined) flag = true;
+            else if (categoryState.error === true) flag = true;
+            else if (categoryState.name.length === 0) flag = true;
+            else if (categoryState.obj === null) flag = true;
             else if (brandState.error === true) flag = true;
             else if (brandState.name.length === 0) flag = true;
-            else if (brandState.obj === undefined) flag = true;
-            else if (pointsState.error === true) flag = true;
-            else if (pointsState.name.length === 0) flag = true;
+            else if (brandState.obj === null) flag = true;
             else if (imagePathState.error === true) flag = true;
             else if (imagePathState.name.length === 0) flag = true;
             else if (descriptionState.error === true) flag = true;
@@ -128,19 +128,25 @@ const productObj = {
                 } else if (element.imageError === true) {
                     flag = true;
                     break;
-                } else if (checkboxes.hasColor === true && element.color === undefined) {
+                } else if (checkboxes.hasColor === true && element.color === null) {
                     flag = true;
                     break;
                 } else if (checkboxes.hasColor === true && element.colorError === true) {
                     flag = true;
                     break;
+                } else if (checkboxes.hasColor === true && element.color === undefined) {
+                    flag = true;
+                    break;
                 } else if (checkboxes.hasColor === true && element.color.length === 0) {
                     flag = true;
                     break;
-                } else if (element.size === undefined) {
+                } else if (element.size === null) {
                     flag = true;
                     break;
                 } else if (element.sizeError === true) {
+                    flag = true;
+                    break;
+                }  else if (element.size === undefined) {
                     flag = true;
                     break;
                 } else if (element.size.length === 0) {
@@ -149,7 +155,7 @@ const productObj = {
                 }
             }
             setCanSubmit(flag);
-        }, [nameState, furtherSubCategoryState, descriptionState, brandState, imagePathState, pointsState, productDetails, checkboxes.hasColor]);
+        }, [nameState, categoryState, descriptionState, brandState, imagePathState, productDetails, checkboxes.hasColor]);
 
         useEffect(() => {
             (
@@ -171,16 +177,61 @@ const productObj = {
         useEffect(() => {
             (
                 async () => {
-                    const response = await fetch(`${api}/further-sub-category/table-data-auto`, {
+                    const response = await fetch(`${api}/category/table-data-auto`, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Cache-Control': 'no-store'
                         },
                     });
                     const content = await response.json();
-                    setFurtherSubCategoriesArray(content.data)
+                    setCategoriesArray(content.data)
                 })();
         }, []);
+
+        useEffect(() => {
+            (
+                async () => {
+                    if (categoryState.obj) {
+                        const response = await fetch(`${api}/sub-category/table-data-auto`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Cache-Control': 'no-store'
+                            },
+                            credentials: 'include',
+                            withCredentials: true,
+                            body: JSON.stringify(categoryState.obj)
+                        });
+                        const content = await response.json();
+                        setSubCategoriesArray(content.data)
+                    } else {
+                        setSubCategoriesArray([]);
+                    }
+                })();
+        }, [categoryState.obj]);
+
+        useEffect(() => {
+            (
+                async () => {
+                    if (subCategoryState.obj) {
+                        const response = await fetch(`${api}/further-sub-category/table-data-auto`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Cache-Control': 'no-store'
+                            },
+                            credentials: 'include',
+                            withCredentials: true,
+                            body: JSON.stringify(subCategoryState.obj)
+                        });
+                        const content = await response.json();
+                        setFurtherSubCategoriesArray(content.data);
+                    } else {
+                        setFurtherSubCategoryState(prevState => ({ ...prevState, name: '', obj: null }));
+                        setFurtherSubCategoriesArray([]);
+                    }
+                })();
+        }, [subCategoryState.obj]);
 
         useEffect(() => {
             (
@@ -227,28 +278,30 @@ const productObj = {
         useEffect(() => {
             if (editObj) {
                 setNameState(prevState => ({ ...prevState, name: editObj.name }));
-                setFurtherSubCategoryState(prevState => ({ ...prevState, name: editObj.name, obj: editObj.furtherSubCategory }));
+                setCategoryState(prevState => ({ ...prevState, name: editObj.category.name, obj: editObj.category }));
+                if (editObj.subCategory) setSubCategoryState(prevState => ({ ...prevState, name: editObj.subCategory.name, obj: editObj.subCategory }));
+                if (editObj.furtherSubCategory) setFurtherSubCategoryState(prevState => ({ ...prevState, name: editObj.furtherSubCategory.name, obj: editObj.furtherSubCategory }));
                 setBrandState(prevState => ({ ...prevState, name: editObj.name, obj: editObj.brand }));
-                setPointsState(prevState => ({ ...prevState, name: editObj.points }));
                 setKeywordsState(prevState => ({ ...prevState, name: editObj.keywords }));
                 setImagePathState(prevState => ({ ...prevState, name: editObj.imagePath }));
                 setDescriptionState(prevState => ({ ...prevState, name: editObj.description }));
                 setCheckboxes(prevState => ({ ...prevState, active: editObj.active, hasColor: editObj.hasColor }))
                 const list = [];
                 editObj.productDetails.forEach(element => {
-                    list.push({ imagePath: element.imagePath, color: element.color, size: element.size, price: element.price, qty: element.quantity, preOrder: element.preOrder })
+                    list.push({ imagePath: element.imagePath, color: element.color, size: element.size, price: element.price, points: element.points, qty: element.quantity, preOrder: element.preOrder })
                 });
                 setProductDetails(list);
             } else {
                 setNameState(prevState => ({ ...prevState, name: '' }));
-                setFurtherSubCategoryState(prevState => ({ ...prevState, name: '', obj: undefined }));
-                setBrandState(prevState => ({ ...prevState, name: '', obj: undefined }))
-                setPointsState(prevState => ({ ...prevState, name: '' }));;
+                setCategoryState(prevState => ({ ...prevState, name: '', obj: null }));
+                setSubCategoryState(prevState => ({ ...prevState, name: '', obj: null }));
+                setFurtherSubCategoryState(prevState => ({ ...prevState, name: '', obj: null }));
+                setBrandState(prevState => ({ ...prevState, name: '', obj: null }))
                 setKeywordsState(prevState => ({ ...prevState, name: '' }));
                 setImagePathState(prevState => ({ ...prevState, name: '' }));
                 setDescriptionState(prevState => ({ ...prevState, name: '' }));
                 setCheckboxes(prevState => ({ ...prevState, active: true, hasColor: true }));
-                setProductDetails([{ imagePath: '', imageError: false, imageHelper: 'Please insert an image url', color: undefined, colorError: false, colorHelper: 'Please select a color', size: undefined, sizeError: false, sizeHelper: 'Please sleect a size', price: 0, qty: 0, preOrder: false }]);
+                setProductDetails([{ imagePath: '', imageError: false, imageHelper: 'Please insert an image url', color: null, colorError: false, colorHelper: 'Please select a color', size: null, sizeError: false, sizeHelper: 'Please sleect a size', price: 0, qty: 0, points: 0, preOrder: false }]);
             }
         }, [editObj]);
 
@@ -260,12 +313,22 @@ const productObj = {
             else if (value === '') setNameState(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
             else setNameState(prevState => ({ ...prevState, helperText: 'Enter name Ex. BACKSTAGE Face & Body Foundation', error: false }));
         };
+        function changeCategoryState(event) {
+            const { value } = event.target;
+            const obj = categoriesArray.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim());
+            setCategoryState(prevState => ({ ...prevState, name: value, obj: obj }));
+            if (value === '') setCategoryState(prevState => ({ ...prevState, helperText: 'Category is required!', error: true }));
+            else setCategoryState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Face', error: false }));
+        };
+        function changeSubCategoryState(event) {
+            const { value } = event.target;
+            const obj = subCategoriesArray.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim());
+            setSubCategoryState(prevState => ({ ...prevState, name: value, obj: obj }));
+        };
         function changeFurtherSubCategoryState(event) {
             const { value } = event.target;
             const obj = furtherSubCategoriesArray.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim());
             setFurtherSubCategoryState(prevState => ({ ...prevState, name: value, obj: obj }));
-            if (value === '') setFurtherSubCategoryState(prevState => ({ ...prevState, helperText: 'Further sub category is required!', error: true }));
-            else setFurtherSubCategoryState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Face', error: false }));
         };
         function changeBrandState(event) {
             const { value } = event.target;
@@ -273,14 +336,6 @@ const productObj = {
             setBrandState(prevState => ({ ...prevState, name: value, obj: obj }));
             if (value === '') setBrandState(prevState => ({ ...prevState, helperText: 'Brand is required!', error: true }));
             else setBrandState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Dior', error: false }));
-        };
-        function changePointsState(event) {
-            const { value } = event.target;
-            const reg = /^\d+$/;
-            setPointsState(prevState => ({ ...prevState, name: value }));
-            if (value === '') setPointsState(prevState => ({ ...prevState, helperText: 'Points are required!', error: true }));
-            else if (!value.match(reg)) setPointsState(prevState => ({ ...prevState, helperText: 'Must contain digits only!', error: true }));
-            else setPointsState(prevState => ({ ...prevState, helperText: 'Enter points Ex. 25', error: false }));
         };
         function changeKeywordsState(event) {
             const { value } = event.target;
@@ -305,7 +360,7 @@ const productObj = {
             const list = [...productDetails];
             if (!checkboxes.hasColor) {
                 for (let index = 0; index < list.length; index++) {
-                    list[index].color = undefined;
+                    list[index].color = null;
                 }
                 setProductDetails(list);
             }
@@ -376,6 +431,18 @@ const productObj = {
                 setProductDetails(list);
             }
         }
+        function changeProductDetailPoints(event, index) {
+            const { value } = event.target;
+            if (value === '') {
+                const list = [...productDetails];
+                list[index].points = parseFloat(0);
+                setProductDetails(list);
+            } else if (parseFloat(value)) {
+                const list = [...productDetails];
+                list[index].points = parseFloat(value);
+                setProductDetails(list);
+            }
+        }
         function changeProductDetailPreorder(event, index) {
             const list = [...productDetails];
             list[index].preOrder = !list[index].preOrder;
@@ -383,7 +450,7 @@ const productObj = {
         }
         const addRow = event => {
             event.preventDefault();
-            setProductDetails([...productDetails, { imagePath: '', imageError: false, imageHelper: 'Please insert an image url', color: undefined, colorError: false, colorHelper: 'Please select a color', size: undefined, sizeError: false, sizeHelper: 'Please sleect a size', price: 0, qty: 0, preOrder: false }]);
+            setProductDetails([...productDetails, { imagePath: '', imageError: false, imageHelper: 'Please insert an image url', color: null, colorError: false, colorHelper: 'Please select a color', size: null, sizeError: false, sizeHelper: 'Please sleect a size', price: 0, qty: 0, points: 0, preOrder: false }]);
         }
         const removeRow = event => {
             event.preventDefault();
@@ -404,7 +471,7 @@ const productObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ name: nameState.name, furtherSubCategory: furtherSubCategoryState.obj, brand: brandState.obj, points: pointsState.name, keywords: keywordsState.name, imagePath: imagePathState.name, description: descriptionState.name, active: checkboxes.active, hasColor: checkboxes.hasColor, productDetails: productDetails }),
+                    body: JSON.stringify({ name: nameState.name, category: categoryState.obj, subCategory: subCategoryState.obj, furtherSubCategory: furtherSubCategoryState.obj, brand: brandState.obj, keywords: keywordsState.name, imagePath: imagePathState.name, description: descriptionState.name, active: checkboxes.active, hasColor: checkboxes.hasColor, productDetails: productDetails }),
                 });
                 const content = await response.json();
                 setProductsArray([...productsArray, content.data]);
@@ -419,7 +486,7 @@ const productObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ _id: queryID, name: nameState.name, furtherSubCategory: furtherSubCategoryState.obj, brand: brandState.obj, points: pointsState.name, keywords: keywordsState.name, imagePath: imagePathState.name, description: descriptionState.name, active: checkboxes.active, hasColor: checkboxes.hasColor, productDetails: productDetails, oldProductDetails: oldProductDetails }),
+                    body: JSON.stringify({ _id: queryID, name: nameState.name, category: categoryState.obj, subCategory: subCategoryState.obj, furtherSubCategory: furtherSubCategoryState.obj, brand: brandState.obj, keywords: keywordsState.name, imagePath: imagePathState.name, description: descriptionState.name, active: checkboxes.active, hasColor: checkboxes.hasColor, productDetails: productDetails, oldProductDetails: oldProductDetails }),
                 });
                 const content = await response.json();
                 const objArray = [...productsArray];
@@ -433,14 +500,15 @@ const productObj = {
             }
             else {
                 setNameState({ name: '', helperText: 'Enter name Ex. BACKSTAGE Face & Body Foundation', error: false });
-                setFurtherSubCategoryState({ name: '', obj: undefined, helperText: 'Enter name Ex. Face', error: false });
-                setBrandState({ name: '', obj: undefined, helperText: 'Enter name Ex. Dior', error: false });
-                setPointsState({ name: '', helperText: 'Enter points Ex. 25', error: false })
+                setCategoryState({ name: '', obj: null, helperText: 'Enter name Ex. Face', error: false });
+                setSubCategoryState({ name: '', obj: null, helperText: 'Enter name Ex. Face', error: false });
+                setFurtherSubCategoryState({ name: '', obj: null, helperText: 'Enter name Ex. Face', error: false });
+                setBrandState({ name: '', obj: null, helperText: 'Enter name Ex. Dior', error: false });
                 setKeywordsState({ name: '', helperText: 'Comma seperated SEO Keywords' });
                 setImagePathState({ name: '', helperText: 'Please insert an image url Ex. https://www.sephora.com/productimages/sku/s2070571-main-zoom.jpg', error: false });
                 setDescriptionState({ name: '', helperText: 'Type a description Ex. This product is...', error: false })
                 setCheckboxes({ active: true, hasColor: true });
-                setProductDetails([{ imagePath: '', imageError: false, imageHelper: 'Please insert an image url', color: undefined, colorError: false, colorHelper: 'Please select a color', size: undefined, sizeError: false, sizeHelper: 'Please sleect a size', price: 0, qty: 0, preOrder: false }]);
+                setProductDetails([{ imagePath: '', imageError: false, imageHelper: 'Please insert an image url', color: null, colorError: false, colorHelper: 'Please select a color', size: null, sizeError: false, sizeHelper: 'Please sleect a size', price: 0, qty: 0, points: 0, preOrder: false }]);
                 setLoading(false);
                 queryID = '';
                 history.push('/admin/product/add');
@@ -470,6 +538,52 @@ const productObj = {
                             <FormHelperText error={nameState.error} id="name-helper">{nameState.helperText}</FormHelperText>
                         </FormControl>
                     </Form.Group>
+                    <Form.Group as={Col} md={6} controlId="category">
+                        <FormControl className={classes.formControl}>
+                            <Autocomplete
+                                id="combo-box-demo"
+                                color="secondary"
+                                options={categoriesArray}
+                                getOptionLabel={(option) => option.name}
+                                getOptionSelected={(option, value) => option._id === value._id}
+                                value={categoryState.obj ? categoryState.obj : null}
+                                // style={{ width: 300 }}
+                                renderInput={(params) => <TextField
+                                    color="secondary"
+                                    error={categoryState.error}
+                                    onChange={changeCategoryState}
+                                    onBlur={changeCategoryState}
+                                    {...params} label="Category"
+                                />
+                                }
+                            />
+                            <FormHelperText error={categoryState.error} id="category-helper">{categoryState.helperText}</FormHelperText>
+                        </FormControl>
+                    </Form.Group>
+                </Row>
+                <Row className={classes.rowGap}>
+                    <Form.Group as={Col} md={6} controlId="subCategory">
+                        <FormControl className={classes.formControl}>
+                            <Autocomplete
+                                id="combo-box-demo"
+                                color="secondary"
+                                options={subCategoriesArray}
+                                getOptionLabel={(option) => option.name}
+                                getOptionSelected={(option, value) => option._id === value._id}
+                                value={subCategoryState.obj ? subCategoryState.obj : null}
+                                // style={{ width: 300 }}
+                                renderInput={(params) => <TextField
+                                    color="secondary"
+                                    error={subCategoryState.error}
+                                    onChange={changeSubCategoryState}
+                                    onBlur={changeSubCategoryState}
+                                    {...params} label="Sub category"
+                                />
+                                }
+                            />
+                            <FormHelperText error={subCategoryState.error} id="subCategory-helper">{subCategoryState.helperText}</FormHelperText>
+                        </FormControl>
+                    </Form.Group>
                     <Form.Group as={Col} md={6} controlId="furtherSubCategory">
                         <FormControl className={classes.formControl}>
                             <Autocomplete
@@ -477,11 +591,12 @@ const productObj = {
                                 color="secondary"
                                 options={furtherSubCategoriesArray}
                                 getOptionLabel={(option) => option.name}
+                                getOptionSelected={(option, value) => option._id === value._id}
                                 value={furtherSubCategoryState.obj ? furtherSubCategoryState.obj : null}
                                 // style={{ width: 300 }}
                                 renderInput={(params) => <TextField
                                     color="secondary"
-                                    error={furtherSubCategoryState.error}
+                                    error={subCategoryState.error}
                                     onChange={changeFurtherSubCategoryState}
                                     onBlur={changeFurtherSubCategoryState}
                                     {...params} label="Further sub category"
@@ -500,6 +615,7 @@ const productObj = {
                                 color="secondary"
                                 options={brandsArray}
                                 getOptionLabel={(option) => option.name}
+                                getOptionSelected={(option, value) => option._id === value._id}
                                 value={brandState.obj ? brandState.obj : null}
                                 // style={{ width: 300 }}
                                 renderInput={(params) => <TextField
@@ -512,24 +628,6 @@ const productObj = {
                                 }
                             />
                             <FormHelperText error={brandState.error} id="brand-helper">{brandState.helperText}</FormHelperText>
-                        </FormControl>
-                    </Form.Group>
-                    <Form.Group as={Col} md={6} controlId="points">
-                        <FormControl className={classes.formControl}>
-                            <InputLabel error={pointsState.error} color="secondary" htmlFor="points">Points</InputLabel>
-                            <Input
-                                color="secondary"
-                                autoComplete="none"
-                                value={pointsState.name}
-                                type="text"
-                                error={pointsState.error}
-                                id="points"
-                                name="points"
-                                onChange={changePointsState}
-                                onBlur={changePointsState}
-                                aria-describedby="points-helper"
-                            />
-                            <FormHelperText error={pointsState.error} id="points-helper">{pointsState.helperText}</FormHelperText>
                         </FormControl>
                     </Form.Group>
                 </Row>
@@ -646,6 +744,7 @@ const productObj = {
                                                     color="secondary"
                                                     options={colorsArray}
                                                     getOptionLabel={(option) => option.name}
+                                                    getOptionSelected={(option, optionValue) => option._id === optionValue._id}
                                                     value={value.color ? value.color : null}
                                                     renderInput={(params) => <TextField
                                                         color="secondary"
@@ -669,6 +768,7 @@ const productObj = {
                                             color="secondary"
                                             options={sizesArray}
                                             getOptionLabel={(option) => option.name}
+                                            getOptionSelected={(option, optionValue) => option._id === optionValue._id}
                                             value={value.size ? value.size : null}
                                             renderInput={(params) => <TextField
                                                 color="secondary"
@@ -682,7 +782,7 @@ const productObj = {
                                         <FormHelperText error={value.sizeError} id="size-helper">{value.sizeHelper}</FormHelperText>
                                     </FormControl>
                                 </Form.Group>
-                                <Form.Group as={Col} md={2} controlId="name">
+                                <Form.Group as={Col} md={1} controlId="name">
                                     <FormControl className={classes.formControl}>
                                         <InputLabel color="secondary" htmlFor="price">Price</InputLabel>
                                         <Input
@@ -695,6 +795,21 @@ const productObj = {
                                             aria-describedby="name-helper"
                                         />
                                         <FormHelperText id="price">Enter a price</FormHelperText>
+                                    </FormControl>
+                                </Form.Group>
+                                <Form.Group as={Col} md={1} controlId="points">
+                                    <FormControl className={classes.formControl}>
+                                        <InputLabel color="secondary" htmlFor="price">Points</InputLabel>
+                                        <Input
+                                            color="secondary"
+                                            autoComplete="none"
+                                            value={value.points}
+                                            type="text"
+                                            onChange={event => changeProductDetailPoints(event, index)}
+                                            // onBlur={event => changeProductDetailQuantity(event, index)}
+                                            aria-describedby="points-helper"
+                                        />
+                                        <FormHelperText id="price">Enter points</FormHelperText>
                                     </FormControl>
                                 </Form.Group>
                                 <Form.Group as={Col} md={1} controlId="name">

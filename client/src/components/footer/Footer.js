@@ -8,8 +8,8 @@ function Footer(props) {
           <h3>MAC <span>ADDICT</span></h3>
           <p className="footer-links">
             <a href="/" className="link-1">Home</a>
-            <a href="/diy">DIY</a>
-            <a href="/contact-us">Contact Us</a>
+            {/* <a href="/diy">DIY</a> */}
+            {/* <a href="/contact-us">Contact Us</a> */}
           </p>
           <p className="footer-company-name">MAC Addict © 2021</p>
         </div>

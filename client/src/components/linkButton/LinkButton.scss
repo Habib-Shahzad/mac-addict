@@ -3,10 +3,10 @@
     background-color: #cf993d;
     color: black !important;
     text-align: center;
-    outline: 1px solid #cf993d;
     width: 10rem;
     padding: 0.5rem 0;
     border-radius: 100px;
+    border: 1px solid #cf993d;
     font-size: 1.1rem;
     display: block;
     transition: .3s ease-in-out;
@@ -20,11 +20,50 @@
 }
 
 .small-width {
-    width: fit-content;
+    width: fit-content !important;
     padding: 0.5rem 1rem;
     margin-right: 1rem;
 }
 
+.product-card-size {
+    width: fit-content !important;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
 .active {
     background-color: transparent;
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+    .link-button {
+        width: 9rem;
+        font-size: 1.05rem;
+    }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+    .link-button {
+        width: 8.5rem;
+        font-size: 0.94rem;
+    }
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+    .link-button {
+        width: 8rem;
+        font-size: 0.84rem;
+    }
 }

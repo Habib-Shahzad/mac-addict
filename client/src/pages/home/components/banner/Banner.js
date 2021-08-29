@@ -4,7 +4,7 @@ import './Banner.scss';
 
 function Banner(props) {
     return (
-        <Col md={props.md} className="banner">
+        <Col lg={props.lg} className="banner">
             <img src={props.src} alt={props.alt} />
         </Col>
     );

@@ -1,5 +1,9 @@
 .main-navbar {
     background-color: #cf993d;
+    .nav-row-fit {
+        width: fit-content;
+        padding: 0;
+    }
     a {
         text-decoration: none;
         color: black;
@@ -17,6 +21,7 @@
     }
     .main-link {
         width: fit-content;
+        display: block;
         margin: 0 0.9rem;
         padding-top: 0.3rem;
         padding-bottom: 0.3rem;
@@ -32,7 +37,7 @@
         padding: 1rem 0;
         background-color: white;
         box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 6px 0px;
-        z-index: 1;
+        z-index: 10;
         width: 100%;
         position: absolute;
         color: black;
@@ -41,7 +46,7 @@
     }
     .dropdown-cont {
         width: 100%;
-        max-width: 85rem;
+        max-width: 70rem;
         padding-left: 1rem;
         padding-right: 1rem;
         position: relative;
@@ -58,7 +63,7 @@
         width: 23rem;
     }
     .dropdown-list {
-        columns: 2;
+        columns: 1;
     }
     li {
         list-style: none;
@@ -69,7 +74,7 @@
 @media (max-width: 87.49875em) {
     .main-navbar {
         .main-link {
-            margin: 0 0.3rem;
+            margin: 0 0.5rem;
         }
         .main-font {
             font-size: 1.2rem;

@@ -22,6 +22,15 @@ router.get('/get-provinces', async (req, res) => {
     else res.json({ data: provinces });
 });
 
+router.get('/get-provinces-search', async (req, res) => {
+    const provinceText = req.query.provinceText;
+    const country = JSON.parse(req.query.country);
+    if (provinceText.trim() !== '') {
+        const provinces = await Province.find({ "name": { "$regex": provinceText, "$options": "i" }, country: country[0] });
+        res.json({ data: provinces });
+    } else res.json({ data: [] });
+});
+
 router.post('/add', async (req, res) => {
     const data = req.body;
     const newProvince = new Province({

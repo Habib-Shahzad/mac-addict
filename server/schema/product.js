@@ -1,25 +1,25 @@
 const mongoose = require('mongoose')
-  , Schema = mongoose.Schema;
+    , Schema = mongoose.Schema;
 
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     slug: { type: String, required: true },
-    keywords:String,
-    description:String,
+    keywords: String,
+    description: { type: String, required: true },
     imagePath: { type: String, required: true },
     active: { type: Boolean, required: true },
     hasColor: { type: Boolean, required: true },
-    points: { type: Number, required: true },
-    productDetails: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'productDetails',
-            required: true
-        }
-    ],
     furtherSubCategory: {
         type: Schema.Types.ObjectId,
-        ref: 'furtherSubCategories',
+        ref: 'furtherSubCategories'
+    },
+    subCategory: {
+        type: Schema.Types.ObjectId,
+        ref: 'subCategories'
+    },
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: 'categories',
         required: true
     },
     brand: {
@@ -28,6 +28,16 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
 });
+
+ProductSchema.virtual('productDetails', {
+    ref: 'productDetails',
+    localField: '_id',
+    foreignField: 'product',
+    justOne: false,
+});
+
+ProductSchema.set('toObject', { virtuals: true });
+ProductSchema.set('toJSON', { virtuals: true });
 
 const Product = mongoose.model('products', ProductSchema);
 

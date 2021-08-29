@@ -1,6 +1,11 @@
 .custom-navbar {
     background-color: white;
     border-bottom: 2px solid #cf993d;
+    position: relative;
+    z-index: 999;
+    .navbar {
+        box-shadow: none;
+    }
     .img-cont {
         width: fit-content;
         img {
@@ -126,6 +131,7 @@
     .hamburger-icon {
         .ham-icon {
             font-size: 2.5rem;
+            cursor: pointer;
         }
     }
 }

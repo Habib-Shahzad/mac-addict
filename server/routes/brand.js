@@ -23,9 +23,17 @@ router.get('/get-brands', async (req, res) => {
 
 router.post('/add', async (req, res) => {
     const data = req.body;
+    let i = 0;
+    let slug = '';
+    while (true) {
+        slug = `${slugify(data.name, { lower: true })}-${i}`;
+        const objExists = await Brand.exists({ slug: slug });
+        if (objExists) i += 1;
+        else break;
+    }
     const newBrand = new Brand({
         name: data.name,
-        slug: slugify(data.name, { lower: true }),
+        slug: slug,
         keywords: data.keywords,
         description: data.description,
         active: data.active
@@ -37,8 +45,19 @@ router.post('/add', async (req, res) => {
 router.post('/update', async (req, res) => {
     const data = req.body;
     const brand = await Brand.findOne({ _id: data._id });
+    let slug = '';
+    if (brand.name === data.name) slug = brand.slug;
+    else {
+        let i = 0;
+        while (true) {
+            slug = `${slugify(data.name, { lower: true })}-${i}`;
+            const objExists = await Brand.exists({ slug: slug });
+            if (objExists) i += 1;
+            else break;
+        }
+    }
     brand.name = data.name;
-    brand.slug = slugify(data.name, { lower: true });
+    brand.slug = slug;
     brand.keywords = data.keywords;
     brand.description = data.description;
     brand.active = data.active;

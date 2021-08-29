@@ -7,9 +7,9 @@ import api from '../api';
 import TreeItem from '@material-ui/lab/TreeItem';
 
 const createTableData = (data) => {
-    const { _id, name, category, active } = data;
+    const { _id, name, slug, category, active } = data;
     const categoryName = category.name
-    return { _id, name, categoryName, active };
+    return { _id, name, slug, categoryName, active };
 }
 
 const startAction = async (obj, selected, setOriginalTableRows, setTableRows) => {
@@ -31,10 +31,10 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
     }
 }
 
-const editObjCheck = (data, value, editObj) => {
-    if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
-    else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
-}
+// const editObjCheck = (data, value, editObj) => {
+//     if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
+//     else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
+// }
 
 const subCategoryObj = {
     apiTable: `${api}/sub-category/table-data`,
@@ -43,6 +43,7 @@ const subCategoryObj = {
     headCells: [
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
         { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
+        { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' },
         { id: 'categoryName', numeric: false, disablePadding: false, label: 'Category' },
         { id: 'active', numeric: false, disablePadding: false, label: 'Active' },
     ],
@@ -161,10 +162,10 @@ const subCategoryObj = {
         function changeSubCategory(event) {
             const { value } = event.target;
             setSubCategory(prevState => ({ ...prevState, name: value }));
-            let obj = editObjCheck(subCategoriesArray, value, editObj);
-            if (obj) setSubCategory(prevState => ({ ...prevState, helperText: `${obj.name} already exists!`, error: true }));
-            else if (value === '') setSubCategory(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
-            else setSubCategory(prevState => ({ ...prevState, helperText: 'Enter name Ex. Face', error: false }));
+            // let obj = editObjCheck(subCategoriesArray, value, editObj);
+            // if (obj) setSubCategory(prevState => ({ ...prevState, helperText: `${obj.name} already exists!`, error: true }));
+            // else if (value === '') setSubCategory(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
+            // else setSubCategory(prevState => ({ ...prevState, helperText: 'Enter name Ex. Face', error: false }));
         };
         function changeCategoryState(event) {
             const { value } = event.target;
