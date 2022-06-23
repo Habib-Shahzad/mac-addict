@@ -1,7 +1,12 @@
 const router = require("express").Router();
 const User = require("../schema").user;
-const dotenv = require("dotenv");
-dotenv.config();
+
+const auth = require(".././middleware/auth");
+
+require("dotenv").config();
+
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const firebaseFile = require("../firebase");
 const firebase = firebaseFile.firebase;
@@ -68,112 +73,75 @@ router.post("/reset-password", async (req, res) => {
 });
 
 router.post("/recover-email", (req, res) => {
-  var restoredEmail = null;
-  firebase
-    .auth()
-    .checkActionCode(req.body.actionCode)
-    .then((info) => {
-      restoredEmail = info["data"]["email"];
-      return firebase.auth().applyActionCode(req.body.actionCode);
-    })
-    .then(() => {
-      firebase
-        .auth()
-        .sendPasswordResetEmail(restoredEmail)
-        .then(() => {
-          res.json({ data: true });
-        })
-        .catch((error) => {
-          res.json({ data: false });
-        });
-    })
-    .catch((error) => {
-      res.json({ data: false });
-    });
+  // TODO
 });
 
 router.post("/verify-email", async (req, res) => {
-  try {
-    await firebase.auth().applyActionCode(req.body.actionCode);
-    res.json({ data: true });
-  } catch (error) {
-    res.json({ data: false });
-  }
+  // TODO
 });
 
 router.post("/change-password", async (req, res) => {
-  const user = firebase.auth().currentUser;
-  const email = user.email;
-  const newEmail = req.body.email;
-  const credential = firebase.auth.EmailAuthProvider.credential(
-    email,
-    req.body.oldPassword
-  );
-  try {
-    await user.reauthenticateWithCredential(credential);
-    await user.updatePassword(req.body.password);
-    res.json({ data: true });
-  } catch (error) {
-    console.log(error);
-    res.json({ data: false });
-  }
+  // TODO
 });
 
 router.post("/login", async (req, res) => {
   try {
-    // const response = await firebase.auth().signInWithEmailAndPassword(req.body.email, req.body.password);
-    const response = await login(req.body.email, req.body.password);
-    const user = response.user;
-    const idTokenResult = await user.getIdTokenResult();
-    const email = user.email;
-    const emailVerified = user.emailVerified;
-    const admin = idTokenResult.claims.admin;
-    if (emailVerified === false) {
-      await firebase.auth().signOut();
+    // Get user input
+    const { email, password } = req.body;
+
+    // Validate if user exist in our database
+    const user = await User.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      // Create token
+      const token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_SECRET,
+        {
+          expiresIn: "7h",
+        }
+      );
+
+      // save user token
+      user.token = token;
+
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: true,
+        })
+        .status(200)
+        .json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: true } });
+    }
+    else {
       res.json({ data: null });
-    } else
-      res.json({
-        data: {
-          firstName: user.displayName,
-          email: email,
-          emailVerified: emailVerified,
-          admin: admin,
-        },
-      });
-  } catch (error) {
-    res.json({ data: null, error: error });
+    }
+  } catch (err) {
+
+    res.json({ data: null });
   }
+});
+
+router.get("/welcome", auth, (req, res) => {
+
+  res.status(200).send("Welcome 🙌 ");
 });
 
 router.get("/loggedIn", async (req, res) => {
   try {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      const idTokenResult = await user.getIdTokenResult();
-      const email = user.email;
-      const emailVerified = user.emailVerified;
-      const admin = idTokenResult.claims.admin;
-      res.json({
-        data: {
-          firstName: user.displayName,
-          email: email,
-          emailVerified: emailVerified,
-          admin: admin,
-        },
-      });
-    } else res.json({ data: null });
+    const token = (req.cookies['access_token']);
+
+    console.log(token);
+
+    res.json({ data: { test: token, ok: 'Hello' } });
+
   } catch (error) {
-    res.json({ data: null, error: error });
+    res.json({ data: null, error: error.message });
   }
 });
 
 router.post("/logout", async (req, res) => {
-  try {
-    await firebase.auth().signOut();
-    res.json({ loggedIn: false });
-  } catch (error) {
-    res.json({ loggedIn: false, error: error });
-  }
+  // TODO
 });
 
 router.post("/change-profile", async (req, res) => {
@@ -217,7 +185,7 @@ router.post("/change-profile", async (req, res) => {
       },
     });
   } catch (error) {
-    // console.log(error);
+
     res.json({ data: "failed" });
   }
 });
@@ -232,31 +200,48 @@ router.get("/get-personal-info", async (req, res) => {
   }
 });
 
-// router.post('/signup', async (req, res) => {
-//     try {
-//         const response = await firebase.auth().createUserWithEmailAndPassword(req.body.email, req.body.password);
-//         const user = response.user;
-//         await firebaseAdmin.auth().setCustomUserClaims(user.uid, { admin: false });
-//         user.sendEmailVerification();
-//         await user.updateProfile({
-//             displayName: req.body.firstName,
-//         });
-//         const newUser = new User({
-//             firstName: req.body.firstName,
-//             lastName: req.body.lastName,
-//             email: req.body.email,
-//             contactNumber: req.body.contactNumber,
-//             staff: false,
-//             active: true,
-//             uid: user.uid
-//         });
-//         newUser.save();
-//         await firebase.auth().signOut();
-//         res.json({ success: true });
-//     } catch (error) {
-//         res.json({ success: false, error: error });
-//     }
-// });
+router.post('/signup', async (req, res) => {
+  try {
+
+    const { firstName, lastName, email, contactNumber, password } = req.body;
+
+    // check if user already exist
+    const oldUser = await User.findOne({ email });
+
+    if (oldUser) {
+      return res.status(409).send("User Already Exist. Please Login");
+    }
+
+    //Encrypt user password
+    encryptedPassword = await bcrypt.hash(password, 10);
+
+    // Create user in our database
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: encryptedPassword,
+      contactNumber: contactNumber,
+      staff: false,
+      active: true
+    });
+
+    // Create token
+    const token = jwt.sign(
+      { user_id: user._id, email },
+      process.env.TOKEN_SECRET,
+      {
+        expiresIn: "7h",
+      }
+    );
+
+    res.cookie("x-access-token", token);
+    res.json({ success: true });
+
+  } catch (error) {
+    res.json({ success: false, error: error });
+  }
+});
 
 router.post("/add", async (req, res) => {
   try {

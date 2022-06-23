@@ -4,31 +4,20 @@ import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
 import api from '../../api';
 import { DescriptionText, MainHeading } from '../../components';
+import { useForm } from "react-hook-form";
 import UserContext from '../../contexts/user';
 
 function Signin(props) {
-    const [email, setEmail] = useState({ name: '', errorText: '', error: false });
-    const [password, setPassword] = useState({ name: '', errorText: '', error: false, showPassword: false });
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const { register, handleSubmit, formState: { errors }, } = useForm();
+
     const history = useHistory();
 
     const user = useContext(UserContext);
 
-    const handleClickShowPassword = _ => {
-        setPassword(prevState => ({ ...prevState, showPassword: !password.showPassword }));
-    }
-    const handleMouseDownPassword = event => {
-        event.preventDefault();
-    }
-    const changePassword = event => {
-        setPassword(prevState => ({ ...prevState, name: event.target.value }));
-    }
-
-    const changeEmail = event => {
-        setEmail(prevState => ({ ...prevState, name: event.target.value }));
-    }
-
-    const handleSubmit = async e => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         const response = await fetch(`${api}/user/login`, {
             method: 'POST',
             headers: {
@@ -36,19 +25,25 @@ function Signin(props) {
             },
             credentials: 'include',
             withCredentials: true,
-            body: JSON.stringify({ email: email.name, password: password.name })
+            body: JSON.stringify({ email: data.email, password: data.password })
         });
+
+        console.log(response);
+
         const content = await response.json();
-        try {
-            const userLoggedin = content.data;
-            if (userLoggedin === null) {
-                setEmail(prevState => ({ ...prevState, name: '', errorText: 'Invalid Credentials!', error: true }));
-                setPassword(prevState => ({ ...prevState, name: '', errorText: 'Invalid Credentials!', error: true, showPassword: false }));
-            } else {
-                user.setUserState(userLoggedin);
-            }
-        } catch (error) {
-        }
+
+        console.log(content);
+
+        // try {
+        //     const userLoggedin = content.data;
+        //     if (userLoggedin === null) {
+        //         alert('Invalid email or password');
+        //     } else {
+        //         user.setUserState(userLoggedin);
+        //     }
+        // } catch (error) {
+        // }
+
     }
 
     useEffect(() => {
@@ -69,7 +64,7 @@ function Signin(props) {
                 </Col>
             </Row>
             <Row>
-                <Form onSubmit={handleSubmit} className="form-style margin-global-top-2">
+                <Form onSubmit={handleSubmit(onSubmit)} className="form-style margin-global-top-2">
                     <input
                         type="password"
                         autoComplete="on"
@@ -81,11 +76,18 @@ function Signin(props) {
                         <Form.Group as={Col} md={6} controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
-                                type="email"
-                                onChange={changeEmail}
-                                value={email.name}
-                            />
-                            <div className="error-text">{email.errorText}</div>
+                                {...register("email", {
+                                    required: true,
+                                    validate: (value) => {
+                                        var mailformat = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                                        if (!value.match(mailformat)) {
+                                            return "Please enter a valid email address";
+                                        }
+                                    },
+                                })}
+                                type="text" />
+                            <div className="error-text">{errors.email && errors.email.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.email && <p>{errors.email.message}</p>}</div>
                         </Form.Group>
                     </Row>
                     <div className="margin-global-top-2" />
@@ -94,27 +96,27 @@ function Signin(props) {
                             <Form.Label>Password</Form.Label>
                             <InputGroup size="lg">
                                 <Form.Control
-                                    type={password.showPassword ? 'text' : 'password'}
-                                    onChange={changePassword}
-                                    value={password.name}
+                                    {...register("password", {
+                                        required: true
+                                    })}
+                                    type={showPassword ? 'text' : 'password'}
                                 />
                                 <InputGroup.Text>
                                     {
-                                        password.showPassword ? (
+                                        showPassword ? (
                                             <IoMdEye
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
+                                                onClick={() => { setShowPassword(false); }}
                                                 className="icon" />
                                         ) : (
                                             <IoMdEyeOff
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
+                                                onClick={() => { setShowPassword(true); }}
                                                 className="icon" />
                                         )
                                     }
                                 </InputGroup.Text>
                             </InputGroup>
-                            <div className="error-text">{password.errorText}</div>
+                            <div className="error-text">{errors.password && errors.password.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.password && <p>{errors.password.message}</p>}</div>
                         </Form.Group>
                     </Row>
                     <div className="margin-global-top-2" />

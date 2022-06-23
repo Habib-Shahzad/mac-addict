@@ -17,17 +17,23 @@ function App() {
         headers: {
           "Content-Type": "application/json",
           "Cache-Control": "no-store",
+
         },
         credentials: "include",
         withCredentials: true,
       });
+
       const content = await response.json();
-      try {
-        const user = content.data;
-        setUserState(user);
-      } catch (error) {
-        setUserState(null);
-      }
+      console.log("RESPONSE JSON", content);
+
+      // try {
+      //   const user = content.data;
+      //   setUserState(user);
+      // } catch (error) {
+      //   setUserState(null);
+      // }
+
+
       setLoading(false);
     })();
   }, []);

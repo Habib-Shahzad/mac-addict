@@ -44,7 +44,7 @@ const createServer = async (callback) => {
         credentials: true,
         origin: [process.env.API_URL1, process.env.API_URL2, process.env.API_URL3, process.env.API_URL4]
     }));
-    
+
     // app.use(express.static('../client/public'));
     app.use(express.static(path.join(__dirname, '../client/build')));
 

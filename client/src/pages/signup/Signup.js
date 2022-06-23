@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Container, Form, Col, Row, InputGroup, Button } from 'react-bootstrap';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
 import { DescriptionText, MainHeading } from '../../components';
 import UserContext from '../../contexts/user';
 import { useForm } from "react-hook-form";
-import { useState } from 'react';
+import api from '../../api';
 import './Signup.scss';
 
 function Signup(props) {
@@ -18,8 +18,24 @@ function Signup(props) {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = async (data) => {
+        const response = await fetch(`${api}/user/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                contactNumber: data.contactNumber,
+                password: data.password
+            })
+        });
+
+        console.log(response);
     };
 
     useEffect(() => {

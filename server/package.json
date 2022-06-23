@@ -23,6 +23,7 @@
     "nodemailer": "^6.6.2",
     "nodemon": "^2.0.9",
     "prompt-sync": "^4.2.0",
-    "slugify": "^1.5.3"
+    "slugify": "^1.5.3",
+    "bcryptjs": "^2.4.3"
   }
 }
