@@ -107,8 +107,7 @@ router.post("/login", async (req, res) => {
 
       res
         .cookie("access_token", token, {
-          httpOnly: true,
-          secure: true,
+          httpOnly: true
         })
         .status(200)
         .json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: true } });
@@ -122,18 +121,19 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/welcome", auth, (req, res) => {
 
-  res.status(200).send("Welcome 🙌 ");
-});
 
 router.get("/loggedIn", async (req, res) => {
   try {
     const token = (req.cookies['access_token']);
 
-    console.log(token);
 
-    res.json({ data: { test: token, ok: 'Hello' } });
+    if (!token) {
+      return res.json({ data: null });
+    }
+    const data = jwt.verify(token, process.env.TOKEN_SECRET);
+    const user = await User.findOne({ _id: data.user_id });
+    return res.json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: true } });
 
   } catch (error) {
     res.json({ data: null, error: error.message });
@@ -141,7 +141,10 @@ router.get("/loggedIn", async (req, res) => {
 });
 
 router.post("/logout", async (req, res) => {
-  // TODO
+  return res
+    .clearCookie("access_token")
+    .status(200)
+    .json({ message: "Successfully logged out 😏 🍀" });
 });
 
 router.post("/change-profile", async (req, res) => {
@@ -235,8 +238,12 @@ router.post('/signup', async (req, res) => {
       }
     );
 
-    res.cookie("x-access-token", token);
-    res.json({ success: true });
+    res.cookie("access_token", token, {
+      httpOnly: true
+    });
+
+
+    res.json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: true } });
 
   } catch (error) {
     res.json({ success: false, error: error });

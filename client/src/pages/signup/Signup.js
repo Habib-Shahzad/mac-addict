@@ -35,7 +35,8 @@ function Signup(props) {
             })
         });
 
-        console.log(response);
+        const content = await response.json();
+        user.setUserState(content.data);
     };
 
     useEffect(() => {

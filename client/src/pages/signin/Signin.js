@@ -10,6 +10,7 @@ import UserContext from '../../contexts/user';
 function Signin(props) {
 
     const [showPassword, setShowPassword] = useState(false);
+    const [loginError, setLoginError] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, } = useForm();
 
@@ -34,15 +35,12 @@ function Signin(props) {
 
         console.log(content);
 
-        // try {
-        //     const userLoggedin = content.data;
-        //     if (userLoggedin === null) {
-        //         alert('Invalid email or password');
-        //     } else {
-        //         user.setUserState(userLoggedin);
-        //     }
-        // } catch (error) {
-        // }
+        const userLoggedin = content.data;
+        user.setUserState(userLoggedin);
+
+        if (!userLoggedin) {
+            setLoginError(true);
+        }
 
     }
 
@@ -117,13 +115,26 @@ function Signin(props) {
                             </InputGroup>
                             <div className="error-text">{errors.password && errors.password.type === "required" && <span>This is a required field</span>}</div>
                             <div className="error-text">{errors.password && <p>{errors.password.message}</p>}</div>
+
+
                         </Form.Group>
                     </Row>
                     <div className="margin-global-top-2" />
+
+
+                    {
+                        loginError && (
+                            <div style={{ textAlign: 'center', marginBottom: '1rem', marginTop: '-2rem' }} className="error-text">{"Email and password do not match!"}</div>
+                        )
+                    }
+
+
                     <Row className="justify-content-center">
                         <Button type="submit">
                             Signin
                         </Button>
+
+
                     </Row>
                     <div className="margin-global-top-2" />
                     <Row>

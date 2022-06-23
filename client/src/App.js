@@ -17,7 +17,6 @@ function App() {
         headers: {
           "Content-Type": "application/json",
           "Cache-Control": "no-store",
-
         },
         credentials: "include",
         withCredentials: true,
@@ -26,13 +25,7 @@ function App() {
       const content = await response.json();
       console.log("RESPONSE JSON", content);
 
-      // try {
-      //   const user = content.data;
-      //   setUserState(user);
-      // } catch (error) {
-      //   setUserState(null);
-      // }
-
+      setUserState(content.data);
 
       setLoading(false);
     })();
