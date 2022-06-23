@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-    , Schema = mongoose.Schema;
+const mongoose = require("mongoose"),
+    Schema = mongoose.Schema;
 
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -11,34 +11,43 @@ const ProductSchema = new mongoose.Schema({
     hasColor: { type: Boolean, required: true },
     furtherSubCategory: {
         type: Schema.Types.ObjectId,
-        ref: 'furtherSubCategories'
+        ref: "furtherSubCategories",
     },
     subCategory: {
         type: Schema.Types.ObjectId,
-        ref: 'subCategories'
+        ref: "subCategories",
     },
     category: {
         type: Schema.Types.ObjectId,
-        ref: 'categories',
-        required: true
+        ref: "categories",
+        required: true,
     },
     brand: {
         type: Schema.Types.ObjectId,
-        ref: 'brands',
-        required: true
+        ref: "brands",
+        required: true,
+    },
+
+    imagePath: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true },
+    points: { type: Number, required: true },
+    preOrder: { type: Boolean, required: true },
+    size: {
+        type: Schema.Types.ObjectId,
+        ref: "sizes",
+        required: true,
+    },
+    color: {
+        type: Schema.Types.ObjectId,
+        ref: "colors",
     },
 });
 
-ProductSchema.virtual('productDetails', {
-    ref: 'productDetails',
-    localField: '_id',
-    foreignField: 'product',
-    justOne: false,
-});
 
-ProductSchema.set('toObject', { virtuals: true });
-ProductSchema.set('toJSON', { virtuals: true });
+ProductSchema.set("toObject", { virtuals: true });
+ProductSchema.set("toJSON", { virtuals: true });
 
-const Product = mongoose.model('products', ProductSchema);
+const Product = mongoose.model("products", ProductSchema);
 
 module.exports = Product;

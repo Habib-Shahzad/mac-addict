@@ -13,25 +13,41 @@ const firebaseFile = require('./firebase');
 const url = process.env.DATABASE_URL;
 const port = parseInt(process.env.PORT);
 
-const createServer = async ( callback ) => {
-    await mongoose.connect( url,  { useNewUrlParser: true, useUnifiedTopology: true });
-    
-    console.log("Database created!");
-    
+const createServer = async (callback) => {
+
+    console.log("Server Says Hello!");
+
+    mongoose
+        .connect(process.env.DATABASE_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
+        })
+        .then(() => {
+            console.log("Successfully connected to database", process.env.DATABASE_NAME);
+        })
+        .catch((error) => {
+            console.log("database connection failed. exiting now...");
+            console.error(error);
+            process.exit(1);
+        });
+
+
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
-    
+
     app.use(cookieParser(
         process.env.COOKIE_SECRET
     ));
     app.use(cors({
         credentials: true,
         origin: [process.env.API_URL1, process.env.API_URL2, process.env.API_URL3, process.env.API_URL4]
-        // origin: [process.env.API_URL1]
     }));
+    
     // app.use(express.static('../client/public'));
     app.use(express.static(path.join(__dirname, '../client/build')));
-    
+
     const userRoutes = require('./routes/user');
     // const cartRoutes = require('./routes/cart');
     const categoryRoutes = require('./routes/category');
@@ -47,7 +63,7 @@ const createServer = async ( callback ) => {
     const areaRoutes = require('./routes/area');
     // const orderRoutes = require('./routes/order');
     const discountRoutes = require('./routes/discount');
-    
+
     app.use('/api/user', userRoutes);
     app.use('/api/category', categoryRoutes);
     app.use('/api/sub-category', subCategoryRoutes);
@@ -65,8 +81,8 @@ const createServer = async ( callback ) => {
 
     app.get('*', function (req, res) {
         res.sendFile(path.join(__dirname, '../client/build/index.html'));
-      });
-    
+    });
+
     app.listen(port, () => {
         console.log(`Example app listening at http://localhost:${port}`);
     });

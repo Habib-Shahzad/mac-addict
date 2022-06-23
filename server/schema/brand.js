@@ -10,10 +10,10 @@ const BrandSchema = new mongoose.Schema({
 });
 
 BrandSchema.virtual('products', {
-    ref: 'products',
-    localField: '_id',
-    foreignField: 'brand',
-    justOne: false,
+  ref: 'products',
+  localField: '_id',
+  foreignField: 'brand',
+  justOne: false,
 });
 
 BrandSchema.set('toObject', { virtuals: true });

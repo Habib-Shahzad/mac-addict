@@ -8,8 +8,11 @@ const discountSchema = new mongoose.Schema({
     endDate: { type: Date, required: true },
     minAmount: { type: Number, required: true },
     maxAmount: { type: Number, required: true },
-    productDetails: [
-        { item: { type: Schema.Types.ObjectId, ref: 'productDetails', required: true }, discountPercentage: { type: Number, required: true } }
+    product: [
+        {
+            item: { type: Schema.Types.ObjectId, ref: 'products', required: true },
+            discountPercentage: { type: Number, required: true }
+        }
     ],
     discountPercentage: { type: Number },
 });

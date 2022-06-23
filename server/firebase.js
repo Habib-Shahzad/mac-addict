@@ -18,6 +18,6 @@ admin.initializeApp({
 });
 
 module.exports = {
-    firebase,
-    admin
+  firebase,
+  admin
 }
