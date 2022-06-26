@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Login, AdminLayout } from '../admin';
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import './Admin.scss';
 import UserContext from '../contexts/user';
 

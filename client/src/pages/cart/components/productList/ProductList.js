@@ -1,45 +1,53 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { DescriptionText, MainHeading, SubHeading, ThirdHeading } from '../../../../components';
+import { MainHeading, Heading2, Heading1, ShopButton } from '../../../../components';
 import CartContext from '../../../../contexts/cart';
 import api from '../../../../api';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import './ProductList.scss';
-import DiscountContext from '../../../../contexts/discount';
+// import DiscountContext from '../../../../contexts/discount';
 
 function ProductList(props) {
+
     const cart = useContext(CartContext);
-    const discount = useContext(DiscountContext);
-    const [data, setData] = useState();
-    const [discountedPrice, setDiscountedPrice] = useState({ value: '', class: '' });
     const [cost, setCost] = useState(0);
-    const [discountedProducts, setDiscountedProducts] = useState([]);
+
+    const [cartProducts, setCartProducts] = useState([]);
+
+    const removeCartItem = async (key) => {
+        const response = await fetch(`${api}/cart/removeItem?key=${key}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            withCredentials: true,
+        });
+        const content = await response.json();
+        cart.setCart(content.data);
+        console.log(cart);
+    }
+
+    const addCartItem = async (key) => {
+        const response = await fetch(`${api}/cart/addItem?key=${key}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            withCredentials: true,
+        });
+        const content = await response.json();
+        cart.setCart(content.data);
+        console.log(cart);
+    }
+
+
 
     useEffect(() => {
-        if (discount && discount.type === 'Product') setDiscountedProducts(discount.products);
-        else setDiscountedProducts([]);
-    }, [discount])
-
-    useEffect(() => {
-        try {
-            if (discount && discount.type === 'Bill') {
-                const cartCurrentPrice = cart.cartObj.cartTotalPrice
-                if (cartCurrentPrice >= discount.minAmount && cartCurrentPrice <= discount.maxAmount) {
-                    const newPrice = ((100 - discount.discountPercentage) / 100) * cartCurrentPrice;
-                    setDiscountedPrice({ value: `PKR.${newPrice}`, class: 'line-through' });
-                } else throw new Error();
-            } else throw new Error();
-        } catch (error) {
-            setDiscountedPrice({ value: '', class: '' });
-        }
-    }, [discount, cart])
-
-    useEffect(() => {
-        try {
-            let content = [];
-            const removeCartItem = async (slug, type) => {
-                const response = await fetch(`${api}/cart/removeItem?${type}Slug=${slug}`, {
+        (
+            async () => {
+                const response = await fetch(`${api}/cart/getCart`, {
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -48,143 +56,95 @@ function ProductList(props) {
                 });
                 const content = await response.json();
                 cart.setCart(content.data);
-            }
-            const addCartItem = async (slug, type) => {
-                const response = await fetch(`${api}/cart/addItem?${type}Slug=${slug}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    withCredentials: true,
-                });
-                const content = await response.json();
-                cart.setCart(content.data);
-            }
-            const prices = [];
-            for (const key in cart.cartObj.data) {
-                if (Object.hasOwnProperty.call(cart.cartObj.data, key)) {
-                    const element = cart.cartObj.data[key];
-                    let newPrice = element.totalPrice;
-                    let newPriceHTML = <></>;
-                    let lineClass = '';
-                    if (element.type === 'diy' && discount && discount.type === 'DIY') {
-                        newPrice = ((100 - discount.discountPercentage) / 100) * newPrice;
-                        newPriceHTML = <p style={{ color: 'rgb(177, 0, 0)', textAlign: 'center' }}><strong>PKR.{newPrice}</strong></p>
-                        lineClass = 'line-through';
-                        prices.push(newPrice);
-                    } else if (element.type ==='product' && discount && discount.type === 'Product') {
-                        const discObj = discountedProducts.find(prod => element.item.name === prod.item.name);
-                        if (discObj) {
-                            const newPrice = ((100 - discObj.discountPercentage) / 100) * element.totalPrice;
-                            newPriceHTML = <p style={{color: 'rgb(177, 0, 0)', textAlign: 'center' }}><strong>PKR.{newPrice}</strong></p>
-                            lineClass = 'line-through';
-                            prices.push(newPrice);
-                        } else prices.push(element.totalPrice);
-                    } else prices.push(element.totalPrice)
-                    let paraText = <div>
-                        <ThirdHeading
-                            text="Description:"
-                            classes="text-uppercase"
-                        />
-                    </div>
-                    if (element.type === 'diy') {
-                        paraText = (
-                            <div>
-                                <DescriptionText
-                                    to=""
-                                    text={`Size: ${element.item.size}`}
-                                    classes="text-capatalize margin-bottom-0"
-                                />
-                                <DescriptionText
-                                    to=""
-                                    text={`Base: ${element.item.base}`}
-                                    classes="text-capatalize margin-bottom-0"
-                                />
-                                <DescriptionText
-                                    to=""
-                                    text={`Color: ${element.item.color}`}
-                                    classes="text-capatalize margin-bottom-0"
-                                />
-                            </div>
-                        )
-                    }
-                    content.push(
-                        <Row key={key} className="product-row">
-                            <div className="margin-global-top-2 display-992" />
-                            <Col lg={3}>
-                                <img src={element.item.imagePath} alt={element.item.name} />
-                            </Col>
-                            <div className="margin-global-top-3 display-992" />
-                            <Col lg={5}>
-                                <SubHeading
-                                    text={element.item.name}
-                                    link="/"
-                                    classes="text-uppercase"
-                                />
-                                {paraText}
-                            </Col>
-                            <Col lg={1}>
-                                <div className="center-relative">
-                                    <input value={element.count} type="text" readOnly={true} />
-                                    <div className="add-remove-icons horizontal-center-relative">
-                                        <RemoveIcon onClick={_ => removeCartItem(key, element.type)} className="cart-icon" />
-                                        <AddIcon onClick={_ => addCartItem(key, element.type)} className="cart-icon" />
-                                    </div>
-                                </div>
-                            </Col>
-                            <div className="margin-global-top-3 display-992" />
-                            <Col className="align-middle">
-                                <div className="center-relative">
-                                    <MainHeading
-                                        text={`PKR.${element.totalPrice}`}
-                                        newPriceHTML={newPriceHTML}
-                                        classes={`text-uppercase text-center ${lineClass}`}
-                                    />
-                                </div>
-                            </Col>
-                            <div className="margin-global-top-2 display-992" />
-                            {/* <Col lg={1}>
-                                <i className="fa fa-times center-relative" aria-hidden="true"></i>
-                            </Col> */}
-                        </Row>
-                    )
-                }
-            }
-            setCost(prices.reduce((a, b) => a + b, 0))
-            setData(content);
-        } catch (error) {
+            })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
+    useEffect(() => {
+        let lst = [];
+        let i = 0;
+        for (const [key, value] of Object.entries(cart.cartObj)) {
+            lst.push(value);
+            lst[i].key = key;
+            i += 1;
         }
-    }, [cart, discount, discountedProducts]);
+        setCartProducts(lst);
+    }, [cart])
+
+
+    useEffect(() => {
+        let totalPrice = 0;
+        cartProducts?.map((element) => {
+            totalPrice += element.price.amount * element.quantity;
+        });
+        setCost(totalPrice);
+    }, [cartProducts])
+
 
     return (
         <Container fluid className="product-list-back">
             <Container className="product-list">
-                {data}
+                {
+                    cartProducts?.map((element, key) => {
+                        return (
+                            <Row key={key} className="product-row">
+                                <div className="global-mt-2 display-992" />
+                                <Col lg={3}>
+                                    <img src={element.images[0].imagePath} alt={element.name} />
+                                </Col>
+                                <div className="global-mt-3 display-992" />
+                                <Col lg={5}>
+                                    <Heading2
+                                        bold={element.name}
+                                        link="/"
+                                        classes="text-uppercase"
+                                    />
+                                    {element.description}
+                                </Col>
+                                <Col lg={1}>
+                                    <div className="center-relative">
+                                        <input value={element.quantity} type="text" readOnly={true} />
+                                        <div className="add-remove-icons horizontal-center-relative">
+                                            <RemoveIcon onClick={() => { removeCartItem(element.key) }} className="cart-icon" />
+                                            <AddIcon onClick={() => { addCartItem(element.key) }} className="cart-icon" />
+                                        </div>
+                                    </div>
+                                </Col>
+                                <div className="global-mt-3 display-992" />
+                                <Col className="align-middle">
+                                    <div className="center-relative">
+                                        <Heading1
+                                            bold={`PKR.${parseInt(element.price.amount) * element.quantity}`}
+                                            classes={`text-uppercase text-center`}
+                                        />
+                                    </div>
+                                </Col>
+                                <div className="global-mt-2 display-992" />
+                            </Row>
+                        );
+                    })
+                }
             </Container>
+
+
+
             <div className="margin-global-top-3" />
             <Row>
                 <MainHeading
                     text={`Total Cost: PKR.${cost}`}
-                    discountAvailable={discountedPrice.value}
-                    discountClass={discountedPrice.class}
                     classes="text-uppercase text-center"
                 />
             </Row>
             <div className="margin-global-top-3" />
             <Row>
                 <div className="horizontal-center-margin">
-                    {/* <Button
-                        // setArrowLeft={props.setArrowLeft}
-                        // setArrowRight={props.setArrowRight}
 
-                        // cartForm={2}
-                        // setActive={props.setActive}
-                        // setActiveCompClass={props.setActiveCompClass}
-                        to="/cart/delivery-info"
-                        text="Proceed"
-                        classes="text-uppercase"
-                    /> */}
+                    <ShopButton
+                        onClick={(e) => { e.preventDefault(); }}
+                        classes={`text-uppercase center-relative`}
+                        text={"Proceed"}
+                    />
+
                 </div>
             </Row>
         </Container>

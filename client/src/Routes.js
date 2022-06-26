@@ -21,7 +21,8 @@ import './global.scss';
 // import Auth from './auth/Auth';
 
 function Routes(props) {
-  const [cart, setCart] = useState({ data: {}, count: 0 });
+  const [cart, setCart] = useState({});
+  // const [cart, setCart] = useState({ data: {}, count: 0 });
   const [discountState, setDiscountState] = useState(null);
   const [navOptions, setNavOptions] = useState([]);
   const [mainNavOptions, setMainNavOptions] = useState([]);
@@ -135,6 +136,25 @@ function Routes(props) {
       })();
   }, []);
 
+
+
+  useEffect(() => {
+    (
+      async () => {
+        const response = await fetch(`${api}/cart/getCart`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          withCredentials: true,
+        });
+        const content = await response.json();
+        setCart(content.data);
+      })();
+  }, []);
+
+
   // const options = [
   // {
   //   content: [{ id: 1, name: "Brands", to: "/brands" }]
@@ -203,33 +223,34 @@ function Routes(props) {
   //   }
   // ];
 
-  useEffect(() => {
-    (
-      async () => {
-        //         const response = await fetch(`${api}/cart/getCart`, {
-        //           method: 'GET',
-        //           headers: {
-        //             'Content-Type': 'application/json',
-        //           },
-        //           credentials: 'include',
-        //           withCredentials: true,
-        //         });
-        //         const content = await response.json();
-        // const data = {
-        //   'product-1': {
-        //     item: {
-        //       name: 'Cream Lip Stain Liquid Lipstick',
-        //       slug: 'product-1',
-        //       imagePath: 'https://www.sephora.com/productimages/sku/s1959386-main-zoom.jpg',
-        //       active: true,
-        //       hasColor: true,
-        //       points: 1
-        //     }
-        //   }
-        // }
-        // setCart(content.data);
-      })();
-  }, []);
+  // useEffect(() => {
+  //   (
+  //     async () => {
+  //       const response = await fetch(`${api}/cart/getCart`, {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         credentials: 'include',
+  //         withCredentials: true,
+  //       });
+  //       const content = await response.json();
+
+  //       const data = {
+  //         'product-1': {
+  //           item: {
+  //             name: 'Cream Lip Stain Liquid Lipstick',
+  //             slug: 'product-1',
+  //             imagePath: 'https://www.sephora.com/productimages/sku/s1959386-main-zoom.jpg',
+  //             active: true,
+  //             hasColor: true,
+  //             points: 1
+  //           }
+  //         }
+  //       }
+  //       setCart(content.data);
+  //     })();
+  // }, []);
 
   //   useEffect(() => {
   //     (

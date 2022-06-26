@@ -1,23 +1,23 @@
 .shop-button {
-    text-decoration: none;
-    background-color: #cf993d;
-    color: white !important;
-    text-align: center;
-    font-weight: 600;
-    border: 1px solid #cf993d;
-    padding: 0.5rem 0;
-    width: 13rem;
-    border-radius: 100px;
-    font-size: 1.5rem;
-    display: block;
-    transition: .3s ease-in-out;
-    &:hover {
-        background-color: transparent;
-        color: #cf993d !important;
-    }
-    &:active {
-        background-color: #f5d9aa;
-    }
+  text-decoration: none;
+  background-color: #cf993d;
+  color: white !important;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid #cf993d;
+  padding: 0.5rem 0;
+  width: 13rem;
+  border-radius: 100px;
+  font-size: 1.5rem;
+  display: block;
+  transition: 0.3s ease-in-out;
+  &:hover {
+    background-color: transparent;
+    color: #cf993d !important;
+  }
+  &:active {
+    background-color: #f5d9aa;
+  }
 }
 
 // X-Large devices (large desktops, less than 1400px)
@@ -26,10 +26,10 @@
 
 // Large devices (desktops, less than 1200px)
 @media (max-width: 74.99875em) {
-    .shop-button {
-        width: 12rem;
-        font-size: 1.43rem;
-    }
+  .shop-button {
+    width: 12rem;
+    font-size: 1.43rem;
+  }
 }
 
 // Medium devices (tablets, less than 992px)
@@ -38,16 +38,25 @@
 
 // Small devices (landscape phones, less than 768px)
 @media (max-width: 47.99875em) {
-    .shop-button {
-        width: 11rem;
-        font-size: 1.295rem;
-    }
+  .shop-button {
+    width: 11rem;
+    font-size: 1.295rem;
+  }
 }
 
 // X-Small devices (portrait phones, less than 576px)
 @media (max-width: 35.99875em) {
-    .shop-button {
-        width: 10rem;
-        font-size: 1.295rem;
-    }
+  .shop-button {
+    width: 10rem;
+    font-size: 1.295rem;
+  }
+}
+
+.disabled-shop-button {
+  opacity: 0.5;
+}
+
+.disabled-shop-button:hover {
+  background-color: #cf993d !important;
+  color: white !important;
 }

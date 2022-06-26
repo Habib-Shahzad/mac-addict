@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
-import { Radio, FormControlLabel, RadioGroup } from '@material-ui/core';
-import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+import { Radio, FormControlLabel, RadioGroup } from '@mui/material';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import { DescriptionText, SubHeading } from '../../../../components';
 import {
     useHistory,

@@ -1,6 +1,7 @@
 const prompt = require('prompt-sync')();
-const dotenv = require('dotenv');
-dotenv.config();
+
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 const User = require('./schema').user;
 

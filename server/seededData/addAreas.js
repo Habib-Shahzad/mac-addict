@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config();
+
+require("dotenv").config();
+
 const Area = require('../schema').area;
 const City = require('../schema').city;
 

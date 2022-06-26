@@ -1,48 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { Drawer, AppBar, Toolbar, List, CssBaseline, Typography, Divider, IconButton, Menu, ListItem, ListItemIcon, ListItemText, MenuItem, makeStyles, useTheme } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import WebIcon from '@material-ui/icons/Web';
-import LockIcon from '@material-ui/icons/Lock';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-// import AssignmentIcon from '@material-ui/icons/Assignment';
-// import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
-// import BlockIcon from '@material-ui/icons/Block';
-// import BusinessIcon from '@material-ui/icons/Business';
-import { EnhancedTable, AdminForm, DeleteConfirmation } from '../../admin'
+import { Drawer, AppBar, Toolbar, CssBaseline, Typography, Divider, IconButton, Menu, ListItemIcon, MenuItem } from '@mui/material';
+import { makeStyles, useTheme } from '@mui/styles'
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import WebIcon from '@mui/icons-material/Web';
+import LockIcon from '@mui/icons-material/Lock';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+// import AssignmentIcon from '@mui/icons-material/Assignment';
+// import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+// import BlockIcon from '@mui/icons-material/Block';
+// import BusinessIcon from '@mui/icons-material/Business';
 import {
   // BrowserRouter as Router,
   Switch as RouterSwitch,
   Link,
-  Route,
 } from "react-router-dom";
 import api from '../../api';
-import InvertColorsIcon from '@material-ui/icons/InvertColors';
-import ReceiptIcon from '@material-ui/icons/Receipt';
-import LocalFloristIcon from '@material-ui/icons/LocalFlorist';
-import PlusOneIcon from '@material-ui/icons/PlusOne';
-import ColorLensIcon from '@material-ui/icons/ColorLens';
-import FilterVintageIcon from '@material-ui/icons/FilterVintage';
-import HeightIcon from '@material-ui/icons/Height';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import MoneyOffIcon from '@material-ui/icons/MoneyOff';
+import InvertColorsIcon from '@mui/icons-material/InvertColors';
 import { StyledTreeItem } from '../components';
-import TreeView from '@material-ui/lab/TreeView';
-import MailIcon from '@material-ui/icons/Mail';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Label from '@material-ui/icons/Label';
-import InfoIcon from '@material-ui/icons/Info';
-import ForumIcon from '@material-ui/icons/Forum';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import TreeView from '@mui/lab/TreeView';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Label from '@mui/icons-material/Label';
+import InfoIcon from '@mui/icons-material/Info';
+import ForumIcon from '@mui/icons-material/Forum';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import './AdminLayout.scss';
 
 StyledTreeItem.propTypes = {
@@ -137,8 +126,8 @@ function AdminLayout(props) {
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
-  let color = 'white';
-  if (!props.darkState) color = 'black';
+  // let color = 'white';
+  // if (!props.darkState) color = 'black';
 
   const handleThemeChange = async () => {
     // console.log(!props.darkState)
@@ -289,7 +278,7 @@ function AdminLayout(props) {
           defaultEndIcon={<div style={{ width: 24 }} />}
         >
           <Link to="/admin">
-          <StyledTreeItem nodeId="1" labelText="Dashboard" labelIcon={DashboardIcon} />
+            <StyledTreeItem nodeId="1" labelText="Dashboard" labelIcon={DashboardIcon} />
           </Link>
           <Link>
             <StyledTreeItem nodeId="2" labelText="Trash" labelIcon={DeleteIcon} />

@@ -4,8 +4,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
-const dotenv = require('dotenv');
-dotenv.config();
+
+require('dotenv').config();
 const app = express();
 
 const firebaseFile = require('./firebase');
@@ -49,7 +49,7 @@ const createServer = async (callback) => {
     app.use(express.static(path.join(__dirname, '../client/build')));
 
     const userRoutes = require('./routes/user');
-    // const cartRoutes = require('./routes/cart');
+    const cartRoutes = require('./routes/cart');
     const categoryRoutes = require('./routes/category');
     const subCategoryRoutes = require('./routes/subCategory');
     const furtherSubCategoryRoutes = require('./routes/furtherSubCategory');
@@ -65,6 +65,7 @@ const createServer = async (callback) => {
     const discountRoutes = require('./routes/discount');
 
     app.use('/api/user', userRoutes);
+    app.use('/api/cart', cartRoutes);
     app.use('/api/category', categoryRoutes);
     app.use('/api/sub-category', subCategoryRoutes);
     app.use('/api/further-sub-category', furtherSubCategoryRoutes);

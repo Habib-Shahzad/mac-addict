@@ -1,10 +1,10 @@
-import { FormControl, FormControlLabel, Checkbox, Input, InputLabel, FormHelperText, Button, TextField } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { FormControl, FormControlLabel, Checkbox, Input, InputLabel, FormHelperText, Button, TextField } from '@mui/material';
+import Autocomplete from '@mui/lab/Autocomplete';
 import React, { useState, useEffect } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import api from '../api';
-import TreeItem from '@material-ui/lab/TreeItem';
+import TreeItem from '@mui/lab/TreeItem';
 
 const createTableData = (data) => {
     const { _id, name, slug, subCategory, active } = data;
@@ -131,14 +131,14 @@ const furtherSubCategoryObj = {
             (
                 async () => {
                     const response = await fetch(`${api}/sub-category/table-data-auto`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Cache-Control': 'no-store'
-                            },
-                            credentials: 'include',
-                            withCredentials: true,
-                            body: JSON.stringify({})
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Cache-Control': 'no-store'
+                        },
+                        credentials: 'include',
+                        withCredentials: true,
+                        body: JSON.stringify({})
                     });
                     const content = await response.json();
                     setSubCategoriesArray(content.data)

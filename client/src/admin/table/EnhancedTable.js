@@ -1,33 +1,33 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
+import { makeStyles } from '@mui/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Checkbox from '@mui/material/Checkbox';
 import { countryObj, provinceObj, cityObj, areaObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj } from '../../db';
-import IconButton from '@material-ui/core/IconButton';
-import Collapse from '@material-ui/core/Collapse';
-// import Button from '@material-ui/core/Button';
-import CloseIcon from '@material-ui/icons/Close';
-import Alert from '@material-ui/lab/Alert';
-import CheckIcon from '@material-ui/icons/Check';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+// import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import Alert from '@mui/lab/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 import {
   useLocation,
 } from "react-router-dom";
 import { EnhancedTableHead, EnhancedTableToolbar } from '../components'
 import { useParams } from 'react-router';
 
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import TableHead from '@material-ui/core/TableHead';
-import Box from '@material-ui/core/Box';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import TableHead from '@mui/material/TableHead';
+import Box from '@mui/material/Box';
 import { Row, Col, Container } from 'react-bootstrap';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import LinearProgress from '@mui/material/LinearProgress';
 import './EnhancedTable.scss';
 
 function descendingComparator(a, b, orderBy) {

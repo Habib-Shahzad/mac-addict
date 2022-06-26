@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv").config();
 const SubCategory = require("../schema").subCategory;
 const Category = require("../schema").category;
 const slugify = require("slugify");

@@ -3,8 +3,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Divider, CartCircleHeading } from '../../components';
 import { ProductList, DeliveryForm, Payment } from './components';
 // import UserContext from '../../authenticatedUser';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import {
     Switch,
     Route,

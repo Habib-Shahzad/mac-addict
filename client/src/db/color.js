@@ -1,10 +1,10 @@
-import { FormControl, Input, InputLabel, FormHelperText, Button } from '@material-ui/core';
+import { FormControl, Input, InputLabel, FormHelperText, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { ChromePicker } from 'react-color';
 import api from '../api';
-import TreeItem from '@material-ui/lab/TreeItem';
+import TreeItem from '@mui/lab/TreeItem';
 
 const createTableData = (data) => {
     const { _id, name, hexCode } = data;
@@ -183,7 +183,7 @@ const colorObj = {
                         </FormControl>
                     </Form.Group>
                     <Form.Group as={Col} md={6} controlId="name">
-                        <FormControl style={{marginLeft: '2rem'}} className={classes.formControl}>
+                        <FormControl style={{ marginLeft: '2rem' }} className={classes.formControl}>
                             <ChromePicker
                                 color={colorState.name}
                                 onChange={changeColorState}

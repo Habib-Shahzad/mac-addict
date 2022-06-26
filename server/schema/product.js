@@ -3,12 +3,13 @@ const mongoose = require("mongoose"),
 
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    slug: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
     keywords: String,
     description: { type: String, required: true },
-    imagePath: { type: String, required: true },
+
     active: { type: Boolean, required: true },
     hasColor: { type: Boolean, required: true },
+
     furtherSubCategory: {
         type: Schema.Types.ObjectId,
         ref: "furtherSubCategories",
@@ -28,20 +29,29 @@ const ProductSchema = new mongoose.Schema({
         required: true,
     },
 
-    imagePath: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    price: { type: Number, required: true },
-    points: { type: Number, required: true },
-    preOrder: { type: Boolean, required: true },
-    size: {
-        type: Schema.Types.ObjectId,
-        ref: "sizes",
-        required: true,
-    },
-    color: {
-        type: Schema.Types.ObjectId,
-        ref: "colors",
-    },
+    productDetails: [{
+        imagePath: { type: String, required: true },
+        price: [
+            {
+                amount: { type: Number, required: true },
+                active: { type: Boolean, required: true }
+            }
+        ],
+        points: { type: Number, required: true },
+        preOrder: { type: Boolean, required: true },
+        size: {
+            type: Schema.Types.ObjectId,
+            ref: 'sizes',
+            required: true
+        },
+        color: {
+            type: Schema.Types.ObjectId,
+            ref: 'colors'
+        },
+    }],
+
+
+
 });
 
 

@@ -1,12 +1,12 @@
-import { FormControl, FormControlLabel, Checkbox, Input, InputLabel, FormHelperText, Button, TextField, Divider, IconButton } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { FormControl, FormControlLabel, Checkbox, Input, InputLabel, FormHelperText, Button, TextField, Divider, IconButton } from '@mui/material';
+import Autocomplete from '@mui/lab/Autocomplete';
 import React, { useState, useEffect } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import api from '../api';
-import TreeItem from '@material-ui/lab/TreeItem';
+import TreeItem from '@mui/lab/TreeItem';
 
 const createTableData = (data) => {
     const { _id, imagePath, name, brand, active } = data;
@@ -146,7 +146,7 @@ const productObj = {
                 } else if (element.sizeError === true) {
                     flag = true;
                     break;
-                }  else if (element.size === undefined) {
+                } else if (element.size === undefined) {
                     flag = true;
                     break;
                 } else if (element.size.length === 0) {

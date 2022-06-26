@@ -19,3 +19,9 @@ export { default as Footer } from './footer/Footer';
 export { default as ProductRow } from './productRow/ProductRow';
 export { default as Sidebar } from './sidebar/Sidebar';
 export { default as Divider } from './divider/Divider';
+
+
+export { default as Heading1 } from './heading1/Heading1';
+export { default as Heading2 } from './heading2/Heading2';
+export { default as Heading3 } from './heading3/Heading3';
+export { default as ParaText } from './paraText/ParaText';

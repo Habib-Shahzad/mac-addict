@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { Card, IconButton, CardContent, Button, CardMedia, InputAdornment, InputLabel, Input, FormControl } from '@material-ui/core';
-import { Email, Visibility, VisibilityOff, Lock } from '@material-ui/icons';
+import { Card, IconButton, CardContent, Button, CardMedia, InputAdornment, InputLabel, Input, FormControl } from '@mui/material';
+import { Email, Visibility, VisibilityOff, Lock } from '@mui/icons-material';
 // import loginUser from '../../loginUser';
 import './Login.scss';
 import api from '../../api';

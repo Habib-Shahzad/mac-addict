@@ -22,15 +22,6 @@ const firebaseAdmin = firebaseFile.admin;
 //     }
 // });
 
-function login(email, password) {
-  return new Promise((resolve, reject) => {
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((user) => resolve(user))
-      .catch((err) => reject(err));
-  });
-}
 
 router.get("/table-data", async (req, res) => {
   const users = await User.find({}, { uid: 0 });
@@ -53,34 +44,27 @@ router.post("/set-active", async (req, res) => {
 });
 
 router.post("/reset-password-check", async (req, res) => {
-  try {
-    await firebase.auth().verifyPasswordResetCode(req.body.actionCode);
-    res.json({ data: true });
-  } catch (error) {
-    res.json({ data: false });
-  }
+  res.json({ data: false });
+  // TODO
 });
 
 router.post("/reset-password", async (req, res) => {
-  try {
-    await firebase
-      .auth()
-      .confirmPasswordReset(req.body.actionCode, req.body.password);
-    res.json({ data: true });
-  } catch (error) {
-    res.json({ data: false });
-  }
+  res.json({ data: false });
+  // TODO
 });
 
 router.post("/recover-email", (req, res) => {
+  res.json({ data: false });
   // TODO
 });
 
 router.post("/verify-email", async (req, res) => {
+  res.json({ data: false });
   // TODO
 });
 
 router.post("/change-password", async (req, res) => {
+  res.json({ data: false });
   // TODO
 });
 
@@ -105,12 +89,12 @@ router.post("/login", async (req, res) => {
       // save user token
       user.token = token;
 
-      res
-        .cookie("access_token", token, {
-          httpOnly: true
-        })
+      res.cookie("access_token", token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 7,
+      })
         .status(200)
-        .json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: true } });
+        .json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: false } });
     }
     else {
       res.json({ data: null });
@@ -133,7 +117,7 @@ router.get("/loggedIn", async (req, res) => {
     }
     const data = jwt.verify(token, process.env.TOKEN_SECRET);
     const user = await User.findOne({ _id: data.user_id });
-    return res.json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: true } });
+    return res.json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: false } });
 
   } catch (error) {
     res.json({ data: null, error: error.message });
@@ -144,7 +128,7 @@ router.post("/logout", async (req, res) => {
   return res
     .clearCookie("access_token")
     .status(200)
-    .json({ message: "Successfully logged out 😏 🍀" });
+    .json({ message: "Successfully logged out" });
 });
 
 router.post("/change-profile", async (req, res) => {
@@ -239,11 +223,11 @@ router.post('/signup', async (req, res) => {
     );
 
     res.cookie("access_token", token, {
-      httpOnly: true
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 7,
     });
 
-
-    res.json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: true } });
+    res.json({ data: { firstName: user.firstName, email: user.email, emailVerified: true, admin: false } });
 
   } catch (error) {
     res.json({ success: false, error: error });

@@ -9,14 +9,10 @@ const userSchema = new mongoose.Schema({
   contactNumber: { type: String, required: true },
   addresses: [
     {
-      addressLine1: { type: String, required: true },
-      addressLine2: { type: String, required: true },
-      landmark: { type: String, required: true },
-      area: {
-        name: { type: String, required: true },
-        city: { type: Schema.Types.ObjectId, ref: "cities", required: true },
-      },
-    },
+      type: Schema.Types.ObjectId,
+      ref: 'addresses',
+      required: true
+    }
   ],
   admin: {
     type: Boolean,
