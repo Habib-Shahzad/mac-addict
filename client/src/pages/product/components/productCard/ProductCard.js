@@ -4,12 +4,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 // import api from '../../../../api';
-import { FourthHeading, MainHeading, DescriptionText, SubHeading, ThirdHeading, LinkButton, ShopButton } from '../../../../components';
+import { FourthHeading, MainHeading, DescriptionText, SubHeading, ThirdHeading, LinkButton, ShopButton, Heading3 } from '../../../../components';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Checkbox from '@mui/material/Checkbox';
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FormControlLabel } from '@mui/material';
 import CartContext from '../../../../contexts/cart';
+import UserContext from '../../../../contexts/user';
 import './ProductCard.scss';
 import { useParams } from 'react-router-dom';
 import api from '../../../../api';
@@ -17,6 +18,8 @@ import api from '../../../../api';
 function ProductCard(props) {
 
     const cart = useContext(CartContext);
+    const user = useContext(UserContext);
+
     const { productSlug } = useParams();
 
     const [data, setData] = useState(null);
@@ -30,7 +33,6 @@ function ProductCard(props) {
     const [loading, setLoading] = useState(true);
 
     const [buttonText, setButtonText] = useState({ text: 'Shop it', classes1: '' });
-
 
     const lightTheme = createTheme({
         palette: {
@@ -137,6 +139,7 @@ function ProductCard(props) {
             credentials: 'include',
             withCredentials: true,
             body: JSON.stringify({
+                user_id: user.userState._id,
                 product_id: product._id,
                 name: product.name,
                 productSlug: product.slug,
@@ -355,13 +358,27 @@ function ProductCard(props) {
                                 </ThemeProvider>
                             </div>
 
-                            <div className="inline-block">
-                                <ShopButton
-                                    onClick={addToCart}
-                                    classes={`text-uppercase center-relative ${buttonText.classes1}`}
-                                    text={buttonText.text}
-                                />
-                            </div>
+                            {
+                                user.userState ?
+                                    (
+                                        <div className="inline-block">
+                                            <ShopButton
+                                                to={""}
+                                                onClick={addToCart}
+                                                classes={`text-uppercase center-relative ${buttonText.classes1}`}
+                                                text={buttonText.text}
+                                            />
+                                        </div>)
+                                    : (
+                                        <div className="inline-block">
+                                            <Heading3
+                                                link={"/signin"}
+                                                linkTag={'Login'}
+                                                bold="to add to cart"
+                                                classes="text-uppercase login-heading"
+                                            />
+                                        </div>)
+                            }
                         </Row>
                         {/* <div className="product-name">{props.name}</div>
                         <div className="product-price-points">{props.pricePoints}</div> */}

@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { MainHeading, Heading2, Heading1, ShopButton } from '../../../../components';
 import CartContext from '../../../../contexts/cart';
+import UserContext from '../../../../contexts/user';
 import api from '../../../../api';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -10,8 +11,10 @@ import './ProductList.scss';
 
 function ProductList(props) {
 
+    const user = useContext(UserContext);
     const cart = useContext(CartContext);
     const [cost, setCost] = useState(0);
+
 
     const [cartProducts, setCartProducts] = useState([]);
 
@@ -25,7 +28,7 @@ function ProductList(props) {
         });
         const content = await response.json();
         cart.setCart(content.data);
-        console.log(cart);
+
     }
 
     const addCartItem = async (key) => {
@@ -38,7 +41,7 @@ function ProductList(props) {
         });
         const content = await response.json();
         cart.setCart(content.data);
-        console.log(cart);
+
     }
 
 
@@ -61,22 +64,33 @@ function ProductList(props) {
     }, []);
 
     useEffect(() => {
+
         let lst = [];
         let i = 0;
-        for (const [key, value] of Object.entries(cart.cartObj)) {
-            lst.push(value);
-            lst[i].key = key;
-            i += 1;
+
+
+        if (user.userState) {
+            for (const [key, value] of Object.entries(cart.cartObj)) {
+                if (value.user_id === user.userState._id) {
+                    lst.push(value);
+                    lst[i].key = key;
+                    i += 1;
+                }
+            }
         }
         setCartProducts(lst);
-    }, [cart])
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cart, user])
+
 
 
     useEffect(() => {
         let totalPrice = 0;
-        cartProducts?.map((element) => {
+        for (var i = 0; i < cartProducts.length; i++) {
+            let element = cartProducts[i];
             totalPrice += element.price.amount * element.quantity;
-        });
+        }
         setCost(totalPrice);
     }, [cartProducts])
 
@@ -140,7 +154,8 @@ function ProductList(props) {
                 <div className="horizontal-center-margin">
 
                     <ShopButton
-                        onClick={(e) => { e.preventDefault(); }}
+                        to={"/cart/delivery-info"}
+                        onClick={() => { }}
                         classes={`text-uppercase center-relative`}
                         text={"Proceed"}
                     />

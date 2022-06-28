@@ -4,7 +4,7 @@ import './ShopButton.scss';
 
 function ShopButton(props) {
     return (
-        <Link to="" onClick={props.onClick} className={`shop-button ${props.classes}`}>
+        <Link to={props.to} onClick={props.onClick} className={`shop-button ${props.classes}`}>
             {props.text}
         </Link>
     );

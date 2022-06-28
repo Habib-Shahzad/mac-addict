@@ -10,15 +10,15 @@ import { Home, Brands, Product, Category, AllProducts, Signin, Signup, Cart } fr
 import { Dashboard } from './dashboard';
 import CartContext from './contexts/cart';
 import DiscountContext from './contexts/discount';
+import CountriesContext from './contexts/country';
 import api from './api';
 import {
   TransitionGroup,
   CSSTransition
 } from "react-transition-group";
-//   import './App.scss';
+
 import './form.scss';
 import './global.scss';
-// import Auth from './auth/Auth';
 
 function Routes(props) {
   const [cart, setCart] = useState({});
@@ -43,7 +43,7 @@ function Routes(props) {
           withCredentials: true,
         });
         const content = await response.json();
-        // console.log(content);
+
         try {
           const data = content.data;
           const options = [
@@ -138,6 +138,9 @@ function Routes(props) {
 
 
 
+
+
+
   useEffect(() => {
     (
       async () => {
@@ -155,215 +158,117 @@ function Routes(props) {
   }, []);
 
 
-  // const options = [
-  // {
-  //   content: [{ id: 1, name: "Brands", to: "/brands" }]
-  // },
-  //   {
-  //     hideBorder: false,
-  //     content: [
-  //       {
-  //         id: 2,
-  //         name: "Makeup",
-  //         children: [
-  //           {
-  //             content: [
-  //               { id: 3, name: "All Makeup", to: "/make-up" },
-  //               {
-  //                 id: 4,
-  //                 name: "Face",
-  //                 children: [
-  //                   {
-  //                     content: [
-  //                       { id: 5, name: "All Face", to: "/face" },
-  //                       { id: 7, name: "Foundation", to: "/foundation" },
-  //                       { id: 8, name: "Foundation", to: "/foundation" },
-  //                       { id: 9, name: "Foundation", to: "/foundation" },
-  //                       { id: 10, name: "Foundation", to: "/foundation" }
-  //                     ]
-  //                   }
-  //                 ]
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     hideBorder: false,
-  //     content: [
-  //       {
-  //         id: 2,
-  //         name: "Makeup",
-  //         children: [
-  //           {
-  //             content: [
-  //               { id: 3, name: "All Makeup", to: "/make-up" },
-  //               {
-  //                 id: 4,
-  //                 name: "Face",
-  //                 children: [
-  //                   {
-  //                     content: [
-  //                       { id: 5, name: "All Face", to: "/face" },
-  //                       { id: 7, name: "Foundation", to: "/foundation" },
-  //                       { id: 8, name: "Foundation", to: "/foundation" },
-  //                       { id: 9, name: "Foundation", to: "/foundation" },
-  //                       { id: 10, name: "Foundation", to: "/foundation" }
-  //                     ]
-  //                   }
-  //                 ]
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       }
-  //     ]
-  //   }
-  // ];
+  const [countryData, setCountryData] = useState({});
+  const [dataMappers, setDataMappers] = useState({});
 
-  // useEffect(() => {
-  //   (
-  //     async () => {
-  //       const response = await fetch(`${api}/cart/getCart`, {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         credentials: 'include',
-  //         withCredentials: true,
-  //       });
-  //       const content = await response.json();
+  useEffect(() => {
+    (
+      async () => {
+        const response = await fetch(`${api}/city/table-data`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          withCredentials: true,
+        });
+        const content = await response.json();
+        let countries = {};
 
-  //       const data = {
-  //         'product-1': {
-  //           item: {
-  //             name: 'Cream Lip Stain Liquid Lipstick',
-  //             slug: 'product-1',
-  //             imagePath: 'https://www.sephora.com/productimages/sku/s1959386-main-zoom.jpg',
-  //             active: true,
-  //             hasColor: true,
-  //             points: 1
-  //           }
-  //         }
-  //       }
-  //       setCart(content.data);
-  //     })();
-  // }, []);
+        let countryMapper = {};
+        let provinceMapper = {};
+        let cityMapper = {};
 
-  //   useEffect(() => {
-  //     (
-  //       async () => {
-  //         const response = await fetch(`${api}/discounts/get-discount`, {
-  //           method: 'GET',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //           credentials: 'include',
-  //           withCredentials: true,
-  //         });
-  //         const content = await response.json();
-  //         setDiscountState(content.data);
-  //       })();
-  //   }, []);
+        content.data.forEach(city => {
+          let country_name = city.province.country.name;
+          let province_name = city.province.name;
+          let city_name = city.name;
+
+          let country_id = city.province.country._id;
+          let province_id = city.province._id;
+          let city_id = city._id;
+
+          if (!countryMapper[country_id]) countryMapper[country_id] = country_name;
+          if (!provinceMapper[province_id]) provinceMapper[province_id] = province_name;
+          if (!cityMapper[city_id]) cityMapper[city_id] = city_name;
+
+          if (!countries[country_id]) countries[country_id] = {};
+          if (!countries[country_id][province_id]) countries[country_id][province_id] = [];
+          countries[country_id][province_id].push(city_id);
+        })
+
+        setDataMappers({ 'country': countryMapper, 'province': provinceMapper, 'city': cityMapper });
+        setCountryData(countries);
+
+      })();
+  }, []);
 
   return (
-    <CartContext.Provider value={{ cartObj: cart, setCart: setCart }}>
-      <DiscountContext.Provider value={discountState}>
-        <SmallBanner />
-        <div className="margin-global-top-1" />
-        <SearchNavbar options={navOptions} />
-        {/* <div className="margin-global-top-1" /> */}
-        <TransitionGroup>
-          <CSSTransition
-            key={location.key}
-            classNames="page"
-            timeout={300}
-          >
-            <div className="page">
-              <Switch location={location}>
-                {/* <Route path="/__/auth/action">
-                  <Auth />
-                </Route> */}
-                {/* <Route path="/forgot-password/sent" children={
-                  <ConfirmationMessage
-                    first=""
-                    bold="Password Reset"
-                    second=""
-                  />
-                } />
-                <Route path="/logout" children={
-                  <ConfirmationMessage
-                    first=""
-                    bold="Account Authentication"
-                    second=""
-                  />
-                } />
-                <Route path="/account-creation" children={
-                  <ConfirmationMessage
-                    first=""
-                    bold="Account creation"
-                    second=""
-                  />
-                } />
-                <Route path="/email-verification" children={
-                  <ConfirmationMessage
-                    first=""
-                    bold="Email verification"
-                    second=""
-                  />
-                } /> */}
-                <Route path="/dashboard">
-                  <MainNavbar options={mainNavOptions} />
-                  <Dashboard />
-                </Route>
-                <Route path="/product/:productSlug">
-                  <MainNavbar options={mainNavOptions} />
-                  <Product />
-                </Route>
-                <Route path="/:category/:subcategory/:furthersubcategory">
-                  <MainNavbar options={mainNavOptions} />
-                  <AllProducts />
-                </Route>
-                <Route path="/:category/:subcategory">
-                  <MainNavbar options={mainNavOptions} />
-                  <AllProducts />
-                </Route>
-                <Route path="/brands">
-                  <MainNavbar options={mainNavOptions} />
-                  <Brands />
-                </Route>
-                <Route path="/cart">
-                  <MainNavbar options={mainNavOptions} />
-                  <Cart />
-                </Route>
-                <Route path="/signin">
-                  <MainNavbar options={mainNavOptions} />
-                  <Signin />
-                </Route>
-                <Route path="/signup">
-                  <MainNavbar options={mainNavOptions} />
-                  <Signup />
-                </Route>
-                <Route path="/:category">
-                  <MainNavbar options={mainNavOptions} />
-                  <Category />
-                </Route>
-                {/* <Route path="/" children={<ComingSoon />} /> */}
-                <Route path="/">
-                  <MainNavbar options={mainNavOptions} />
-                  <Home />
-                </Route>
-              </Switch>
-              <div className="margin-global-top-8" />
-              <IconBanner />
-              <Footer />
-            </div>
-          </CSSTransition>
-        </TransitionGroup>
-      </DiscountContext.Provider>
-    </CartContext.Provider>
+    <CountriesContext.Provider value={{ data: countryData, dataMappers: dataMappers }}>
+      <CartContext.Provider value={{ cartObj: cart, setCart: setCart }}>
+        <DiscountContext.Provider value={discountState}>
+          <SmallBanner />
+          <div className="margin-global-top-1" />
+          <SearchNavbar options={navOptions} />
+          <TransitionGroup>
+            <CSSTransition
+              key={location.key}
+              classNames="page"
+              timeout={300}
+            >
+              <div className="page">
+                <Switch location={location}>
+                  <Route path="/dashboard">
+                    <MainNavbar options={mainNavOptions} />
+                    <Dashboard />
+                  </Route>
+                  <Route path="/product/:productSlug">
+                    <MainNavbar options={mainNavOptions} />
+                    <Product />
+                  </Route>
+                  <Route path="categories/:category/:subcategory/:furthersubcategory">
+                    <MainNavbar options={mainNavOptions} />
+                    <AllProducts />
+                  </Route>
+                  <Route path="categories/:category/:subcategory">
+                    <MainNavbar options={mainNavOptions} />
+                    <AllProducts />
+                  </Route>
+                  <Route path="/brands">
+                    <MainNavbar options={mainNavOptions} />
+                    <Brands />
+                  </Route>
+                  <Route path="/cart">
+                    <MainNavbar options={mainNavOptions} />
+                    <Cart />
+                  </Route>
+                  <Route path="/signin">
+                    <MainNavbar options={mainNavOptions} />
+                    <Signin />
+                  </Route>
+                  <Route path="/signup">
+                    <MainNavbar options={mainNavOptions} />
+                    <Signup />
+                  </Route>
+                  <Route path="categories/:category">
+                    <MainNavbar options={mainNavOptions} />
+                    <Category />
+                  </Route>
+                  {/* <Route path="/" children={<ComingSoon />} /> */}
+                  <Route path="/">
+                    <MainNavbar options={mainNavOptions} />
+                    <Home />
+                  </Route>
+                </Switch>
+                <div className="margin-global-top-8" />
+                <IconBanner />
+                <Footer />
+              </div>
+            </CSSTransition>
+          </TransitionGroup>
+        </DiscountContext.Provider>
+      </CartContext.Provider>
+    </CountriesContext.Provider>
   );
 }
 

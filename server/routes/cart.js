@@ -26,12 +26,13 @@ router.post('/addToCart', async (req, res) => {
     if (cartCookie) {
         const cartObj = cartCookie;
 
-        let key = `${req.body.productSlug}-.-.-${req.body.size.name}-.-.-${req.body.color.name}-.-.-product`;
+        let key = `${req.body.productSlug}-.-.-${req.body.size.name}-.-.-${req.body.color.name}-.-.-${req.body.user_id}`;
 
         if (cartObj[key]) {
             cartObj[key].quantity += 1;
         } else {
             cartObj[key] = {
+                user_id: req.body.user_id,
                 images: req.body.imageList,
                 product_id: req.body.product_id,
                 name: req.body.name,

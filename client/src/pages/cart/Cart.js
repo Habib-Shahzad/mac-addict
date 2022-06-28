@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Divider, CartCircleHeading } from '../../components';
 import { ProductList, DeliveryForm, Payment } from './components';
-// import UserContext from '../../authenticatedUser';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import {
@@ -22,7 +21,8 @@ function Cart(props) {
     const location = useLocation();
     const pathname = location.pathname;
 
-    // const user = useContext(UserContext);
+    // const cart = useContext(CartContext);
+
     let active = {};
     let activeCompClass = {};
     if (pathname.toLowerCase() === '/cart') {

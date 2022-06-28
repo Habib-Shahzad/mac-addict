@@ -46,7 +46,7 @@ function Admin(props) {
     if (props.loading) return <div></div>
     return (
         <ThemeProvider theme={currentTheme}>
-            {!user.userState ? (
+            {user.userState ? (
                 <Login user={user} title="MAC Addict: Admin Login" />
             ) : (
                 <AdminLayout user={user} darkState={darkState} setDarkState={setDarkState} title="MAC Addict: Dashboard" />

@@ -42,7 +42,6 @@ function SearchNavbar(props) {
         });
         const content = await response.json();
         cart.setCart(content.data);
-        console.log(cart);
     }
 
     const addCartItem = async (key) => {
@@ -55,7 +54,6 @@ function SearchNavbar(props) {
         });
         const content = await response.json();
         cart.setCart(content.data);
-        console.log(cart);
     }
 
     const handleClick = itemOptions => {
@@ -68,8 +66,7 @@ function SearchNavbar(props) {
     };
 
     const handleLogout = async event => {
-        // console.log(123);
-        // event.preventDefault();
+
         await fetch(`${api}/user/logout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -80,15 +77,22 @@ function SearchNavbar(props) {
     }
 
     useEffect(() => {
+
         let lst = [];
         let i = 0;
-        for (const [key, value] of Object.entries(cart.cartObj)) {
-            lst.push(value);
-            lst[i].key = key;
-            i += 1;
+        if (user.userState) {
+            for (const [key, value] of Object.entries(cart.cartObj)) {
+                if (value.user_id === user.userState._id) {
+                    lst.push(value);
+                    lst[i].key = key;
+                    i += 1;
+                }
+            }
         }
         setData(lst);
-    }, [cart])
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cart, user])
 
     const theme = createTheme({
         palette: {
@@ -108,9 +112,10 @@ function SearchNavbar(props) {
 
     useEffect(() => {
         let totalPrice = 0;
-        data?.map((element) => {
+        for (var i = 0; i < data.length; i++) {
+            let element = data[i];
             totalPrice += element.price.amount * element.quantity;
-        });
+        }
         setCost(totalPrice);
     }, [data])
 
@@ -170,85 +175,104 @@ function SearchNavbar(props) {
                         {/*  */}
 
                         <div className="hover-box position-relative">
-                            <Link className="account-icon justify-content-end" to="/cart">
-                                <ThemeProvider theme={theme}>
-                                    <Badge color="secondary" badgeContent={Object.keys(cart.cartObj).length}>
-                                        <BsBag className="bag-icon" />
-                                    </Badge>
-                                </ThemeProvider>
-                            </Link>
+                            {
+                                user.userState ? (
+                                    <Link className="account-icon justify-content-end" to="/cart">
+                                        <ThemeProvider theme={theme}>
+                                            <Badge color="secondary" badgeContent={Object.keys(data).length}>
+                                                <BsBag className="bag-icon" />
+                                            </Badge>
+                                        </ThemeProvider>
+                                    </Link>) : (
+                                    <Link className="account-icon justify-content-end" to="/" onClick={(e) => { e.preventDefault(); }}>
+                                        <ThemeProvider theme={theme}>
+                                            <Badge color="secondary" badgeContent={Object.keys(data).length}>
+                                                <BsBag className="bag-icon" />
+                                            </Badge>
+                                        </ThemeProvider>
+                                    </Link>)
+
+                            }
                             <div className="cart-list-box">
                                 {
-                                    data.length === 0 ? (
-                                        <div className="center-relative-fit-content">
-                                            <Heading2
-                                                first="Cart is"
-                                                link="/"
-                                                bold="Empty!"
-                                                classes="text-uppercase"
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <div className="cart-list">
-                                                {
-                                                    data.map((element, index) => {
-                                                        return (
-                                                            <li className="cart-list-item" key={`${element.key}-${index}`}>
-                                                                <Row>
-                                                                    <Col md={3}>
-                                                                        <img src={element.images[0].imagePath} alt={element.name} />
-                                                                    </Col>
-                                                                    <Col md={5}>
-                                                                        <div className="vertical-center-relative">
-                                                                            <Heading3
-                                                                                bold={element.name}
-                                                                                classes="text-uppercase"
-                                                                            />
+                                    user.userState ? (
+                                        data.length === 0 ? (
+                                            <div className="center-relative-fit-content">
+                                                <Heading2
+                                                    first="Cart is"
+                                                    link="/"
+                                                    bold="Empty!"
+                                                    classes="text-uppercase"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <div className="cart-list">
+                                                    {
+                                                        data.map((element, index) => {
+                                                            return (
+                                                                <li className="cart-list-item" key={`${element.key}-${index}`}>
+                                                                    <Row>
+                                                                        <Col md={3}>
+                                                                            <img src={element.images[0].imagePath} alt={element.name} />
+                                                                        </Col>
+                                                                        <Col md={5}>
+                                                                            <div className="vertical-center-relative">
+                                                                                <Heading3
+                                                                                    bold={element.name}
+                                                                                    classes="text-uppercase"
+                                                                                />
 
-                                                                            <ParaText
-                                                                                text={`Quantity: ${element.quantity}`}
-                                                                                classes="margin-bottom-0"
-                                                                                href='/'
-                                                                            />
-                                                                            <div className="add-remove-icons">
-                                                                                <RemoveIcon onClick={() => { removeCartItem(element.key) }} className="cart-icon" />
-                                                                                <AddIcon onClick={() => { addCartItem(element.key) }} className="cart-icon" />
+                                                                                <ParaText
+                                                                                    text={`Quantity: ${element.quantity}`}
+                                                                                    classes="margin-bottom-0"
+                                                                                    href='/'
+                                                                                />
+                                                                                <div className="add-remove-icons">
+                                                                                    <RemoveIcon onClick={() => { removeCartItem(element.key) }} className="cart-icon" />
+                                                                                    <AddIcon onClick={() => { addCartItem(element.key) }} className="cart-icon" />
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col className="align-middle">
-                                                                        <div className="vertical-center-relative">
-                                                                            <Heading3
-                                                                                bold={`PKR.${parseInt(element.price.amount) * element.quantity}`}
-                                                                                classes={`text-uppercase text-center`}
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                </Row>
-                                                            </li>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
+                                                                        </Col>
+                                                                        <Col className="align-middle">
+                                                                            <div className="vertical-center-relative">
+                                                                                <Heading3
+                                                                                    bold={`PKR.${parseInt(element.price.amount) * element.quantity}`}
+                                                                                    classes={`text-uppercase text-center`}
+                                                                                />
+                                                                            </div>
+                                                                        </Col>
+                                                                    </Row>
+                                                                </li>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
 
-                                            <div className="cart-buttons">
-                                                <Heading3
-                                                    bold="Total: "
-                                                    second={`PKR.${cost}`}
-                                                    classes="text-uppercase"
-                                                />
-                                                <Heading3
-                                                    first="Go to"
-                                                    link="/cart"
-                                                    linkTag="cart"
-                                                    bold=""
-                                                    classes="text-uppercase"
-                                                />
+                                                <div className="cart-buttons">
+                                                    <Heading3
+                                                        bold="Total: "
+                                                        second={`PKR.${cost}`}
+                                                        classes="text-uppercase"
+                                                    />
+                                                    <Heading3
+                                                        first="Go to"
+                                                        link="/cart"
+                                                        linkTag="cart"
+                                                        bold=""
+                                                        classes="text-uppercase"
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                }
+                                        )
+                                    ) : (<div className="center-relative-fit-content">
+                                        <Heading2
+                                            first="Login to"
+                                            link="/"
+                                            bold="View Cart!"
+                                            classes="text-uppercase"
+                                        />
+                                    </div>)}
                             </div>
                         </div>
 

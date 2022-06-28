@@ -1,186 +1,186 @@
 .form-cont {
-    position: relative;
+  position: relative;
 }
 .form-style {
-    background-color: var(--silver);
-    padding: 0rem 3rem 2.5rem;
-    .form-heading {
-        margin-bottom: 1.5rem;
+  background-color: var(--silver);
+  padding: 0rem 3rem 2.5rem;
+  .form-heading {
+    margin-bottom: 1.5rem;
+  }
+  .form-group {
+    padding: 0 3rem;
+  }
+  .dropdown-item.active {
+    background-color: #cf993d;
+  }
+  .dropdown-item {
+    &:active {
+      background-color: #cf993d;
     }
-    .form-group {
-        padding: 0 3rem;
+  }
+  .form-label {
+    width: 100%;
+  }
+  .form-control {
+    height: auto !important;
+  }
+  .form-label,
+  .MuiFormControlLabel-label {
+    font-size: 1.2rem;
+  }
+  .error-text,
+  .show-password {
+    margin-top: 0.188rem;
+    font-size: 0.8rem;
+    color: rgb(180, 0, 0);
+  }
+  .show-password {
+    color: black;
+    cursor: pointer;
+    text-align: right;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea,
+  select {
+    background-color: transparent;
+    border: 2px solid #cf993d;
+    padding: 0.938rem 0.75rem 0.938rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    &:focus {
+      box-shadow: none;
+      background-color: transparent;
+      border: 2px solid #cf993d;
     }
-    .dropdown-item.active {
-        background-color: #cf993d;
-    }
-    .dropdown-item {
-        &:active {
-            background-color: #cf993d;
-        }
-    }
-    .form-label {
-        width: 100%;
-    }
-    .form-control {
-        height: auto !important;
-    }
-    .form-label,
-    .MuiFormControlLabel-label {
-        font-size: 1.2rem;
-    }
-    .error-text,
-    .show-password {
-        margin-top: 0.188rem;
-        font-size: 0.8rem;
-        color: rgb(180, 0, 0);
-    }
-    .show-password {
-        color: black;
-        cursor: pointer;
-        text-align: right;
-    }
+  }
+  .input-group {
     input[type="text"],
     input[type="email"],
     input[type="password"],
     textarea,
     select {
-        background-color: transparent;
-        border: 2px solid #cf993d;
-        padding: 0.938rem 0.75rem 0.938rem;
-        border-radius: 10px;
-        font-size: 1rem;
-        &:focus {
-            box-shadow: none;
-            background-color: transparent;
-            border: 2px solid #cf993d;
-        }
+      border-right: 0;
+      &:focus {
+        border-right: 0;
+      }
     }
-    .input-group {
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        textarea,
-        select {
-            border-right: 0;
-            &:focus {
-                border-right: 0;
-            }
-        }
-        .input-group-text {
-            font-size: 1.6rem;
-            background-color: white;
-            border: 2px solid #cf993d;
-            border-radius: 10px;
-            border-left: 0;
-            .icon {
-                cursor: pointer;
-            }
-        }
-    }
-    .rbt-aux {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-    .btn {
-        padding: 0.625rem 0;
-        background-color: #cf993d !important;
-        color: white;
+    .input-group-text {
+      font-size: 1.6rem;
+      background-color: white;
+      border: 2px solid #cf993d;
+      border-radius: 10px;
+      border-left: 0;
+      .icon {
         cursor: pointer;
-        width: 12.5rem;
-        text-align: center;
-        font-weight: 400;
-        font-size: 1.4rem;
-        border: 1px solid #cf993d !important;
-        text-transform: uppercase;
-        border-radius: 30px;
-        transition: ease-in-out 0.3s;
-        margin: 0 1rem;
-        box-shadow: none;
-        &:hover {
-            background-color: transparent;
-            color: black;
-            border: 1px solid #cf993d !important;
-        }
-        &:active {
-            background-color: #f5d9aa !important;
-            color: white;
-            box-shadow: none;
-        }
-        &:focus {
-            box-shadow: none;
-        }
+      }
     }
-    .horizontal-center-margin {
-        margin-top: 1.875rem;
-        margin-bottom: 0.625rem;
+  }
+  .rbt-aux {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .btn {
+    padding: 0.625rem 0;
+    background-color: #cf993d !important;
+    color: white;
+    cursor: pointer;
+    width: 12.5rem;
+    text-align: center;
+    font-weight: 400;
+    font-size: 1.4rem;
+    border: 1px solid #cf993d !important;
+    text-transform: uppercase;
+    border-radius: 30px;
+    transition: ease-in-out 0.3s;
+    margin: 0 1rem;
+    box-shadow: none;
+    &:hover {
+      background-color: transparent;
+      color: black;
+      border: 1px solid #cf993d !important;
     }
+    &:active {
+      background-color: #f5d9aa !important;
+      color: white;
+      box-shadow: none;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .horizontal-center-margin {
+    margin-top: 1.875rem;
+    margin-bottom: 0.625rem;
+  }
 }
 
 // X-Large devices (large desktops, less than 1400px)
 @media (max-width: 87.49875em) {
-    .form-style {
-        padding: 5rem 2.5rem 2.5rem;
-        .btn {
-            font-size: 1.33rem;
-        }
+  .form-style {
+    padding: 5rem 2.5rem 2.5rem;
+    .btn {
+      font-size: 1.33rem;
     }
+  }
 }
 
 // Large devices (desktops, less than 1200px)
 @media (max-width: 74.99875em) {
-    .form-style {
-        padding: 5rem 2rem 2.5rem;
-        .btn {
-            width: 12rem;
-            font-size: 1.26rem;
-        }
-        .form-group {
-            padding: 0 2rem;
-        }
+  .form-style {
+    padding: 5rem 2rem 2.5rem;
+    .btn {
+      width: 12rem;
+      font-size: 1.26rem;
     }
+    .form-group {
+      padding: 0 2rem;
+    }
+  }
 }
 
 // Medium devices (tablets, less than 992px)
 @media (max-width: 61.99875em) {
-    .form-style {
-        padding: 3rem 2rem 2.5rem;
-        .btn {
-            width: 10rem;
-            font-size: 1.19rem;
-        }
-        .input-form-group {
-            width: 50%;
-        }
-        .checkbox-form-group {
-            width: 70%;
-        }
-        .form-group {
-            padding: 0 0.5rem;
-        }
+  .form-style {
+    padding: 3rem 2rem 2.5rem;
+    .btn {
+      width: 10rem;
+      font-size: 1.19rem;
     }
+    .input-form-group {
+      width: 50%;
+    }
+    .checkbox-form-group {
+      width: 70%;
+    }
+    .form-group {
+      padding: 0 0.5rem;
+    }
+  }
 }
 
 // Small devices (landscape phones, less than 768px)
 @media (max-width: 47.99875em) {
-    .form-style {
-        .btn {
-            width: 9.5rem;
-            font-size: 1.12rem;
-        }
-        .input-form-group,
-        .checkbox-form-group {
-            width: 100%;
-        }
+  .form-style {
+    .btn {
+      width: 9.5rem;
+      font-size: 1.12rem;
     }
+    .input-form-group,
+    .checkbox-form-group {
+      width: 100%;
+    }
+  }
 }
 
 // X-Small devices (portrait phones, less than 576px)
 @media (max-width: 35.99875em) {
-    .form-style {
-        .btn {
-            font-size: 1.05rem;
-        }
+  .form-style {
+    .btn {
+      font-size: 1.05rem;
     }
+  }
 }

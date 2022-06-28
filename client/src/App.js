@@ -23,8 +23,6 @@ function App() {
       });
 
       const content = await response.json();
-      console.log("RESPONSE JSON", content);
-
       setUserState(content.data);
 
       setLoading(false);

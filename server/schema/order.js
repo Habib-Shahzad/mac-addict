@@ -2,9 +2,14 @@ const mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 const orderSchema = new mongoose.Schema({
-  orderNumber: { type: String, required: true },
-  deliveryAddress: { type: Schema.Types.ObjectId, ref: 'addresses', required: true },
-  billingAddress: { type: Schema.Types.ObjectId, ref: 'addresses', required: true },
+
+  deliveryAddress: {
+    addressLine1: { type: String, required: true },
+    addressLine2: { type: String, required: true },
+    landmark: { type: String, required: true },
+    city: { type: Schema.Types.ObjectId, ref: "cities", required: true },
+  },
+
   orderDate: { type: Date, required: true, default: new Date() },
   paymentMethod: { type: String, required: true },
   orderStatus: { type: String, required: true },
