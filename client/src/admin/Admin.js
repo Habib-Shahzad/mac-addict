@@ -1,13 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Login, AdminLayout } from '../admin';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import './Admin.scss';
-import UserContext from '../contexts/user';
-
+import AdminUserContext from '../contexts/adminUser';
 
 function Admin(props) {
+
+    const adminUser = React.useContext(AdminUserContext);
+
     const [darkState, setDarkState] = useState(false);
-    const user = useContext(UserContext);
+
     const darkTheme = createTheme({
         palette: {
             type: 'dark',
@@ -43,15 +45,18 @@ function Admin(props) {
         },
     });
     const currentTheme = darkState ? darkTheme : lightTheme;
+
     if (props.loading) return <div></div>
     return (
+
         <ThemeProvider theme={currentTheme}>
-            {user.userState ? (
-                <Login user={user} title="MAC Addict: Admin Login" />
+            {!adminUser.adminUserState ? (
+                <Login user={adminUser} title="MAC Addict: Admin Login" />
             ) : (
-                <AdminLayout user={user} darkState={darkState} setDarkState={setDarkState} title="MAC Addict: Dashboard" />
+                <AdminLayout user={adminUser} darkState={darkState} setDarkState={setDarkState} title="MAC Addict: Dashboard" />
             )}
         </ThemeProvider>
+
     );
 }
 

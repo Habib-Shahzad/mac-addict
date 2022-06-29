@@ -5,10 +5,6 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./schema').user;
 
-const firebaseFile = require('./firebase');
-const firebase = firebaseFile.firebase;
-const firebaseAdmin = firebaseFile.admin;
-
 const url = process.env.DATABASE_URL;
 
 const createServer = async (callback) => {
@@ -29,26 +25,16 @@ const createServer = async (callback) => {
         console.log('Passwords do not match... aborting!');
         process.exit(0);
     };
-    const response = await firebase.auth().createUserWithEmailAndPassword(email, password);
-    const user = response.user;
-    await firebaseAdmin.auth().setCustomUserClaims(user.uid, { admin: true });
-    await user.sendEmailVerification();
-    await user.updateProfile({
-        displayName: firstName,
-    });
-    // console.log(user);
+
     const newUser = new User({
         firstName: firstName,
         lastName: lastName,
         email: email,
         contactNumber: contactNumber,
-        admin: true,
-        uid: user.uid
+        admin: true
     });
     await newUser.save();
-    console.log('Verification Email sent! Please verify to login');
     process.exit(0);
-
 }
 
 createServer();

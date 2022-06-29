@@ -123,6 +123,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AdminLayout(props) {
+
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
@@ -161,17 +162,19 @@ function AdminLayout(props) {
     const handleLogout = async e => {
         // console.log(123);
         e.preventDefault();
-        await fetch(`${api}/user/logout`, {
+        await fetch(`${api}/user/logout-admin`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             withCredentials: true,
         });
-        props.user.setUserState(null);
+        props.user.setAdminUserState(null);
     }
+
 
     return (
         <div className={classes.root}>
+
             <CssBaseline />
             <AppBar
                 position="fixed"
@@ -414,6 +417,7 @@ function AdminLayout(props) {
           </TransitionGroup> */}
                 {/* </Router> */}
             </main>
+
         </div>
     );
 }

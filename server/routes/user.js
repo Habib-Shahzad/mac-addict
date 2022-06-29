@@ -27,6 +27,13 @@ router.post("/logout", async (req, res) => {
     .json({ message: "Successfully logged out" });
 });
 
+router.post("/logout-admin", async (req, res) => {
+  return res
+    .clearCookie("access_token_admin")
+    .status(200)
+    .json({ message: "Successfully logged out" });
+});
+
 
 
 router.get("/loggedIn", async (req, res) => {
@@ -265,6 +272,72 @@ router.post("/delete-address", async (req, res) => {
   const addresses = updated_user.addresses;
   res.json({ success: true, addresses: addresses });
 
+});
+
+
+
+
+router.get("/admin-loggedIn", async (req, res) => {
+  try {
+    const token = (req.cookies['access_token_admin']);
+
+    if (!token) {
+      return res.json({ data: null });
+    }
+    const data = jwt.verify(token, process.env.TOKEN_SECRET);
+    const user = await User.findOne({ _id: data.user_id });
+    return res.json({
+      data: user
+    });
+
+  } catch (error) {
+    res.json({ data: null, error: error.message });
+  }
+});
+
+
+
+router.post("/admin-login", async (req, res) => {
+  try {
+    // Get user input
+    const { email, password } = req.body;
+
+    // Validate if user exist in our database
+    const user = await User.findOne({ email });
+
+    if (!user.admin) {
+      return res.json({ success: false, data: null, message: "User is not an admin" });
+    }
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      // Create token
+      const token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_SECRET,
+        {
+          expiresIn: "7000h",
+        }
+      );
+
+      // save user token
+      user.token = token;
+
+      res.cookie("access_token_admin", token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 7,
+      })
+        .status(200)
+        .json({
+          success: true,
+          data: user
+        });
+    }
+    else {
+      res.json({ success: false, data: null, message: "Email and Password do not match!" });
+    }
+  } catch (err) {
+    res.json({ data: null, success: false, message: "User not found!" });
+  }
 });
 
 

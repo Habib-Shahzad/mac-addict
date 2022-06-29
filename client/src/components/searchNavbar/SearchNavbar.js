@@ -144,7 +144,7 @@ function SearchNavbar(props) {
                                             classes="bold-400 margin-bottom-0"
                                         />
                                         <ParaText1
-                                            text="Points: 1028"
+                                            text={`Points: ${user.userState.totalPoints}`}
                                             classes="bold-300 margin-bottom-0"
                                         />
                                     </>

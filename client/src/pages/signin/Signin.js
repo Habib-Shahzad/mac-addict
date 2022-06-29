@@ -81,7 +81,7 @@ function Signin(props) {
                                     },
                                 })}
                                 type="text" />
-                            <div className="error-text">{errors.email && errors.email.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.email && errors.email.type === "required" && <span>Email is required</span>}</div>
                             <div className="error-text">{errors.email && <p>{errors.email.message}</p>}</div>
                         </Form.Group>
                     </Row>
@@ -110,7 +110,7 @@ function Signin(props) {
                                     }
                                 </InputGroup.Text>
                             </InputGroup>
-                            <div className="error-text">{errors.password && errors.password.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.password && errors.password.type === "required" && <span>Password is required</span>}</div>
                             <div className="error-text">{errors.password && <p>{errors.password.message}</p>}</div>
 
 

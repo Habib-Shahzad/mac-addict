@@ -5,6 +5,7 @@ import { Admin } from "./admin";
 import api from "./api";
 import React, { useState, useEffect } from "react";
 import UserContext from "./contexts/user";
+import AdminUserContext from './contexts/adminUser';
 
 function App() {
   const [userState, setUserState] = useState(null);
@@ -29,24 +30,50 @@ function App() {
     })();
   }, []);
 
+
+  const [adminUserState, setAdminUserState] = React.useState(null);
+
+  React.useEffect(() => {
+    (async () => {
+      const response = await fetch(`${api}/user/admin-loggedIn`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+        },
+        credentials: "include",
+        withCredentials: true,
+      });
+
+      const content = await response.json();
+      setAdminUserState(content.data);
+    })();
+  }, []);
+
+
   if (loading) return <div></div>;
 
   return (
-    <UserContext.Provider
-      value={{ userState: userState, setUserState: setUserState }}
+    <AdminUserContext.Provider
+      value={{ adminUserState: adminUserState, setAdminUserState: setAdminUserState }}
     >
-      <Router>
-        <Switch>
-          {/* <Route path="/thankyou" children={<Thankyou />} /> */}
-          <Route path="/admin">
-            <Admin loading={loading} />
-          </Route>
-          <Route path="*">
-            <Routes />
-          </Route>
-        </Switch>
-      </Router>
-    </UserContext.Provider>
+      <UserContext.Provider
+        value={{ userState: userState, setUserState: setUserState }}
+      >
+        <Router>
+          <Switch>
+            {/* <Route path="/thankyou" children={<Thankyou />} /> */}
+            <Route path="/admin">
+              <Admin loading={loading} />
+            </Route>
+            <Route path="*">
+              <Routes />
+            </Route>
+          </Switch>
+        </Router>
+      </UserContext.Provider>
+    </AdminUserContext.Provider>
+
   );
 }
 
