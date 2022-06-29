@@ -1,43 +1,43 @@
 .cart-circle-heading {
-    font-size: 1.9rem;
-    line-height: 3.188rem;
-    font-weight: 300;
+  font-size: 1.9rem;
+  line-height: 3.188rem;
+  font-weight: 300;
 }
 
 // X-Large devices (large desktops, less than 1400px)
 @media (max-width: 87.49875em) {
-    .cart-circle-heading {
-        font-size: 1.8rem;
-        line-height: 3.5rem;
-    }
+  .cart-circle-heading {
+    font-size: 1.8rem;
+    line-height: 3.5rem;
+  }
 }
 
 // Large devices (desktops, less than 1200px)
 @media (max-width: 74.99875em) {
-    .cart-circle-heading {
-        font-size: 1.7rem;
-    }
+  .cart-circle-heading {
+    font-size: 1.7rem;
+  }
 }
 
 // Medium devices (tablets, less than 992px)
 @media (max-width: 61.99875em) {
-    .cart-circle-heading {
-        width: 100%;
-        font-size: 1.6rem;
-        line-height: 2.1rem;
-    }
+  .cart-circle-heading {
+    width: 100%;
+    font-size: 1.6rem;
+    line-height: 2.1rem;
+  }
 }
 
 // Small devices (landscape phones, less than 768px)
 @media (max-width: 47.99875em) {
-    .cart-circle-heading {
-        font-size: 1.5rem;
-    }
+  .cart-circle-heading {
+    font-size: 1.5rem;
+  }
 }
 
 // X-Small devices (portrait phones, less than 576px)
 @media (max-width: 35.99875em) {
-    .cart-circle-heading {
-        font-size: 1.4rem;
-    }
+  .cart-circle-heading {
+    font-size: 1.4rem;
+  }
 }

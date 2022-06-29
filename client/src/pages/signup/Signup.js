@@ -73,7 +73,7 @@ function Signup(props) {
                                     required: true,
                                 })}
                                 type="text" />
-                            <div className="error-text">{errors.firstName && errors.firstName.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.firstName && errors.firstName.type === "required" && <span>First Name required</span>}</div>
                             <div className="error-text">{errors.firstName && <p>{errors.firstName.message}</p>}</div>
                         </Form.Group>
                         <Form.Group as={Col} md={6} controlId="lastName">
@@ -83,7 +83,7 @@ function Signup(props) {
                                     required: true,
                                 })}
                                 type="text" />
-                            <div className="error-text">{errors.lastName && errors.lastName.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.lastName && errors.lastName.type === "required" && <span>Last Name is required</span>}</div>
                             <div className="error-text">{errors.lastName && <p>{errors.lastName.message}</p>}</div>
                         </Form.Group>
                     </Row>
@@ -102,7 +102,7 @@ function Signup(props) {
                                     },
                                 })}
                                 type="text" />
-                            <div className="error-text">{errors.email && errors.email.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.email && errors.email.type === "required" && <span>Email is required</span>}</div>
                             <div className="error-text">{errors.email && <p>{errors.email.message}</p>}</div>
 
                         </Form.Group>
@@ -111,9 +111,16 @@ function Signup(props) {
                             <Form.Control
                                 {...register("contactNumber", {
                                     required: true,
+                                    validate: (value) => {
+                                        var format = /^\d{11}$/
+                                        if (!value.match(format)) {
+                                            return "Contact number must be 11 digits";
+                                        }
+                                    },
+
                                 })}
                                 type="text" />
-                            <div className="error-text">{errors.contactNumber && errors.contactNumber.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.contactNumber && errors.contactNumber.type === "required" && <span>Contact Number is required</span>}</div>
                             <div className="error-text">{errors.contactNumber && <p>{errors.contactNumber.message}</p>}</div>
                         </Form.Group>
                     </Row>
@@ -126,8 +133,9 @@ function Signup(props) {
                                     {...register("password", {
                                         required: true,
                                         validate: (value) => {
-                                            if (value?.length < 8) {
-                                                return "Your password must contain more than 8 characters";
+                                            const passwReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_])(?=.{8,})/;
+                                            if (!value.match(passwReg)) {
+                                                return 'Password must contain atleast 1 lowercase alhpabetical character, atleast 1 uppercase alhpabetical character, atleast 1 numerical character, 1 special character and must be of atleast 8 characters';
                                             }
                                         },
                                     })}
@@ -147,7 +155,7 @@ function Signup(props) {
                                     }
                                 </InputGroup.Text>
                             </InputGroup>
-                            <div className="error-text">{errors.password && errors.password.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.password && errors.password.type === "required" && <span>Password is required</span>}</div>
                             <div className="error-text">{errors.password && <p>{errors.password.message}</p>}</div>
                         </Form.Group>
                         <Form.Group as={Col} md={6} controlId="confirmPassword">
@@ -178,7 +186,7 @@ function Signup(props) {
                                     }
                                 </InputGroup.Text>
                             </InputGroup>
-                            <div className="error-text">{errors.confirmPassword && errors.confirmPassword.type === "required" && <span>This is a required field</span>}</div>
+                            <div className="error-text">{errors.confirmPassword && errors.confirmPassword.type === "required" && <span>Confirm Password is required</span>}</div>
                             <div className="error-text">{errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}</div>
                         </Form.Group>
                     </Row>

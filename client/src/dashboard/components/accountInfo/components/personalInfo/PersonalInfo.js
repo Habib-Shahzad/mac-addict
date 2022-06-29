@@ -1,75 +1,37 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Container, Form, Button, InputGroup } from 'react-bootstrap';
-import { DescriptionText, FourthHeading, MainHeading } from '../../../../../components';
+import { FourthHeading, MainHeading, DescriptionText } from '../../../../../components';
 import { MdEdit, MdCancel } from "react-icons/md";
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import './PersonalInfo.scss';
+import { useForm } from "react-hook-form";
 import api from '../../../../../api';
 import UserContext from '../../../../../contexts/user';
+
 
 function PersonalInfo(props) {
 
     const user = useContext(UserContext);
 
-    const [firstName, setFirstName] = useState({ value: '', errorText: '', error: false });
-    const [lastName, setlastName] = useState({ value: '', errorText: '', error: false });
-    const [email, setEmail] = useState({ value: '', errorText: '', error: false });
-    const [contactNumber, setContactNumber] = useState({ value: '', errorText: '', error: false, showPassword: false });
-    const [password, setPassword] = useState({ value: '', errorText: '' });
+    const { register, handleSubmit, formState: { errors }, } = useForm(
+        {
+            defaultValues: {
+                firstName: user.userState.firstName,
+                lastName: user.userState.lastName,
+                email: user.userState.email,
+                contactNumber: user.userState.contactNumber,
+            }
+        }
+    );
+
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const [edit, setEdit] = useState(false);
-
     const [profileChange, setProfileChange] = useState(<div></div>);
-    const [saveButton, setSaveButton] = useState({ show: false, disabled: false });
 
-    const revertFields = _ => {
-        setFirstName(prevState => ({ ...prevState, value: props.dbUser.firstName }));
-        setlastName(prevState => ({ ...prevState, value: props.dbUser.lastName }));
-        setEmail(prevState => ({ ...prevState, value: props.dbUser.email }));
-        setContactNumber(prevState => ({ ...prevState, value: props.dbUser.contactNumber }));
-    }
 
-    useEffect(() => {
-        if (props.dbUser) {
-            setFirstName(prevState => ({ ...prevState, value: props.dbUser.firstName }));
-            setlastName(prevState => ({ ...prevState, value: props.dbUser.lastName }));
-            setEmail(prevState => ({ ...prevState, value: props.dbUser.email }));
-            setContactNumber(prevState => ({ ...prevState, value: props.dbUser.contactNumber }));
-        }
-    }, [props.dbUser]);
-
-    const changeFirstName = event => {
-        const { value } = event.target;
-        setFirstName(prevState => ({ ...prevState, value: value }));
-        if (value === '') setFirstName(prevState => ({ ...prevState, errorText: 'First name is required!', error: true }));
-        else setFirstName(prevState => ({ ...prevState, errorText: '', error: false }));
-    }
-    const changeLastName = event => {
-        const { value } = event.target;
-        setlastName(prevState => ({ ...prevState, value: value }));
-        if (value === '') setlastName(prevState => ({ ...prevState, errorText: 'Last name is required!', error: true }));
-        else setlastName(prevState => ({ ...prevState, errorText: '', error: false }));
-    }
-    const changeContactNumber = event => {
-        const phoneReg = /^\d{11}$/;
-        setContactNumber(prevState => ({ ...prevState, value: event.target.value }));
-        if (event.target.value === '') setContactNumber(prevState => ({ ...prevState, errorText: 'Phone number is required!', error: true }));
-        else if (!event.target.value.match(phoneReg)) setContactNumber(prevState => ({ ...prevState, errorText: 'Must contain 11 digits!', error: true }));
-        else setContactNumber(prevState => ({ ...prevState, errorText: '', error: false }));
-    }
-    const changeEmail = event => {
-        setEmail(prevState => ({ ...prevState, value: event.target.value }));
-        if (event.target.value === '') setEmail(prevState => ({ ...prevState, errorText: 'Email is required!', error: true }));
-        else if (!event.target.value.includes('@')) setEmail(prevState => ({ ...prevState, errorText: 'Email must be valid!', error: true }));
-        else setEmail(prevState => ({ ...prevState, errorText: '', error: false }));
-    }
-    const changePassword = event => {
-        setPassword(prevState => ({ ...prevState, value: event.target.value, errorText: '' }));
-    }
-    const handleClickShowPassword = _ => {
-        setPassword(prevState => ({ ...prevState, showPassword: !password.showPassword }));
-    }
     const handleMouseDownPassword = event => {
         event.preventDefault();
     }
@@ -88,31 +50,11 @@ function PersonalInfo(props) {
             </div>)
         } else {
             setProfileChange(<div></div>);
-            revertFields();
-            setPassword({ value: '', errorText: '' });
         }
     }
 
-    useEffect(() => {
-        let flag = true;
-        if (firstName.error === true) flag = true;
-        else if (firstName.value.length === 0) flag = true;
-        else if (lastName.error === true) flag = true;
-        else if (lastName.value.length === 0) flag = true;
-        else if (contactNumber.error === true) flag = true;
-        else if (contactNumber.value.length === 0) flag = true;
-        else if (email.error === true) flag = true;
-        else if (email.value.length === 0) flag = true;
-        else if (password.error === true) flag = true;
-        else if (password.value.length === 0) flag = true;
-        else flag = false;
-        if (!flag) {
-            setSaveButton(prevState => ({ ...prevState, disabled: false }));
-        } else setSaveButton(prevState => ({ ...prevState, disabled: true }));
-    }, [firstName, lastName, contactNumber, email, password]);
 
-    const handleSubmit = async e => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         const response = await fetch(`${api}/user/change-profile`, {
             method: 'POST',
             headers: {
@@ -121,45 +63,27 @@ function PersonalInfo(props) {
             credentials: 'include',
             withCredentials: true,
             body: JSON.stringify({
-                firstName: firstName.value.trim(),
-                lastName: lastName.value.trim(),
-                contactNumber: contactNumber.value.trim(),
-                email: email.value.trim(),
-                password: password.value
+                ...data
             })
         });
         const content = await response.json();
-        handleEditChange();
-        if (content.data === 'success') {
+
+        if (content.success) {
+
             user.setUserState(content.user);
-            if (content.emailChange) {
-                setProfileChange(<Row>
-                    <div className="margin-global-top-2"></div>
-                    <DescriptionText
-                        text="Your changes have been confirmed. Please verify your email from the link that was emailed to you."
-                        classes="text-center"
-                    />
-                </Row>)
-                setTimeout(() => {
-                    setProfileChange(<div></div>)
-                }, 4000)
-            } else {
-        setProfileChange(
-            <div>
-                <div className="margin-global-top-2" />
-                <Row>
-                    <DescriptionText
-                        text="Your changes have been confirmed"
-                        classes="text-center margin-bottom-0 bold"
-                    />
-                </Row>
-            </div>)
-        setTimeout(() => {
-            setProfileChange(<div></div>)
-        }, 3000)
-            }
-            setSaveButton({ show: false, disabled: false });
-        } else {
+            setEdit(false);
+            setProfileChange(<Row>
+                <div className="margin-global-top-2"></div>
+                <DescriptionText
+                    text="Your changes have been confirmed."
+                    classes="text-center"
+                />
+            </Row>)
+            setTimeout(() => {
+                setProfileChange(<div></div>)
+            }, 2000)
+        }
+        else {
             setProfileChange(<Row>
                 <div className="margin-global-top-2"></div>
                 <DescriptionText
@@ -167,10 +91,6 @@ function PersonalInfo(props) {
                     classes="text-center"
                 />
             </Row>)
-            setTimeout(() => {
-                setProfileChange(<div></div>)
-            }, 3000)
-            setSaveButton({ show: false, disabled: false });
         }
     }
 
@@ -192,14 +112,14 @@ function PersonalInfo(props) {
                                         <Col md={6}>
                                             <FourthHeading
                                                 text="First Name:"
-                                                notBold={firstName.value}
+                                                notBold={user.userState.firstName}
                                                 classes="margin-bottom-0"
                                             />
                                         </Col>
                                         <Col md={6}>
                                             <FourthHeading
                                                 text="Last Name:"
-                                                notBold={lastName.value}
+                                                notBold={user.userState.lastName}
                                                 classes="margin-bottom-0"
                                             />
                                         </Col>
@@ -209,14 +129,14 @@ function PersonalInfo(props) {
                                         <Col md={6}>
                                             <FourthHeading
                                                 text="Email:"
-                                                notBold={email.value}
+                                                notBold={user.userState.email}
                                                 classes="margin-bottom-0"
                                             />
                                         </Col>
                                         <Col md={6}>
                                             <FourthHeading
                                                 text="Contact Number:"
-                                                notBold={contactNumber.value}
+                                                notBold={user.userState.contactNumber}
                                                 classes="margin-bottom-0"
                                             />
                                         </Col>
@@ -228,7 +148,7 @@ function PersonalInfo(props) {
                     ) : (
                         <div>
                             <MdCancel onClick={handleEditChange} className="edit-icon" />
-                            <Form className="form-style">
+                            <Form onSubmit={handleSubmit(onSubmit)} className="form-style">
                                 <input
                                     type="password"
                                     autoComplete="on"
@@ -239,19 +159,29 @@ function PersonalInfo(props) {
                                 <Row className="justify-content-between">
                                     <Form.Group className="input-form-group" as={Col} md={6} controlId="firstName">
                                         <Form.Label>First Name</Form.Label>
-                                        <Form.Control value={firstName.value} onChange={changeFirstName} type="text" />
+                                        <Form.Control
+                                            {...register("firstName", {
+                                                required: true,
+                                            })}
+                                            type="text" />
                                         <Row>
                                             <Col xs={8}>
-                                                <div className="error-text">{firstName.errorText}</div>
+                                                <div className="error-text">{errors.firstName && errors.firstName.type === "required" && <span>First Name required</span>}</div>
+                                                <div className="error-text">{errors.firstName && <p>{errors.firstName.message}</p>}</div>
                                             </Col>
                                         </Row>
                                     </Form.Group>
                                     <Form.Group className="input-form-group" as={Col} md={6} controlId="lastName">
                                         <Form.Label>Last Name</Form.Label>
-                                        <Form.Control value={lastName.value} onChange={changeLastName} type="text" />
+                                        <Form.Control
+                                            {...register("lastName", {
+                                                required: true,
+                                            })}
+                                            type="text" />
                                         <Row>
                                             <Col xs={8}>
-                                                <div className="error-text">{lastName.errorText}</div>
+                                                <div className="error-text">{errors.lastName && errors.lastName.type === "required" && <span>Last Name is required</span>}</div>
+                                                <div className="error-text">{errors.lastName && <p>{errors.lastName.message}</p>}</div>
                                             </Col>
                                         </Row>
                                     </Form.Group>
@@ -260,19 +190,43 @@ function PersonalInfo(props) {
                                 <Row className="justify-content-between">
                                     <Form.Group className="input-form-group" as={Col} md={6} controlId="contactNumber">
                                         <Form.Label>Contact Number</Form.Label>
-                                        <Form.Control value={contactNumber.value} onChange={changeContactNumber} type="text" />
+                                        <Form.Control
+                                            {...register("contactNumber", {
+                                                required: true,
+                                                validate: (value) => {
+                                                    var format = /^\d{11}$/
+                                                    if (!value.match(format)) {
+                                                        return "Contact number must be 11 digits";
+                                                    }
+                                                },
+
+                                            })}
+                                            type="text" />
                                         <Row>
                                             <Col xs={8}>
-                                                <div className="error-text">{contactNumber.errorText}</div>
+                                                <div className="error-text">{errors.contactNumber && errors.contactNumber.type === "required" && <span>Contact Number is required</span>}</div>
+                                                <div className="error-text">{errors.contactNumber && <p>{errors.contactNumber.message}</p>}</div>
                                             </Col>
                                         </Row>
                                     </Form.Group>
                                     <Form.Group className="input-form-group" as={Col} md={6} controlId="email">
                                         <Form.Label>Email Address</Form.Label>
-                                        <Form.Control value={email.value} onChange={changeEmail} type="text" />
+                                        <Form.Control
+                                            type="text"
+                                            {...register("email", {
+                                                required: true,
+                                                validate: (value) => {
+                                                    var mailformat = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                                                    if (!value.match(mailformat)) {
+                                                        return "Please enter a valid email address";
+                                                    }
+                                                },
+                                            })}
+                                        />
                                         <Row>
                                             <Col xs={8}>
-                                                <div className="error-text">{email.errorText}</div>
+                                                <div className="error-text">{errors.email && errors.email.type === "required" && <span>Email is required</span>}</div>
+                                                <div className="error-text">{errors.email && <p>{errors.email.message}</p>}</div>
                                             </Col>
                                         </Row>
                                     </Form.Group>
@@ -284,33 +238,35 @@ function PersonalInfo(props) {
                                         <InputGroup size="lg">
                                             <Form.Control
                                                 autoComplete="off"
-                                                value={password.value}
-                                                onChange={changePassword}
-                                                type={password.showPassword ? 'text' : 'password'}
+                                                {...register("password", {
+                                                    required: true,
+                                                })}
+                                                type={showPassword ? 'text' : 'password'}
                                             />
                                             <InputGroup.Text>
                                                 {
-                                                    password.showPassword ? (
+                                                    showPassword ? (
                                                         <IoMdEye
-                                                            onClick={handleClickShowPassword}
+                                                            onClick={() => { setShowPassword(false); }}
                                                             onMouseDown={handleMouseDownPassword}
                                                             className="icon" />
                                                     ) : (
                                                         <IoMdEyeOff
-                                                            onClick={handleClickShowPassword}
+                                                            onClick={() => { setShowPassword(true); }}
                                                             onMouseDown={handleMouseDownPassword}
                                                             className="icon" />
                                                     )
                                                 }
                                             </InputGroup.Text>
                                         </InputGroup>
-                                        <div className="error-text">{password.errorText}</div>
+                                        <div className="error-text">{errors.password && errors.password.type === "required" && <span>Password is requried</span>}</div>
+                                        <div className="error-text">{errors.password && <p>{errors.password.message}</p>}</div>
                                     </Form.Group>
                                 </Row>
                                 {profileChange}
                                 <div className="margin-global-top-2"></div>
                                 <Row className="justify-content-center">
-                                    <Button disabled={saveButton.disabled} type="submit" onClick={handleSubmit}>Save</Button>
+                                    <Button type="submit" >Save</Button>
                                 </Row>
                             </Form>
                         </div>

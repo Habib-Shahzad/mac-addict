@@ -1,0 +1,31 @@
+.custom-modal .modal-content {
+  background-color: white;
+}
+
+.custom-modal .modal-content {
+  border: 1px solid #cf993d;
+  border-radius: 20px !important;
+}
+
+.modal-header {
+  border-bottom: 0 none;
+}
+
+.my-button {
+  margin-right: 10px;
+  font-size: inherit;
+  height: 3rem;
+  color: black !important;
+  border: 1px solid #cf993d !important;
+  border-radius: 10px !important;
+}
+
+.my-button:hover {
+  background-color: #cf993d !important;
+  color: #fff !important;
+}
+
+.my-button:focus {
+  outline: none;
+  box-shadow: none !important;
+}

@@ -57,19 +57,19 @@ function Cart(props) {
                         </div>
                     </div>
                     <Col lg={1} className={`${activeCompClass['h1']}`}>
-                        <div onClick={cartPage} className={active[1] + ` horizontal-center-relative center-relative-992`}>
+                        <div style={{ cursor: 'pointer' }} onClick={cartPage} className={active[1] + ` horizontal-center-relative center-relative-992`}>
                             1
                         </div>
                     </Col>
                     <Divider md={3} classes="margin-auto hide-992" />
                     <Col lg={1} className={`${activeCompClass['h2']}`}>
-                        <div onClick={deliveryPage} className={active[2] + ` horizontal-center-relative center-relative-992`}>
+                        <div style={{ cursor: 'pointer' }} onClick={deliveryPage} className={active[2] + ` horizontal-center-relative center-relative-992`}>
                             2
                         </div>
                     </Col>
                     <Divider md={3} classes="margin-auto hide-992" />
                     <Col lg={1} className={`${activeCompClass['h3']}`}>
-                        <div onClick={paySendPage} className={active[3] + ` horizontal-center-relative center-reative-992`}>
+                        <div style={{ cursor: 'pointer' }} onClick={paySendPage} className={active[3] + ` horizontal-center-relative center-reative-992`}>
                             3
                         </div>
                     </Col>
@@ -114,86 +114,7 @@ function Cart(props) {
                     }
                     />
                 </Switch>
-                {/* <div className={`${active[1]} ${activeCompClass[1]}`}> */}
-                {/* <ProductList
-                        setArrowLeft={setArrowLeft}
-                        setArrowRight={setArrowRight}
 
-                        setActive={setActive}
-                        setActiveCompClass={setActiveCompClass} /> */}
-                {/* </div> */}
-                {/* <div className={`${active[2]} ${activeCompClass[2]}`}> */}
-                {/* <DeliveryForm
-                        firstName={firstName}
-                        setFirstName={setFirstName}
-                        lastName={lastName}
-                        setLastName={setLastName}
-                        phoneNumber={phoneNumber}
-                        setPhoneNumber={setPhoneNumber}
-                        email={email}
-                        setEmail={setEmail}
-
-                        firstName1={firstName1}
-                        setFirstName1={setFirstName1}
-                        lastName1={lastName1}
-                        setLastName1={setLastName1}
-                        phoneNumber1={phoneNumber1}
-                        setPhoneNumber1={setPhoneNumber1}
-                        email1={email1}
-                        setEmail1={setEmail1}
-
-                        area={area}
-                        setArea={setArea}
-                        addressLine1={addressLine1}
-                        setAddressLine1={setAddressLine1}
-                        landmark={landmark}
-                        setLandmark={setLandmark}
-                        addressLine2={addressLine2}
-                        setAddressLine2={setAddressLine2}
-
-                        date={date}
-                        setDate={setDate}
-                        message={message}
-                        setMessage={setMessage}
-
-                        checkBoxes={checkBoxes}
-                        setCheckboxes={setCheckboxes}
-
-                        setArrowLeft={setArrowLeft}
-                        setArrowRight={setArrowRight}
-
-                        setActive={setActive}
-                        setActiveCompClass={setActiveCompClass}
-
-                        canSubmit={canSubmit}
-                    /> */}
-                {/* </div> */}
-                {/* <div className={`${active[3]} ${activeCompClass[3]}`}> */}
-                {/* <Payment
-                        firstName={firstName.value}
-                        lastName={lastName.value}
-                        phoneNumber={phoneNumber.value}
-                        email={email.value}
-
-                        firstName1={firstName1.value}
-                        lastName1={lastName1.value}
-                        phoneNumber1={phoneNumber1.value}
-                        email1={email1.value}
-
-                        area={area.value}
-                        addressLine1={addressLine1.value}
-                        landmark={landmark.value}
-                        addressLine2={addressLine2.value}
-
-                        date={date.value}
-                        message={message.value}
-
-                        checkBoxes={checkBoxes}
-
-                        radioBoxes={radioBoxes}
-                        setRadioBoxes={setRadioBoxes}
-                    /> */}
-                {/* </div> */}
             </Container>
         </div>
     );

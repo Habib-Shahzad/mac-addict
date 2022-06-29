@@ -1,277 +1,107 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Col, Container, Row, Form, Button } from 'react-bootstrap';
 import { ImBin2 } from "react-icons/im";
 import { IoMdAdd } from "react-icons/io";
 import { MdCancel } from 'react-icons/md';
-import api from '../../../api';
+
 import { MainHeading, DescriptionText, SubHeading } from '../../../components';
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import './Addresses.scss';
+import { useForm, Controller } from "react-hook-form";
+import CountriesContext from '../../../contexts/country';
+import api from '../../../api';
+import { AddressModal } from "../../components";
 
 function Addresses(props) {
-    const [addAddress, setAddress] = useState(false);
-    const [edit, setEdit] = useState(false);
-    const [profileChange, setProfileChange] = useState(<div></div>);
-    const [saveButton, setSaveButton] = useState({ show: false, disabled: false });
 
-    const [firstName, setFirstName] = useState({ value: '', errorText: '', error: false });
-    const [lastName, setlastName] = useState({ value: '', errorText: '', error: false });
-    const [addressLine1, setAddressLine1] = useState({ value: '', errorText: '', error: false });
-    const [addressLine2, setAddressLine2] = useState({ value: '' });
-    const [area, setArea] = useState({ value: [], errorText: '', error: false });
-    const [city, setCity] = useState({ value: [], errorText: '', error: false });
-    const [province, setProvince] = useState({ value: [], errorText: '', error: false });
-    const [country, setCountry] = useState({ value: [], errorText: '', error: false });
-    const [zipcode, setZipcode] = useState({ value: '', errorText: '', error: false });
+    const countries = useContext(CountriesContext);
+    const [addressList, setAddressList] = useState([]);
 
-    const [countryList, setCountryList] = useState([]);
-    const [provinceList, setProvinceList] = useState([]);
-    const [cityList, setCityList] = useState([]);
-    const [areaList, setAreaList] = useState([]);
+    const [deleteableAddress, setDeleteableAddress] = useState('');
 
-    const [countryLoading, setCountryLoading] = useState(false);
-    const [provinceLoading, setProvinceLoading] = useState(false);
-    const [cityLoading, setCityLoading] = useState(false);
-    const [areaLoading, setAreaLoading] = useState(false);
+    const [countryData, setCountryData] = useState({});
 
-    useEffect(() => (
-        async () => {
-            setSaveButton({ show: false, disabled: false });
-            const response = await fetch(`${api}/country/get-countries`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-store'
-                },
-                credentials: 'include',
-                withCredentials: true,
-            });
-            const content = await response.json();
-            setCountryList(content.data);
+    useEffect(() => {
+        if (Object.keys(countries.data).length > 0) {
+            setCountryData(countries.data);
         }
-    ), []);
+    }, [countries])
 
-    const addresses = [
-        {
-            firstName: 'Murtaza',
-            lastName: 'Faisal Shafi',
-            addressLine1: 'Addressline 1',
-            addressLine2: 'Addressline 2',
-            area: 'DHA Phase 1',
-            city: 'Karachi',
-            province: 'Sindh',
-            country: 'Pakistan',
-            zipcode: 75530
+    const [addAddress, setAddAddress] = useState(false);
+    const { handleSubmit, register, control, formState: { errors }, reset, getValues } = useForm();
+    const [profileChange,] = useState(<div></div>);
+
+    const onSubmit = async (data) => {
+
+        const response = await fetch(`${api}/user/add-address`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                ...data
+            })
+        });
+        const content = await response.json();
+
+        if (content.success) {
+            setAddAddress(false);
+            setAddressList(content.addresses);
         }
-    ];
-
-    const handleAddAddress = _ => {
-        setAddress(!addAddress);
     }
+
+
+
+    const [typedCountry, setTypedCountry] = useState([]);
+    const [typedProvince, setTypedProvince] = useState([]);
+    const [typedCity, setTypedCity] = useState([]);
+
+
+    const [selectedCountry, setSelectedCountry] = useState('');
+    const [selectedProvince, setSelectedProvince] = useState('');
+
+    const availableCountries = (countryData["countries"]) ?? [];
+    const availableProvinces = (countryData[selectedCountry] ? countryData[selectedCountry]["provinces"] : []) ?? [];
+    const availableCities = (countryData[selectedCountry] ? countryData[selectedCountry][selectedProvince] : []) ?? [];
+
+
+
+
+    useEffect(() => {
+        (
+            async () => {
+                const response = await fetch(`${api}/user/address-list`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    withCredentials: true
+                });
+                const content = await response.json();
+                if (content.success)
+                    setAddressList(content.data);
+            })();
+
+    }, [])
 
     const handleEditChange = _ => {
-        setEdit(!edit);
+        setAddAddress(!addAddress);
     }
 
-    const changeFirstName = event => {
-        const { value } = event.target;
-        setFirstName(prevState => ({ ...prevState, value: value }));
-        if (value === '') setFirstName(prevState => ({ ...prevState, errorText: 'First name is required!', error: true }));
-        else setFirstName(prevState => ({ ...prevState, errorText: '', error: false }));
+    const [showModal, setShowModal] = useState(false);
+    const handleClose = () => {
+        setShowModal(false);
     }
-    const changeLastName = event => {
-        const { value } = event.target;
-        setlastName(prevState => ({ ...prevState, value: value }));
-        if (value === '') setlastName(prevState => ({ ...prevState, errorText: 'Last name is required!', error: true }));
-        else setlastName(prevState => ({ ...prevState, errorText: '', error: false }));
-    }
-
-    const changeAddressLine1 = event => {
-        const { value } = event.target;
-        setAddressLine1(prevState => ({ ...prevState, value: value }));
-        if (value === '') setAddressLine1(prevState => ({ ...prevState, errorText: 'Address line 1 is required!', error: true }));
-        else setAddressLine1(prevState => ({ ...prevState, errorText: '', error: false }));
-    }
-    const changeAddressLine2 = event => {
-        setAddressLine2({ value: event.target.value });
-    }
-
-    const changeCountry = async array => {
-        setCountry(prevState => ({ ...prevState, value: array }));
-    }
-    const handleCountrySearch = async (query) => {
-        setCountryLoading(true);
-        setCountryList([]);
-        setProvinceList([]);
-        setProvince(prevState => ({ ...prevState, value: [] }));
-        setCityList([]);
-        setCity(prevState => ({ ...prevState, value: [] }));
-        setAreaList([]);
-        setArea(prevState => ({ ...prevState, value: [] }));
-        const response = await fetch(`${api}/country/get-countries-search?countryText=${query}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-store'
-            },
-            credentials: 'include',
-            withCredentials: true,
-        });
-        const content = await response.json();
-        setTimeout(() => {
-            setCountryList(content.data);
-            setCountryLoading(false);
-        }, 1000)
-    };
-    const filterByCountry = () => true;
-
-    const changeProvince = async array => {
-        setProvince(prevState => ({ ...prevState, value: array }));
-    }
-    const handleProvinceSearch = async (query) => {
-        setProvinceLoading(true);
-        setCityList([]);
-        setCity(prevState => ({ ...prevState, value: [] }));
-        setAreaList([]);
-        setArea(prevState => ({ ...prevState, value: [] }));
-        const response = await fetch(`${api}/province/get-provinces-search?provinceText=${query}&country=${JSON.stringify(country.value)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-store'
-            },
-            credentials: 'include',
-            withCredentials: true,
-        });
-        const content = await response.json();
-        setTimeout(() => {
-            setProvinceList(content.data);
-            setProvinceLoading(false);
-        }, 1000)
-    };
-    const filterByProvince = () => true;
-
-    const changeCity = async array => {
-        setCity(prevState => ({ ...prevState, value: array }));
-    }
-    const handleCitySearch = async (query) => {
-        setCityLoading(true);
-        setAreaList([]);
-        setArea(prevState => ({ ...prevState, value: [] }));
-        const response = await fetch(`${api}/city/get-cities-search?cityText=${query}&province=${JSON.stringify(province.value)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-store'
-            },
-            credentials: 'include',
-            withCredentials: true,
-        });
-        const content = await response.json();
-        setTimeout(() => {
-            setCityList(content.data);
-            setCityLoading(false);
-        }, 1000)
-    };
-    const filterByCity = () => true;
-
-    const changeArea = async array => {
-        setArea(prevState => ({ ...prevState, value: array }));
-    }
-    const handleAreaSearch = async (query) => {
-        setAreaLoading(true);
-        const response = await fetch(`${api}/area/get-areas-search?areaText=${query}&city=${JSON.stringify(city.value)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-store'
-            },
-            credentials: 'include',
-            withCredentials: true,
-        });
-        const content = await response.json();
-        setTimeout(() => {
-            setAreaList(content.data);
-            setAreaLoading(false);
-        }, 1000)
-    };
-    const filterByArea = () => true;
-
-    const changeZipcode = event => {
-        const { value } = event.target;
-        setZipcode(prevState => ({ ...prevState, value: value }));
-        if (value === '') setZipcode(prevState => ({ ...prevState, errorText: 'Zipcode is required!', error: true }));
-        else setZipcode(prevState => ({ ...prevState, errorText: '', error: false }));
-    }
-    const handleSubmit = async e => {
-        e.preventDefault();
-        handleEditChange();
-        // const response = await fetch(`${api}/users/change-profile`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     credentials: 'include',
-        //     withCredentials: true,
-        //     body: JSON.stringify({
-        //         firstName: firstName.value.trim(),
-        //         lastName: lastName.value.trim(),
-        //         contactNumber: contactNumber.value.trim(),
-        //         email: email.value.trim(),
-        //         password: password.value
-        //     })
-        // });
-        // const content = await response.json();
-        // if (content.data === 'success') {
-        //     user.setUserState(content.user);
-        //     if (content.emailChange) {
-        //         setProfileChange(<Row>
-        //             <div className="margin-global-top-2"></div>
-        //             <DescriptionText
-        //                 text="Your changes have been confirmed. Please verify your email from the link that was emailed to you."
-        //                 classes="text-center"
-        //             />
-        //         </Row>)
-        //         setTimeout(() => {
-        //             setProfileChange(<div></div>)
-        //         }, 3000)
-        //     } else {
-        setProfileChange(
-            <div>
-                <div className="margin-global-top-3" />
-                <Row>
-                    <DescriptionText
-                        text="Your changes have been confirmed"
-                        classes="text-center margin-bottom-0 bold"
-                    />
-                </Row>
-            </div>)
-        setTimeout(() => {
-            setProfileChange(<div></div>)
-        }, 1500)
-        //     }
-        //     setShowEditButton(true);
-        //     setSaveButton({ show: false, disabled: false });
-        //     setShowCancelEditButton(false);
-        // } else {
-        //     setProfileChange(<Row>
-        //         <div className="margin-global-top-2"></div>
-        //         <DescriptionText
-        //             text="Invalid Password. Please try again."
-        //             classes="text-center"
-        //         />
-        //     </Row>)
-        //     setTimeout(() => {
-        //         setProfileChange(<div></div>)
-        //     }, 3000)
-        //     setShowEditButton(true);
-        //     setSaveButton({ show: false, disabled: false });
-        //     setShowCancelEditButton(false);
-        // }
+    const handleShow = () => {
+        setShowModal(true);
     }
 
     return (
         <div>
+            <AddressModal address_id={deleteableAddress} show={showModal} handleClose={handleClose} handleShow={handleShow} setAddressList={setAddressList} />
             <MainHeading
                 text="My Addresses"
                 classes="text-center"
@@ -279,51 +109,45 @@ function Addresses(props) {
             <div className="margin-global-top-2" />
             <Container className="my-addresses box-info">
                 {
-                    addresses.length === 0 ? (
+                    addressList.length === 0 ? (
                         <DescriptionText
-                            to=""
                             text="No addresses found"
                             classes="margin-bottom-0"
                         />
                     ) : (
                         <>
                             {
-                                addresses.map((value, index) => (
+                                addressList.map((address, index) => (
                                     <Row className="address-row" key={index}>
                                         <Col xs={8}>
                                             <DescriptionText
                                                 to=""
-                                                text={`${value.firstName} ${value.lastName}`}
+                                                text={`${address.firstName} ${address.lastName}`}
                                                 classes="margin-bottom-0 bold"
                                             />
                                             <DescriptionText
-                                                to=""
-                                                text={value.addressLine1}
+                                                text={address.addressLine1}
                                                 classes="margin-bottom-0"
                                             />
                                             <DescriptionText
-                                                to=""
-                                                text={value.addressLine2}
+                                                text={address.addressLine2}
                                                 classes="margin-bottom-0"
                                             />
                                             <DescriptionText
-                                                to=""
-                                                text={`${value.area}, ${value.city}`}
+                                                text={`${address.area}, ${address.city.name}`}
                                                 classes="margin-bottom-0"
                                             />
                                             <DescriptionText
-                                                to=""
-                                                text={`${value.province}, ${value.country}`}
+                                                text={`${address.city.province.name}, ${address.city.province.country.name}`}
                                                 classes="margin-bottom-0"
                                             />
                                             <DescriptionText
-                                                to=""
-                                                text={value.zipcode}
+                                                text={address.zipcode}
                                                 classes=""
                                             />
                                         </Col>
                                         <Col>
-                                            <ImBin2 className="delete-icon" />
+                                            <ImBin2 onClick={() => { handleShow(); setDeleteableAddress(address._id); }} className="delete-icon" />
                                         </Col>
                                     </Row>
                                 ))
@@ -343,7 +167,7 @@ function Addresses(props) {
                                     to=""
                                 />
                                 <div className="margin-global-top-2" />
-                                <Form className="form-style">
+                                <Form onSubmit={handleSubmit(onSubmit)} className="form-style">
                                     <input
                                         type="password"
                                         autoComplete="on"
@@ -354,167 +178,220 @@ function Addresses(props) {
                                     <Row className="justify-content-between">
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="firstName">
                                             <Form.Label>First Name</Form.Label>
-                                            <Form.Control value={firstName.value} onChange={changeFirstName} type="text" />
+                                            <Form.Control
+                                                type="text"
+                                                {...register("firstName", {
+                                                    required: true
+                                                })}
+                                            />
                                             <Row>
                                                 <Col xs={8}>
-                                                    <div className="error-text">{firstName.errorText}</div>
+                                                    <div className="error-text">{errors.firstName && errors.firstName.type === "required" && <span>First Name is required</span>}</div>
+                                                    <div className="error-text">{errors.firstName && <p>{errors.firstName.message}</p>}</div>
                                                 </Col>
                                             </Row>
                                         </Form.Group>
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="lastName">
                                             <Form.Label>Last Name</Form.Label>
-                                            <Form.Control value={lastName.value} onChange={changeLastName} type="text" />
+                                            <Form.Control
+                                                {...register("lastName", {
+                                                    required: true
+                                                })}
+                                                type="text" />
                                             <Row>
                                                 <Col xs={8}>
-                                                    <div className="error-text">{lastName.errorText}</div>
+                                                    <div className="error-text">{errors.lastName && errors.lastName.type === "required" && <span>Last Name is required</span>}</div>
+                                                    <div className="error-text">{errors.lastName && <p>{errors.lastName.message}</p>}</div>
                                                 </Col>
                                             </Row>
                                         </Form.Group>
                                     </Row>
+
+                                    <Row className="justify-content-center">
+                                        <Form.Group as={Col} md={6} controlId="contactNumber">
+                                            <Form.Label>Contact Number</Form.Label>
+                                            <Form.Control
+                                                autoComplete="off"
+                                                {...register("contactNumber", {
+                                                    required: true,
+                                                    validate: (value) => {
+                                                        var format = /^\d{11}$/
+                                                        if (!value.match(format)) {
+                                                            return "Contact number must be 11 digits";
+                                                        }
+                                                    },
+
+                                                })}
+                                                type="text"
+                                            />
+                                            <div className="error-text">{errors.contactNumber && errors.contactNumber.type === "required" && <span>Contact Number is requried</span>}</div>
+                                            <div className="error-text">{errors.contactNumber && <p>{errors.contactNumber.message}</p>}</div>
+                                        </Form.Group>
+                                    </Row>
+
                                     <div className="margin-global-top-2" />
                                     <Row className="justify-content-between">
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="addressLine1">
                                             <Form.Label>Address line 1</Form.Label>
-                                            <Form.Control value={addressLine1.value} onChange={changeAddressLine1} type="text" />
+                                            <Form.Control
+                                                {...register("addressLine1", {
+                                                    required: true
+                                                })}
+                                                type="text"
+                                            />
                                             <Row>
                                                 <Col xs={8}>
-                                                    <div className="error-text">{addressLine1.errorText}</div>
+                                                    <div className="error-text">{errors.addressLine1 && errors.addressLine1.type === "required" && <span>Address line1 is required</span>}</div>
+                                                    <div className="error-text">{errors.addressLine1 && <p>{errors.addressLine1.message}</p>}</div>
                                                 </Col>
                                             </Row>
                                         </Form.Group>
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="addressLine2">
-                                            <Form.Label>Address line 2</Form.Label>
-                                            <Form.Control value={addressLine2.value} onChange={changeAddressLine2} type="text" />
+                                            <Form.Label>Address line 2 (Optional)</Form.Label>
+                                            <Form.Control
+                                                {...register("addressLine2", {})}
+                                                type="text" />
                                         </Form.Group>
                                     </Row>
                                     <div className="margin-global-top-2" />
                                     <Row className="justify-content-between">
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="country">
                                             <Form.Label>Country</Form.Label>
-                                            <AsyncTypeahead
-                                                filterBy={filterByCountry}
-                                                isLoading={countryLoading}
-                                                id="country"
-                                                labelKey="name"
-                                                minLength={2}
-                                                onSearch={handleCountrySearch}
-                                                onChange={changeCountry}
-                                                options={countryList}
-                                                selected={country.value}
-                                                renderMenuItemChildren={(option, props) => (
-                                                    <Fragment>
-                                                        <span>{option.name}</span>
-                                                    </Fragment>
+                                            <Controller
+                                                render={({ field: { onChange } }) => (
+                                                    <Typeahead
+                                                        id="country-typeahead"
+                                                        labelKey="name"
+                                                        onChange={(data) => { setTypedCountry(data); onChange(data[0]); setSelectedCountry(data[0] ? data[0]._id : ''); setTypedProvince([]); setTypedCity([]); reset({ ...getValues(), 'province': '', 'city': '' }); }}
+                                                        options={availableCountries}
+                                                        selected={typedCountry}
+                                                    />
                                                 )}
+                                                rules={{ required: true }}
+                                                control={control}
+                                                name="country"
                                             />
+
                                             <Row>
                                                 <Col xs={8}>
-                                                    <div className="error-text">{country.errorText}</div>
+                                                    <div className="error-text">{errors.country && errors.country.type === "required" && <span>Country is required</span>}</div>
+                                                    <div className="error-text">{errors.country && <p>{errors.country.message}</p>}</div>
                                                 </Col>
                                             </Row>
                                         </Form.Group>
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="province">
                                             <Form.Label>Province</Form.Label>
-                                            <AsyncTypeahead
-                                                filterBy={filterByProvince}
-                                                isLoading={provinceLoading}
-                                                id="province"
-                                                labelKey="name"
-                                                minLength={2}
-                                                onSearch={handleProvinceSearch}
-                                                onChange={changeProvince}
-                                                options={provinceList}
-                                                selected={province.value}
-                                                renderMenuItemChildren={(option, props) => (
-                                                    <Fragment>
-                                                        <span>{option.name}</span>
-                                                    </Fragment>
+                                            <Controller
+                                                render={({ field: { onChange } }) => (
+                                                    <Typeahead
+                                                        id="province-typeahead"
+                                                        labelKey="name"
+                                                        onChange={(data) => { setTypedProvince(data); onChange(data[0]); setSelectedProvince(data[0] ? data[0]._id : ''); setTypedCity([]); reset({ ...getValues(), 'city': '' }); }}
+                                                        options={availableProvinces}
+                                                        selected={typedProvince}
+                                                    />
                                                 )}
+                                                rules={{ required: true }}
+                                                control={control}
+                                                name="province"
                                             />
+
                                             <Row>
                                                 <Col xs={8}>
-                                                    <div className="error-text">{province.errorText}</div>
+                                                    <div className="error-text">{errors.province && errors.province.type === "required" && <span>Province is required</span>}</div>
+                                                    <div className="error-text">{errors.province && <p>{errors.province.message}</p>}</div>
                                                 </Col>
                                             </Row>
                                         </Form.Group>
                                     </Row>
                                     <div className="margin-global-top-2" />
-                                    <Row className="justify-content-between">
+                                    <Row className="justify-content-center">
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="city">
                                             <Form.Label>City</Form.Label>
-                                            <AsyncTypeahead
-                                                filterBy={filterByCity}
-                                                isLoading={cityLoading}
-                                                id="city"
-                                                labelKey="name"
-                                                minLength={2}
-                                                onSearch={handleCitySearch}
-                                                onChange={changeCity}
-                                                options={cityList}
-                                                selected={city.value}
-                                                renderMenuItemChildren={(option, props) => (
-                                                    <Fragment>
-                                                        <span>{option.name}</span>
-                                                    </Fragment>
+                                            <Controller
+                                                render={({ field: { onChange } }) => (
+                                                    <Typeahead
+                                                        id="city-typeahead"
+                                                        labelKey="name"
+                                                        onChange={(data) => { setTypedCity(data); onChange(data[0]); }}
+                                                        options={availableCities}
+                                                        selected={typedCity}
+                                                    />
                                                 )}
+                                                rules={{ required: true }}
+                                                control={control}
+                                                name="city"
                                             />
                                             <Row>
                                                 <Col xs={8}>
-                                                    <div className="error-text">{city.errorText}</div>
+                                                    <div className="error-text">{errors.city && errors.city.type === "required" && <span>City is required</span>}</div>
+                                                    <div className="error-text">{errors.city && <p>{errors.city.message}</p>}</div>
                                                 </Col>
                                             </Row>
                                         </Form.Group>
+
+                                    </Row>
+                                    <div className="margin-global-top-2" />
+                                    <Row className="justify-content-between">
+
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="area">
                                             <Form.Label>Area</Form.Label>
-                                            <AsyncTypeahead
-                                                filterBy={filterByArea}
-                                                isLoading={areaLoading}
-                                                id="area"
-                                                labelKey="name"
-                                                minLength={2}
-                                                onSearch={handleAreaSearch}
-                                                onChange={changeArea}
-                                                options={areaList}
-                                                selected={area.value}
-                                                renderMenuItemChildren={(option, props) => (
-                                                    <Fragment>
-                                                        <span>{option.name}</span>
-                                                    </Fragment>
-                                                )}
-                                            />
+                                            <Form.Control
+                                                {...register("area", {
+                                                    required: true
+                                                })}
+                                                type="text" />
                                             <Row>
                                                 <Col xs={8}>
-                                                    <div className="error-text">{area.errorText}</div>
+                                                    <div className="error-text">{errors.area && errors.area.type === "required" && <span>Area is required</span>}</div>
+                                                    <div className="error-text">{errors.area && <p>{errors.area.message}</p>}</div>
+                                                </Col>
+                                            </Row>
+                                        </Form.Group>
+
+                                        <Form.Group className="input-form-group" as={Col} md={6} controlId="zipcode">
+                                            <Form.Label>Zipcode</Form.Label>
+                                            <Form.Control
+                                                {...register("zipCode", {
+                                                    required: true,
+                                                    validate: (value) => {
+                                                        var reg = /^\d+$/;
+                                                        if (!value.match(reg)) {
+                                                            return "Please enter a valid zip code";
+                                                        }
+                                                    },
+                                                })}
+                                                type="text" />
+                                            <Row>
+                                                <Col xs={8}>
+                                                    <div className="error-text">{errors.zipCode && errors.zipCode.type === "required" && <span>Zip Code is required</span>}</div>
+                                                    <div className="error-text">{errors.zipCode && <p>{errors.zipCode.message}</p>}</div>
                                                 </Col>
                                             </Row>
                                         </Form.Group>
                                     </Row>
-                                    <div className="margin-global-top-2" />
-                                    <Row className="justify-content-between">
-                                        <Form.Group className="input-form-group" as={Col} md={6} controlId="zipcode">
-                                            <Form.Label>Zipcode</Form.Label>
-                                            <Form.Control value={zipcode.value} onChange={changeZipcode} type="text" />
-                                            <Row>
-                                                <Col xs={8}>
-                                                    <div className="error-text">{zipcode.errorText}</div>
-                                                </Col>
-                                            </Row>
+
+                                    <Row className="justify-content-center">
+                                        <Form.Group className="input-form-group" as={Col} md={6} controlId="landmark">
+                                            <Form.Label>Landmark (Optional)</Form.Label>
+                                            <Form.Control
+                                                {...register("landmark", {})}
+                                                type="text" />
                                         </Form.Group>
                                     </Row>
                                     {profileChange}
                                     <div className="margin-global-top-2"></div>
                                     <Row className="justify-content-center">
-                                        <Button disabled={saveButton.disabled} type="submit" onClick={handleSubmit}>Save</Button>
+                                        <Button type="submit">Save</Button>
                                     </Row>
                                 </Form>
                             </div>
                         </Row>
                     ) : (
                         <Row>
-                            <div onClick={handleAddAddress} className="add-address">
+                            <div onClick={handleEditChange} className="add-address">
                                 <IoMdAdd className="add-icon" />
                                 <DescriptionText
-                                    to=""
                                     text="Add address"
                                     classes="margin-bottom-0 width-fit"
                                 />

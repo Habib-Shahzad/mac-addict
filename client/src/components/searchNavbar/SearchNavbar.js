@@ -193,7 +193,7 @@ function SearchNavbar(props) {
                                     </Link>)
 
                             }
-                            <div className="cart-list-box">
+                            <div className="box-list cart-box">
                                 {
                                     user.userState ? (
                                         data.length === 0 ? (

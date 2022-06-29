@@ -1,41 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Container, Form, Button, InputGroup } from 'react-bootstrap';
 import { DescriptionText, FourthHeading, MainHeading } from '../../../../../components';
 import { MdEdit, MdCancel } from "react-icons/md";
-import { IoMdEye } from 'react-icons/io';
+import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import { useForm } from "react-hook-form";
+import UserContext from '../../../../../contexts/user';
+import api from '../../../../../api';
+
 
 function ChangePassword(props) {
-    const [oldPassword, setOldPassword] = useState({ value: '', errorText: '', showPassword: false });
-    const [password, setPassword] = useState({ value: '', errorText: '', showPassword: false, error: false });
-    const [confirmPassword, setConfirmPassword] = useState({ value: '', errorText: '', showPassword: false, error: false });
+
+    const user = useContext(UserContext);
+
+    const { register, handleSubmit, formState: { errors }, watch, reset } = useForm();
+
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showOldPassword, setShowOldPassword] = useState(false);
 
     const [edit, setEdit] = useState(false);
 
     const [profileChange, setProfileChange] = useState(<div></div>);
-    const [saveButton, setSaveButton] = useState({ show: false, disabled: false });
-
-    const changeOldPassword = event => {
-        setOldPassword(prevState => ({ ...prevState, value: event.target.value }));
-    }
-
-    const changePassword = event => {
-        const { value } = event.target;
-        const passwReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_])(?=.{8,})/;
-        setPassword(prevState => ({ ...prevState, value: value }));
-        if (!value.match(passwReg)) setPassword(prevState => ({ ...prevState, errorText: 'Password must contain atleast 1 lowercase alhpabetical character, atleast 1 uppercase alhpabetical character, atleast 1 numerical character, 1 special character and must be of atleast 8 characters', error: true }));
-        else setPassword(prevState => ({ ...prevState, errorText: '', error: false }));
-    }
-    // const handleClickShowPassword = _ => {
-    //     setPassword(prevState => ({ ...prevState, showPassword: !password.showPassword }));
-    // }
-    // const handleMouseDownPassword = event => {
-    //     event.preventDefault();
-    // }
-
-    const changeConfirmPassword = event => {
-        setConfirmPassword(prevState => ({ ...prevState, value: event.target.value }));
-    }
 
     const handleEditChange = _ => {
         setEdit(!edit);
@@ -53,70 +39,51 @@ function ChangePassword(props) {
             )
         } else {
             setProfileChange(<div></div>);
-            setPassword({ value: '', errorText: '' });
         }
     }
 
-    useEffect(() => {
-        let flag = true;
-        if (oldPassword.error === true) flag = true;
-        else if (oldPassword.value.length === 0) flag = true;
-        else if (password.error === true) flag = true;
-        else if (password.value.length === 0) flag = true;
-        else if (confirmPassword.error === true) flag = true;
-        else flag = false;
-        if (!flag) {
-            setSaveButton(prevState => ({ ...prevState, disabled: false }));
-        } else setSaveButton(prevState => ({ ...prevState, disabled: true }));
-    }, [oldPassword, password, confirmPassword]);
 
-    const handleSubmit = async e => {
-        e.preventDefault();
-        // const response = await fetch(`${api}/users/change-password`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     credentials: 'include',
-        //     withCredentials: true,
-        //     body: JSON.stringify({ oldPassword: oldPassword.value, password: password.value, confirmPassword: confirmPassword.value })
-        // });
-        // const content = await response.json();
-        setPassword(prevState => ({ ...prevState, value: '', errorText: '', error: false, readOnly: true, showText: 'Show Password' }));
-        setConfirmPassword(prevState => ({ ...prevState, value: '', errorText: '', error: false, readOnly: true, showText: 'Show Password' }));
-        setOldPassword(prevState => ({ ...prevState, value: '', errorText: '' }));
-        // if (content.data === true) {
-        setProfileChange(
-            <div>
-                <div className="margin-global-top-3" />
+    const onSubmit = async (data) => {
+
+        const response = await fetch(`${api}/user/change-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                ...data
+            })
+        });
+        const content = await response.json();
+
+        if (content.success) {
+            reset();
+            setEdit(false);
+            user.setUserState(content.user);
+            setProfileChange(<Row>
+                <div className="margin-global-top-2"></div>
+                <DescriptionText
+                    text="Your changes have been confirmed."
+                    classes="text-center"
+                />
+            </Row>)
+            setTimeout(() => {
+                setProfileChange(<div></div>)
+            }, 2000)
+        }
+        else {
+            setProfileChange(<div>
+                <div className="margin-global-top-1" />
                 <Row>
                     <DescriptionText
-                        text="Your changes have been confirmed"
-                        classes="text-center margin-bottom-0 bold"
+                        text="Invalid Password. Please try again."
+                        classes="text-center margin-bottom-0"
                     />
                 </Row>
             </div>)
-        setTimeout(() => {
-            setProfileChange(<div></div>)
-        }, 1500)
-        // setShowEditButton(true);
-        setSaveButton({ show: false, disabled: false });
-        // setShowCancelEditButton(false);
-        // } else {
-        //     setProfileChange(<Row>
-        //         <div className="global-mt-2"></div>
-        //         <ParaText
-        //             text="Invalid Password. Please try again."
-        //             textAlign="center"
-        //         />
-        //     </Row>)
-        //     setTimeout(() => {
-        //         setProfileChange(<div></div>)
-        //     }, 3000)
-        //     setShowEditButton(true);
-        //     setSaveButton({ show: false, disabled: false });
-        //     setShowCancelEditButton(false);
-        // }
+        }
     }
 
     return (
@@ -149,7 +116,7 @@ function ChangePassword(props) {
                     ) : (
                         <div>
                             <MdCancel onClick={handleEditChange} className="edit-icon" />
-                            <Form className="form-style">
+                            <Form onSubmit={handleSubmit(onSubmit)} className="form-style">
                                 <input
                                     type="password"
                                     autoComplete="on"
@@ -158,21 +125,70 @@ function ChangePassword(props) {
                                     readOnly={true}
                                 />
                                 <Row className="justify-content-between">
-                                    <Form.Group as={Col} md={6} controlId="password">
+                                    <Form.Group as={Col} md={6} controlId="newPassword">
                                         <Form.Label>New Password</Form.Label>
                                         <InputGroup size="lg">
-                                            <Form.Control autoComplete="off" value={password.value} onChange={changePassword} type="password" />
-                                            <InputGroup.Text><IoMdEye className="icon" /></InputGroup.Text>
+                                            <Form.Control
+                                                {...register("newPassword", {
+                                                    required: true,
+                                                    validate: (value) => {
+                                                        const passwReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_])(?=.{8,})/;
+                                                        if (!value.match(passwReg)) {
+                                                            return 'Password must contain atleast 1 lowercase alhpabetical character, atleast 1 uppercase alhpabetical character, atleast 1 numerical character, 1 special character and must be of atleast 8 characters';
+                                                        }
+                                                    },
+                                                })}
+                                                autoComplete="off"
+                                                type={showNewPassword ? 'text' : 'password'}
+                                            />
+                                            <InputGroup.Text>
+                                                {
+                                                    showNewPassword ? (
+                                                        <IoMdEye
+                                                            onClick={() => { setShowNewPassword(false); }}
+                                                            className="icon" />
+                                                    ) : (
+                                                        <IoMdEyeOff
+                                                            onClick={() => { setShowNewPassword(true); }}
+                                                            className="icon" />
+                                                    )
+                                                }
+                                            </InputGroup.Text>
                                         </InputGroup>
-                                        <div className="error-text">{password.errorText}</div>
+                                        <div className="error-text">{errors.newPassword && errors.newPassword.type === "required" && <span>New Password is required</span>}</div>
+                                        <div className="error-text">{errors.newPassword && <p>{errors.newPassword.message}</p>}</div>
                                     </Form.Group>
                                     <Form.Group as={Col} md={6} controlId="confirmPassword">
                                         <Form.Label>Confirm Password</Form.Label>
                                         <InputGroup size="lg">
-                                            <Form.Control autoComplete="off" value={confirmPassword.value} onChange={changeConfirmPassword} type="password" />
-                                            <InputGroup.Text><IoMdEye className="icon" /></InputGroup.Text>
+                                            <Form.Control
+                                                {...register("confirmPassword", {
+                                                    required: true,
+                                                    validate: (value) => {
+                                                        if (watch('newPassword') !== value) {
+                                                            return "Your passwords do no match";
+                                                        }
+                                                    },
+                                                })}
+                                                autoComplete="off"
+                                                type={showConfirmPassword ? 'text' : 'password'}
+                                            />
+                                            <InputGroup.Text>
+                                                {
+                                                    showConfirmPassword ? (
+                                                        <IoMdEye
+                                                            onClick={() => { setShowConfirmPassword(false); }}
+                                                            className="icon" />
+                                                    ) : (
+                                                        <IoMdEyeOff
+                                                            onClick={() => { setShowConfirmPassword(true); }}
+                                                            className="icon" />
+                                                    )
+                                                }
+                                            </InputGroup.Text>
                                         </InputGroup>
-                                        <div className="error-text">{confirmPassword.errorText}</div>
+                                        <div className="error-text">{errors.confirmPassword && errors.confirmPassword.type === "required" && <span>Confirm Password is required</span>}</div>
+                                        <div className="error-text">{errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}</div>
                                     </Form.Group>
                                 </Row>
                                 <div className="margin-global-top-2" />
@@ -180,16 +196,35 @@ function ChangePassword(props) {
                                     <Form.Group as={Col} md={6} controlId="oldPassword">
                                         <Form.Label>Old Password</Form.Label>
                                         <InputGroup size="lg">
-                                            <Form.Control autoComplete="off" value={oldPassword.value} onChange={changeOldPassword} type="password" />
-                                            <InputGroup.Text><IoMdEye className="icon" /></InputGroup.Text>
+                                            <Form.Control
+                                                {...register("oldPassword", {
+                                                    required: true,
+                                                })}
+                                                autoComplete="off"
+                                                type={showOldPassword ? 'text' : 'password'}
+                                            />
+                                            <InputGroup.Text>
+                                                {
+                                                    showOldPassword ? (
+                                                        <IoMdEye
+                                                            onClick={() => { setShowOldPassword(false); }}
+                                                            className="icon" />
+                                                    ) : (
+                                                        <IoMdEyeOff
+                                                            onClick={() => { setShowOldPassword(true); }}
+                                                            className="icon" />
+                                                    )
+                                                }
+                                            </InputGroup.Text>
                                         </InputGroup>
-                                        <div className="error-text">{oldPassword.errorText}</div>
+                                        <div className="error-text">{errors.oldPassword && errors.oldPassword.type === "required" && <span>Old Password is required</span>}</div>
+                                        <div className="error-text">{errors.oldPassword && <p>{errors.oldPassword.message}</p>}</div>
                                     </Form.Group>
                                 </Row>
                                 {profileChange}
                                 <div className="margin-global-top-2"></div>
                                 <Row className="justify-content-center">
-                                    <Button disabled={saveButton.disabled} type="submit" onClick={handleSubmit}>Save</Button>
+                                    <Button type="submit" >Save</Button>
                                 </Row>
                             </Form>
                         </div>

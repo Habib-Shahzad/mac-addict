@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../schema").user;
+const Address = require("../schema").address;
 
 // const auth = require(".././middleware/auth");
 
@@ -47,6 +48,32 @@ router.get("/loggedIn", async (req, res) => {
   }
 });
 
+router.get("/address-list", async (req, res) => {
+  const token = (req.cookies['access_token']);
+
+  if (!token) {
+    return res.json({ data: null });
+  };
+  const data = jwt.verify(token, process.env.TOKEN_SECRET);
+  const user = await User.findOne({ _id: data.user_id }).populate({
+    path: 'addresses',
+    populate: {
+      path: 'city',
+      populate: {
+        path: 'province',
+        populate: {
+          path: 'country'
+        }
+      }
+    }
+  });;
+
+  const addresses = user.addresses;
+
+  res.json({ success: true, data: addresses });
+
+});
+
 
 
 router.post('/signup', async (req, res) => {
@@ -80,7 +107,7 @@ router.post('/signup', async (req, res) => {
       { user_id: user._id, email },
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "7h",
+        expiresIn: "7000h",
       }
     );
 
@@ -114,7 +141,7 @@ router.post("/login", async (req, res) => {
         { user_id: user._id, email },
         process.env.TOKEN_SECRET,
         {
-          expiresIn: "7h",
+          expiresIn: "7000h",
         }
       );
 
@@ -140,9 +167,104 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.post("/addAddress", async (req, res) => {
-  // const { firstName, lastName, email, contactNumber, password } = req.body;
-  console.log(req.body);
+router.post("/add-address", async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    contactNumber,
+    addressLine1,
+    addressLine2,
+    area,
+    zipCode,
+    landmark,
+    country,
+    province,
+    city }
+    = req.body;
+
+  var address = new Address(
+    {
+      firstName: firstName,
+      lastName: lastName,
+      contactNumber: contactNumber,
+      addressLine1: addressLine1,
+      addressLine2: addressLine2,
+      area: area,
+      zipCode: zipCode,
+      landmark: landmark,
+      country: country._id,
+      province: province._id,
+      city: city._id
+    }
+  );
+
+
+  const token = (req.cookies['access_token']);
+
+  if (!token) {
+    return res.json({ success: false });
+  }
+
+  const data = jwt.verify(token, process.env.TOKEN_SECRET);
+  const user_id = data.user_id;
+  const user = await User.findOne({ _id: user_id });
+
+  await address.save();
+  user.addresses.push(address);
+  await user.save();
+
+  const updated_user = await User.findOne({ _id: data.user_id }).populate({
+    path: 'addresses',
+    populate: {
+      path: 'city',
+      populate: {
+        path: 'province',
+        populate: {
+          path: 'country'
+        }
+      }
+    }
+  });;
+
+  const addresses = updated_user.addresses;
+  res.json({ success: true, addresses: addresses });
+
+
+});
+
+
+router.post("/delete-address", async (req, res) => {
+  const { address_id } = req.body;
+  const address = await Address.findOne({ _id: address_id });
+
+  if (!address) {
+    return res.json({ success: false });
+  }
+  await address.delete();
+
+  const token = (req.cookies['access_token']);
+
+  if (!token) {
+    return res.json({ success: false });
+  }
+
+  const data = jwt.verify(token, process.env.TOKEN_SECRET);
+  const updated_user = await User.findOne({ _id: data.user_id }).populate({
+    path: 'addresses',
+    populate: {
+      path: 'city',
+      populate: {
+        path: 'province',
+        populate: {
+          path: 'country'
+        }
+      }
+    }
+  });;
+
+  const addresses = updated_user.addresses;
+  res.json({ success: true, addresses: addresses });
+
 });
 
 
@@ -190,21 +312,73 @@ router.post("/verify-email", async (req, res) => {
   // TODO
 });
 
+
 router.post("/change-password", async (req, res) => {
-  res.json({ data: false });
-  // TODO
+
+  const { newPassword, oldPassword } = req.body;
+
+  const token = (req.cookies['access_token']);
+
+  if (!token) {
+    return res.json({ success: false });
+  }
+
+  const data = jwt.verify(token, process.env.TOKEN_SECRET);
+  const user = await User.findOne({ _id: data.user_id });
+
+  const encryptedPassword = await bcrypt.hash(newPassword, 10);
+
+  if (user && (await bcrypt.compare(oldPassword, user.password))) {
+    await User.updateOne({ _id: data.user_id }, {
+      password: encryptedPassword
+    });
+
+    const updatedUser = await User.findOne({ _id: data.user_id });
+
+    res.json({ success: true, user: updatedUser });
+  }
+
+  else {
+    res.json({ success: false });
+  }
 });
 
 
 
 
-
-
-
-
-
 router.post("/change-profile", async (req, res) => {
-  res.json({ data: "failed" });
+
+  const { firstName, lastName, email, contactNumber, password } = req.body;
+
+  const token = (req.cookies['access_token']);
+
+  if (!token) {
+    return res.json({ success: false });
+  }
+
+  const data = jwt.verify(token, process.env.TOKEN_SECRET);
+  const user = await User.findOne({ _id: data.user_id });
+
+  const encryptedPassword = await bcrypt.hash(password, 10);
+
+  if (user && (await bcrypt.compare(password, user.password))) {
+    await User.updateOne({ _id: data.user_id }, {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      contactNumber: contactNumber,
+      password: encryptedPassword
+    });
+
+    const updatedUser = await User.findOne({ _id: data.user_id });
+
+    res.json({ success: true, user: updatedUser });
+  }
+
+  else {
+    res.json({ success: false });
+  }
+
 });
 
 router.get("/get-personal-info", async (req, res) => {

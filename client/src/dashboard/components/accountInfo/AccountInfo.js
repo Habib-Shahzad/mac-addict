@@ -6,8 +6,8 @@ import { Container } from 'react-bootstrap';
 function AccountInfo(props) {
     return (
         <Container fluid>
-            <PersonalInfo dbUser={props.dbUser} />
-                <div className="margin-global-top-5" />
+            <PersonalInfo />
+            <div className="margin-global-top-5" />
             <ChangePassword />
         </Container>
     );

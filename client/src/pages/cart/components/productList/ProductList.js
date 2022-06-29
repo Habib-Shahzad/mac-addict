@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { MainHeading, Heading2, Heading1, ShopButton } from '../../../../components';
+import { MainHeading, Heading2, Heading1, LinkButton } from '../../../../components';
 import CartContext from '../../../../contexts/cart';
 import UserContext from '../../../../contexts/user';
 import api from '../../../../api';
@@ -153,15 +153,21 @@ function ProductList(props) {
             <Row>
                 <div className="horizontal-center-margin">
 
-                    <ShopButton
-                        to={"/cart/delivery-info"}
+
+                    <LinkButton
                         onClick={() => { }}
-                        classes={`text-uppercase center-relative`}
+                        classes="text-uppercase product-card-size"
                         text={"Proceed"}
+                        button={false}
+                        to={"/cart/delivery-info"}
                     />
+
 
                 </div>
             </Row>
+
+
+
         </Container>
     );
 }

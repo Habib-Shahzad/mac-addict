@@ -29,11 +29,8 @@ function Signin(props) {
             body: JSON.stringify({ email: data.email, password: data.password })
         });
 
-        console.log(response);
 
         const content = await response.json();
-
-        console.log(content);
 
         const userLoggedin = content.data;
         user.setUserState(userLoggedin);

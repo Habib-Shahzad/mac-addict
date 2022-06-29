@@ -1,37 +1,41 @@
 .my-addresses {
-    .address-row {
-        border-bottom: 1px solid #dedfe0;
+  .address-row {
+    border-bottom: 1px solid #dedfe0;
+  }
+  .col {
+    position: relative;
+    .delete-icon {
+      font-size: 2rem;
+      color: black;
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: 0.3s ease-in-out;
+      &:hover {
+        color: #cf993d;
+        cursor: pointer;
+      }
     }
-    .col {
-        position: relative;
-        .delete-icon {
-            font-size: 2rem;
-            color: black;
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: .3s ease-in-out;
-            &:hover {
-                color: #cf993d;
-                cursor: pointer;
-            }
-        }
+  }
+  .add-address {
+    display: flex;
+    position: relative;
+    margin-top: 0.8rem;
+    width: fit-content;
+    .add-icon {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.6rem;
+      margin-right: 0.5rem;
     }
-    .add-address {
-        display: flex;
-        position: relative;
-        margin-top: 0.5rem;
-        width: fit-content;
-        .add-icon {
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.6rem;
-            margin-right: 0.5rem;
-        }
-        &:hover {
-            cursor: pointer;
-        }
+    &:hover {
+      cursor: pointer;
     }
+  }
+}
+
+.delete-icon {
+  font-size: 1.75rem !important;
 }

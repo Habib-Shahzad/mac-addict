@@ -158,13 +158,12 @@ function Routes(props) {
   }, []);
 
 
-  const [countryData, setCountryData] = useState({});
-  const [dataMappers, setDataMappers] = useState({});
+  const [data, setData] = useState({});
 
   useEffect(() => {
     (
       async () => {
-        const response = await fetch(`${api}/city/table-data`, {
+        const cityData = await fetch(`${api}/city/table-data`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -172,39 +171,68 @@ function Routes(props) {
           credentials: 'include',
           withCredentials: true,
         });
-        const content = await response.json();
-        let countries = {};
+        const cities = await cityData.json();
 
-        let countryMapper = {};
-        let provinceMapper = {};
-        let cityMapper = {};
 
-        content.data.forEach(city => {
-          let country_name = city.province.country.name;
-          let province_name = city.province.name;
-          let city_name = city.name;
+        const provinceData = await fetch(`${api}/province/table-data`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          withCredentials: true,
+        });
 
-          let country_id = city.province.country._id;
-          let province_id = city.province._id;
-          let city_id = city._id;
+        const provinces = await provinceData.json();
 
-          if (!countryMapper[country_id]) countryMapper[country_id] = country_name;
-          if (!provinceMapper[province_id]) provinceMapper[province_id] = province_name;
-          if (!cityMapper[city_id]) cityMapper[city_id] = city_name;
 
-          if (!countries[country_id]) countries[country_id] = {};
-          if (!countries[country_id][province_id]) countries[country_id][province_id] = [];
-          countries[country_id][province_id].push(city_id);
+
+        const countryData = await fetch(`${api}/country/table-data`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          withCredentials: true,
+        });
+
+        let _data = {};
+
+        const countries = await countryData.json();
+
+        _data["countries"] = [];
+
+        countries.data.forEach(country => {
+          _data["countries"].push({ "_id": country._id, "name": country.name });
         })
 
-        setDataMappers({ 'country': countryMapper, 'province': provinceMapper, 'city': cityMapper });
-        setCountryData(countries);
+        provinces.data.forEach(province => {
+          let country = province.country;
+
+          if (!_data[country._id]) {
+            _data[country._id] = {};
+            _data[country._id]["provinces"] = [];
+          }
+          _data[country._id]["provinces"].push({ "_id": province._id, "name": province.name });
+        })
+
+        cities.data.forEach(city => {
+          let province = city.province;
+          let country = city.province.country;
+
+          if (!_data[country._id][province._id]) {
+            _data[country._id][province._id] = [];
+          }
+          _data[country._id][province._id].push({ "_id": city._id, "name": city.name });
+        });
+
+        setData(_data);
 
       })();
   }, []);
 
   return (
-    <CountriesContext.Provider value={{ data: countryData, dataMappers: dataMappers }}>
+    <CountriesContext.Provider value={{ data: data }}>
       <CartContext.Provider value={{ cartObj: cart, setCart: setCart }}>
         <DiscountContext.Provider value={discountState}>
           <SmallBanner />
