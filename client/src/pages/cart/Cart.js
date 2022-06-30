@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Divider, CartCircleHeading } from '../../components';
 import { ProductList, DeliveryForm, Payment } from './components';
@@ -11,11 +11,16 @@ import {
     useHistory
 } from "react-router-dom";
 import './Cart.scss';
+import UserContext from '../../contexts/user';
 
 function Cart(props) {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    const user = useContext(UserContext);
+
+
 
     const history = useHistory();
     const location = useLocation();
@@ -36,6 +41,15 @@ function Cart(props) {
         activeCompClass = { 1: 'hide', 2: 'hide', 3: '', h1: 'hide-992', h2: 'hide-992', h3: '' };
     }
 
+    useEffect(() => {
+        if (!user.userState) {
+            history.push('/signin');
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+
     const cartPage = e => {
         history.push('/cart');
     }
@@ -44,6 +58,10 @@ function Cart(props) {
     }
     const paySendPage = e => {
         history.push('/cart/pay-send');
+    }
+
+    if (!user.userState) {
+        return <div></div>
     }
 
     return (

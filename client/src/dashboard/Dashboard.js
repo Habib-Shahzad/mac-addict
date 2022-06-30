@@ -15,10 +15,13 @@ function Dashboard(props) {
 
     useEffect(() => {
         if (!user.userState) {
-            history.push('/');
+            history.push('/signin');
         }
     }, [user.userState, history]);
 
+    if (!user.userState) {
+        return <div></div>
+    }
 
     return (
         <Container fluid>
