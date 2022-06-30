@@ -35,25 +35,35 @@ router.post("/logout-admin", async (req, res) => {
 });
 
 
-
 router.get("/loggedIn", async (req, res) => {
-  try {
-    const token = (req.cookies['access_token']);
 
+  const user_token = (req.cookies['access_token']);
+  let user = null;
 
-    if (!token) {
-      return res.json({ data: null });
-    }
-    const data = jwt.verify(token, process.env.TOKEN_SECRET);
-    const user = await User.findOne({ _id: data.user_id });
-    return res.json({
-      data: user
-    });
-
-  } catch (error) {
-    res.json({ data: null, error: error.message });
+  if (user_token) {
+    const user_data = jwt.verify(user_token, process.env.TOKEN_SECRET);
+    user = await User.findOne({ _id: user_data.user_id });
   }
+
+  const admin_token = (req.cookies['access_token_admin']);
+  let admin_user = null;
+
+  if (admin_token) {
+    const admin_data = jwt.verify(admin_token, process.env.TOKEN_SECRET);
+    admin_user = await User.findOne({ _id: admin_data.user_id });
+  }
+
+  return res.json({
+    successUser: user != null,
+    successAdmin: admin_user != null,
+    user: user,
+    admin_user: admin_user
+  });
+
 });
+
+
+
 
 router.get("/address-list", async (req, res) => {
   const token = (req.cookies['access_token']);
@@ -277,23 +287,6 @@ router.post("/delete-address", async (req, res) => {
 
 
 
-router.get("/admin-loggedIn", async (req, res) => {
-  try {
-    const token = (req.cookies['access_token_admin']);
-
-    if (!token) {
-      return res.json({ data: null });
-    }
-    const data = jwt.verify(token, process.env.TOKEN_SECRET);
-    const user = await User.findOne({ _id: data.user_id });
-    return res.json({
-      data: user
-    });
-
-  } catch (error) {
-    res.json({ data: null, error: error.message });
-  }
-});
 
 
 

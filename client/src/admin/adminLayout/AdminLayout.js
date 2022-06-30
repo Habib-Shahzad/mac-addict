@@ -20,7 +20,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import api from '../../api';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import WebIcon from '@mui/icons-material/Web';
-import LockIcon from '@mui/icons-material/Lock';
+// import LockIcon from '@mui/icons-material/Lock';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import InvertColorsIcon from '@mui/icons-material/InvertColors';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -173,251 +173,253 @@ function AdminLayout(props) {
 
 
     return (
-        <div className={classes.root}>
+        <div className='primary'>
+            <div className={classes.root}>
 
-            <CssBaseline />
-            <AppBar
-                position="fixed"
-                className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open,
-                })}
-            >
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        MAC Addict Admin
-                    </Typography>
-                    <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleThemeChange}
-                    >
-                        <InvertColorsIcon
-                        />
-                    </IconButton>
-                    <IconButton
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="inherit"
-                    >
-                        <MoreIcon />
-                    </IconButton>
-                    <Menu
-                        // className={classes.root}
-                        id="menu-appbar"
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={openMenu}
-                        onClose={handleClose}
-                    >
-                        <MenuItem onClick={_ => window.location.pathname = '/'}>
-                            <ListItemIcon className={classes.listItemIcon}>
-                                <WebIcon fontSize="small" />
-                            </ListItemIcon>
-                            <Typography variant="body2">Go to website</Typography>
-                        </MenuItem>
-                        <MenuItem>
+                <CssBaseline />
+                <AppBar
+                    position="fixed"
+                    className={clsx(classes.appBar, {
+                        [classes.appBarShift]: open,
+                    })}
+                >
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            className={clsx(classes.menuButton, open && classes.hide)}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography className={classes.title} variant="h6" noWrap>
+                            MAC Addict Admin
+                        </Typography>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleThemeChange}
+                        >
+                            <InvertColorsIcon
+                            />
+                        </IconButton>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                            color="inherit"
+                        >
+                            <MoreIcon />
+                        </IconButton>
+                        <Menu
+                            // className={classes.root}
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={openMenu}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={_ => window.location.pathname = '/'}>
+                                <ListItemIcon className={classes.listItemIcon}>
+                                    <WebIcon fontSize="small" />
+                                </ListItemIcon>
+                                <Typography variant="body2">Go to website</Typography>
+                            </MenuItem>
+                            {/* <MenuItem>
                             <ListItemIcon className={classes.listItemIcon}>
                                 <LockIcon fontSize="small" />
                             </ListItemIcon>
                             <Typography variant="body2">Change password</Typography>
-                        </MenuItem>
-                        <MenuItem onClick={handleLogout}>
-                            <ListItemIcon className={classes.listItemIcon}>
-                                <ExitToAppIcon fontSize="small" />
-                            </ListItemIcon>
-                            <Typography variant="body2">Logout</Typography>
-                        </MenuItem>
-                    </Menu>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="persistent"
-                anchor="left"
-                open={open}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-            >
-                <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                    </IconButton>
-                </div>
-                <Divider />
-
-                <TreeView
-                    className={classes.tree}
-                    defaultExpanded={['3', '13']}
-                    defaultCollapseIcon={<ArrowDropDownIcon />}
-                    defaultExpandIcon={<ArrowRightIcon />}
-                    defaultEndIcon={<div style={{ width: 24 }} />}
+                        </MenuItem> */}
+                            <MenuItem onClick={handleLogout}>
+                                <ListItemIcon className={classes.listItemIcon}>
+                                    <ExitToAppIcon fontSize="small" />
+                                </ListItemIcon>
+                                <Typography variant="body2">Logout</Typography>
+                            </MenuItem>
+                        </Menu>
+                    </Toolbar>
+                </AppBar>
+                <Drawer
+                    className={classes.drawer}
+                    variant="persistent"
+                    anchor="left"
+                    open={open}
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
                 >
-                    <Link to="/admin" style={{ textDecoration: 'none' }}>
-                        <StyledTreeItem nodeId="1" labelText="Dashboard" labelIcon={DashboardIcon} />
-                    </Link>
-                    <Link to="/admin" style={{ textDecoration: 'none' }}>
-                        <StyledTreeItem nodeId="2" labelText="User" labelIcon={SupervisorAccountIcon} />
-                    </Link>
-                    <StyledTreeItem nodeId="3" labelText="Shop" labelIcon={StoreIcon}>
-                        <Link to="/admin/brand" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="4"
-                                labelText="Brand"
-                                labelIcon={BookmarkIcon}
-                                // labelInfo="90"
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
+                    <div className={classes.drawerHeader}>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                        </IconButton>
+                    </div>
+                    <Divider />
+
+                    <TreeView
+                        className={classes.tree}
+                        defaultExpanded={['3', '13']}
+                        defaultCollapseIcon={<ArrowDropDownIcon />}
+                        defaultExpandIcon={<ArrowRightIcon />}
+                        defaultEndIcon={<div style={{ width: 24 }} />}
+                    >
+                        <Link to="/admin" style={{ textDecoration: 'none' }}>
+                            <StyledTreeItem nodeId="1" labelText="Dashboard" labelIcon={DashboardIcon} />
                         </Link>
-                        <Link to="/admin/category" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="5"
-                                labelText="Category"
-                                labelIcon={BookmarkIcon}
-                                // labelInfo="90"
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
+                        <Link to="/admin" style={{ textDecoration: 'none' }}>
+                            <StyledTreeItem nodeId="2" labelText="User" labelIcon={SupervisorAccountIcon} />
                         </Link>
-                        <Link to="/admin/sub-category" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="6"
-                                labelText="Sub Category"
-                                labelIcon={BookmarkIcon}
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
+                        <StyledTreeItem nodeId="3" labelText="Shop" labelIcon={StoreIcon}>
+                            <Link to="/admin/brand" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="4"
+                                    labelText="Brand"
+                                    labelIcon={BookmarkIcon}
+                                    // labelInfo="90"
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/category" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="5"
+                                    labelText="Category"
+                                    labelIcon={BookmarkIcon}
+                                    // labelInfo="90"
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/sub-category" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="6"
+                                    labelText="Sub Category"
+                                    labelIcon={BookmarkIcon}
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/further-sub-category" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="7"
+                                    labelText="Further Sub Category"
+                                    labelIcon={BookmarkIcon}
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/product" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="8"
+                                    labelText="Product"
+                                    labelIcon={LocalOfferIcon}
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/color" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="9"
+                                    labelText="Color"
+                                    labelIcon={PaletteIcon}
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/size" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="10"
+                                    labelText="Size"
+                                    labelIcon={FormatSizeIcon}
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                        </StyledTreeItem>
+                        <Link to="/admin" style={{ textDecoration: 'none' }}>
+                            <StyledTreeItem nodeId="11" labelText="Order" labelIcon={MonetizationOnIcon} />
                         </Link>
-                        <Link to="/admin/further-sub-category" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="7"
-                                labelText="Further Sub Category"
-                                labelIcon={BookmarkIcon}
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
+                        <Link to="/admin" style={{ textDecoration: 'none' }}>
+                            <StyledTreeItem nodeId="12" labelText="Discount" labelIcon={MoneyOffIcon} />
                         </Link>
-                        <Link to="/admin/product" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="8"
-                                labelText="Product"
-                                labelIcon={LocalOfferIcon}
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
-                        </Link>
-                        <Link to="/admin/color" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="9"
-                                labelText="Color"
-                                labelIcon={PaletteIcon}
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
-                        </Link>
-                        <Link to="/admin/size" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="10"
-                                labelText="Size"
-                                labelIcon={FormatSizeIcon}
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
-                        </Link>
-                    </StyledTreeItem>
-                    <Link to="/admin" style={{ textDecoration: 'none' }}>
-                        <StyledTreeItem nodeId="11" labelText="Order" labelIcon={MonetizationOnIcon} />
-                    </Link>
-                    <Link to="/admin" style={{ textDecoration: 'none' }}>
-                        <StyledTreeItem nodeId="12" labelText="Discount" labelIcon={MoneyOffIcon} />
-                    </Link>
-                    <StyledTreeItem nodeId="13" labelText="Location" labelIcon={PublicIcon}>
-                        <Link to="/admin/country" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="14"
-                                labelText="Country"
-                                labelIcon={LocationOnIcon}
-                                // labelInfo="90"
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
-                        </Link>
-                        <Link to="/admin/province" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="15"
-                                labelText="Province"
-                                labelIcon={LocationOnIcon}
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
-                        </Link>
-                        <Link to="/admin/city" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="16"
-                                labelText="City"
-                                labelIcon={LocationCityIcon}
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
-                        </Link>
-                        <Link to="/admin/area" style={{ textDecoration: 'none' }}>
-                            <StyledTreeItem
-                                nodeId="17"
-                                labelText="Area"
-                                labelIcon={PinDropIcon}
-                                color="#000000"
-                                bgColor="#f5daab"
-                            />
-                        </Link>
-                    </StyledTreeItem>
-                </TreeView>
-            </Drawer>
-            <main
-                className={clsx(classes.content, {
-                    [classes.contentShift]: open,
-                })}
-            >
-                <div className={classes.drawerHeader} />
-                {/* <Router> */}
-                {/* <TransitionGroup>
+                        <StyledTreeItem nodeId="13" labelText="Location" labelIcon={PublicIcon}>
+                            <Link to="/admin/country" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="14"
+                                    labelText="Country"
+                                    labelIcon={LocationOnIcon}
+                                    // labelInfo="90"
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/province" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="15"
+                                    labelText="Province"
+                                    labelIcon={LocationOnIcon}
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/city" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="16"
+                                    labelText="City"
+                                    labelIcon={LocationCityIcon}
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                            <Link to="/admin/area" style={{ textDecoration: 'none' }}>
+                                <StyledTreeItem
+                                    nodeId="17"
+                                    labelText="Area"
+                                    labelIcon={PinDropIcon}
+                                    color="#000000"
+                                    bgColor="#f5daab"
+                                />
+                            </Link>
+                        </StyledTreeItem>
+                    </TreeView>
+                </Drawer>
+                <main
+                    className={clsx(classes.content, {
+                        [classes.contentShift]: open,
+                    })}
+                >
+                    <div className={classes.drawerHeader} />
+                    {/* <Router> */}
+                    {/* <TransitionGroup>
             <CSSTransition
               key={location.key}
               classNames="fade"
               timeout={300}
             > */}
-                <RouterSwitch>
-                    {/* <Route path="/admin/orders" children={<OrdersTable />} /> */}
-                    <Route path="/admin/:model/edit/:id" children={<AdminForm />} />
-                    <Route path="/admin/:model/add" children={<AdminForm />} />
-                    {/* <Route path="/admin/:model/delete" children={<DeleteConfirmation />} /> */}
-                    <Route path="/admin/:model" children={<EnhancedTable />} />
-                </RouterSwitch>
-                {/* </CSSTransition>
+                    <RouterSwitch>
+                        {/* <Route path="/admin/orders" children={<OrdersTable />} /> */}
+                        <Route path="/admin/:model/edit/:id" children={<AdminForm />} />
+                        <Route path="/admin/:model/add" children={<AdminForm />} />
+                        {/* <Route path="/admin/:model/delete" children={<DeleteConfirmation />} /> */}
+                        <Route path="/admin/:model" children={<EnhancedTable />} />
+                    </RouterSwitch>
+                    {/* </CSSTransition>
           </TransitionGroup> */}
-                {/* </Router> */}
-            </main>
+                    {/* </Router> */}
+                </main>
 
+            </div>
         </div>
     );
 }

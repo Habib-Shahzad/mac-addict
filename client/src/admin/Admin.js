@@ -27,6 +27,7 @@ function Admin(props) {
             fontFamily: 'Montserrat',
         },
     });
+
     const lightTheme = createTheme({
         palette: {
             type: 'light',
@@ -47,8 +48,8 @@ function Admin(props) {
     const currentTheme = darkState ? darkTheme : lightTheme;
 
     if (props.loading) return <div></div>
-    return (
 
+    return (
         <ThemeProvider theme={currentTheme}>
             {!adminUser.adminUserState ? (
                 <Login user={adminUser} title="MAC Addict: Admin Login" />
@@ -56,7 +57,6 @@ function Admin(props) {
                 <AdminLayout user={adminUser} darkState={darkState} setDarkState={setDarkState} title="MAC Addict: Dashboard" />
             )}
         </ThemeProvider>
-
     );
 }
 
