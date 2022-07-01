@@ -1,10 +1,13 @@
 import { FormControl, FormControlLabel, Checkbox, Input, InputLabel, FormHelperText, Button, TextField } from '@mui/material';
-import Autocomplete from '@mui/lab/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import React, { useState, useEffect } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import api from '../api';
 import TreeItem from '@mui/lab/TreeItem';
+
+import { useForm, Controller } from "react-hook-form";
+
 
 const createTableData = (data) => {
     const { _id, name, slug, category, active } = data;
@@ -31,10 +34,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
     }
 }
 
-// const editObjCheck = (data, value, editObj) => {
-//     if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
-//     else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
-// }
+
 
 const subCategoryObj = {
     apiTable: `${api}/sub-category/table-data`,
@@ -89,28 +89,19 @@ const subCategoryObj = {
         if (id != null) queryID = id;
         const [editObj, setEditObj] = useState(null);
 
-        const [subCategory, setSubCategory] = useState({ name: '', helperText: 'Enter name Ex. Face', error: false });
-        const [categoryState, setCategoryState] = useState({ name: '', obj: undefined, helperText: 'Enter name Ex. Makeup', error: false });
-        const [keywordsState, setKeywordsState] = useState({ name: '', helperText: 'Comma seperated SEO Keywords' });
-        const [descriptionState, setDescriptionState] = useState({ name: '', helperText: 'Type a description for SEO Ex. This sub category is...' });
-        const [checkboxes, setCheckboxes] = useState({ active: true });
+
 
         const [subCategoriesArray, setSubCategoriesArray] = useState([]);
         const [categoriesArray, setCategoriesArray] = useState([]);
-        const [isDisabled, setCanSubmit] = useState(true);
         const [pressedBtn, setPressedBtn] = useState(null);
         const [loading, setLoading] = useState(true);
 
-        useEffect(() => {
-            let flag = true;
-            if (subCategory.error === true) flag = true;
-            else if (subCategory.name.length === 0) flag = true;
-            else if (categoryState.error === true) flag = true;
-            else if (categoryState.name.length === 0) flag = true;
-            else if (categoryState.obj === undefined) flag = true;
-            else flag = false;
-            setCanSubmit(flag);
-        }, [subCategory, categoryState]);
+        const [defaultName, setDefaultName] = useState('');
+        const [defaultCategory, setDefaultCategory] = useState('');
+        const [defaultKeywords, setDefaultKeywords] = useState('');
+        const [defaultDescription, setDefaultDescription] = useState('');
+        const [defaultActive, setDefaultActive] = useState(true);
+
 
         useEffect(() => {
             (
@@ -145,51 +136,23 @@ const subCategoryObj = {
 
         useEffect(() => {
             if (editObj) {
-                setSubCategory(prevState => ({ ...prevState, name: editObj.name }));
-                setCategoryState(prevState => ({ ...prevState, name: editObj.name, obj: editObj.category }));
-                setKeywordsState(prevState => ({ ...prevState, name: editObj.keywords }));
-                setDescriptionState(prevState => ({ ...prevState, name: editObj.description }));
-                setCheckboxes(prevState => ({ ...prevState, active: editObj.active }))
+                setDefaultName(editObj.name);
+                setDefaultCategory(editObj.category);
+                setDefaultKeywords(editObj.keywords);
+                setDefaultDescription(editObj.description);
+                setDefaultActive(editObj.active);
             } else {
-                setSubCategory(prevState => ({ ...prevState, name: '' }));
-                setCategoryState(prevState => ({ ...prevState, name: '', obj: undefined }));
-                setKeywordsState(prevState => ({ ...prevState, name: '' }));
-                setDescriptionState(prevState => ({ ...prevState, name: '' }));
-                setCheckboxes(prevState => ({ ...prevState, active: true }))
+
             }
         }, [editObj]);
 
-        function changeSubCategory(event) {
-            const { value } = event.target;
-            setSubCategory(prevState => ({ ...prevState, name: value }));
-            // let obj = editObjCheck(subCategoriesArray, value, editObj);
-            // if (obj) setSubCategory(prevState => ({ ...prevState, helperText: `${obj.name} already exists!`, error: true }));
-            // else if (value === '') setSubCategory(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
-            // else setSubCategory(prevState => ({ ...prevState, helperText: 'Enter name Ex. Face', error: false }));
-        };
-        function changeCategoryState(event) {
-            const { value } = event.target;
-            const obj = categoriesArray.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim());
-            setCategoryState(prevState => ({ ...prevState, name: value, obj: obj }));
-            if (value === '') setCategoryState(prevState => ({ ...prevState, helperText: 'Category is required!', error: true }));
-            else setCategoryState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Makeup', error: false }));
-        };
-        function changeKeywordsState(event) {
-            const { value } = event.target;
-            setKeywordsState(prevState => ({ ...prevState, name: value }));
-        };
-        function changeDescriptionState(event) {
-            const { value } = event.target;
-            setDescriptionState(prevState => ({ ...prevState, name: value }));
-        };
 
-        const handleActiveCheckbox = () => {
-            setCheckboxes(prevState => ({ ...prevState, active: !checkboxes.active }));
-        };
+        const { register, handleSubmit, formState: { errors }, control, reset } = useForm();
 
-        const onSubmit = async e => {
-            e.preventDefault();
+
+        const onSubmit = async (data) => {
             setLoading(true);
+
             if (queryID === '') {
                 const response = await fetch(`${api}/sub-category/add`, {
                     method: 'POST',
@@ -197,7 +160,7 @@ const subCategoryObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ name: subCategory.name, category: categoryState.obj, keywords: keywordsState.name, description: descriptionState.name, active: checkboxes.active }),
+                    body: JSON.stringify({ name: data.name, category: data.category, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();
                 setSubCategoriesArray([...subCategoriesArray, content.data]);
@@ -208,7 +171,7 @@ const subCategoryObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ _id: queryID, name: subCategory.name, category: categoryState.obj, keywords: keywordsState.name, description: descriptionState.name, active: checkboxes.active }),
+                    body: JSON.stringify({ _id: queryID, name: data.name, category: data.category, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();
                 const objArray = [...subCategoriesArray];
@@ -217,91 +180,107 @@ const subCategoryObj = {
                 queryID = '';
                 setSubCategoriesArray(objArray);
             }
+            reset();
             if (pressedBtn === 1) {
                 if (queryID === '') {
                     history.push({
                         pathname: `/admin/sub-category`,
-                        state: { data: 'added', name: subCategory.name }
+                        state: { data: 'added', name: data.name }
                     });
                 } else {
                     history.push({
                         pathname: `/admin/sub-category`,
-                        state: { data: 'edited', name: subCategory.name }
+                        state: { data: 'edited', name: data.name }
                     });
                 }
             }
             else {
-                setSubCategory({ name: '', helperText: 'Enter name Ex. Face', error: false });
-                setCategoryState({ name: '', obj: undefined, helperText: 'Enter name Ex. Makeup', error: false });
-                setKeywordsState({ name: '', helperText: 'Comma seperated SEO Keywords' });
-                setDescriptionState({ name: '', helperText: 'Type a description for SEO Ex. This sub category is...' })
-                setCheckboxes({ active: true });
+                setDefaultName('');
+                setDefaultCategory('');
+                setDefaultKeywords('');
+                setDefaultDescription('');
+
                 setLoading(false);
                 history.push('/admin/sub-category/add');
             }
         };
+
+
         if (loading) return <div></div>
 
-        return (<form onSubmit={onSubmit} autoComplete="off">
+        return (<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <fieldset>
                 <legend>Details</legend>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="name">
                         <FormControl className={classes.formControl}>
-                            <InputLabel error={subCategory.error} color="secondary" htmlFor="name">Name</InputLabel>
+                            <InputLabel error={errors.name ? true : false} color="secondary">Name</InputLabel>
                             <Input
+                                {...register("name", {
+                                    required: "Name is required!",
+                                })}
+                                defaultValue={defaultName}
                                 color="secondary"
                                 autoComplete="none"
-                                value={subCategory.name}
                                 type="text"
-                                error={subCategory.error}
-                                id="name"
-                                name="name"
-                                onChange={changeSubCategory}
-                                onBlur={changeSubCategory}
+                                error={errors.name ? true : false}
                                 aria-describedby="name-helper"
                             />
-                            <FormHelperText error={subCategory.error} id="name-helper">{subCategory.helperText}</FormHelperText>
+                            {!errors.name &&
+                                <FormHelperText id="name-helper">Enter name Ex. Face</FormHelperText>
+                            }
+                            <FormHelperText error={errors.name ? true : false} id="name-helper">{errors.name && <>{errors.name.message}</>}</FormHelperText>
                         </FormControl>
                     </Form.Group>
                     <Form.Group as={Col} md={6} controlId="category">
                         <FormControl className={classes.formControl}>
-                            <Autocomplete
-                                id="combo-box-demo"
-                                color="secondary"
-                                options={categoriesArray}
-                                getOptionLabel={(option) => option.name}
-                                value={categoryState.obj ? categoryState.obj : null}
-                                // style={{ width: 300 }}
-                                renderInput={(params) => <TextField
-                                    color="secondary"
-                                    error={categoryState.error}
-                                    onChange={changeCategoryState}
-                                    onBlur={changeCategoryState}
-                                    {...params} label="Category"
-                                />
-                                }
+                            <Controller
+                                render={(props) => (
+                                    <Autocomplete
+                                        defaultValue={editObj ? defaultCategory : undefined}
+                                        isOptionEqualToValue={(option, value) => option._id === value._id}
+                                        id="combo-box-demo"
+                                        color="secondary"
+                                        options={categoriesArray}
+                                        getOptionLabel={(option) => option.name}
+                                        onChange={(e, data) => props.field.onChange(data)}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                error={errors.category ? true : false}
+                                                color="secondary"
+                                                {...params}
+                                                label="Category"
+                                            />
+                                        }
+                                    />
+                                )}
+                                rules={{ required: "Category is required!" }}
+                                onChange={([, data]) => data}
+                                defaultValue={defaultCategory}
+                                name={"category"}
+                                control={control}
                             />
-                            <FormHelperText error={categoryState.error} id="categoryState-helper">{categoryState.helperText}</FormHelperText>
+                            {!errors.category &&
+                                <FormHelperText id="name-helper">Enter name Ex. makeup</FormHelperText>
+                            }
+                            <FormHelperText error={errors.category ? true : false} id="name-helper">{errors.category && <>{errors.category.message}</>}</FormHelperText>
+
                         </FormControl>
                     </Form.Group>
                 </Row>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="keywords">
                         <FormControl className={classes.formControl}>
-                            <InputLabel color="secondary" htmlFor="keywords">Keywords</InputLabel>
+                            <InputLabel color="secondary">Keywords</InputLabel>
                             <Input
+                                defaultValue={defaultKeywords}
                                 color="secondary"
                                 autoComplete="none"
-                                value={keywordsState.name}
+                                {...register("keywords", {})}
                                 type="text"
-                                id="keywords"
-                                name="keywords"
-                                onChange={changeKeywordsState}
-                                onBlur={changeKeywordsState}
                                 aria-describedby="keywords-helper"
                             />
-                            <FormHelperText id="keywords-helper">{keywordsState.helperText}</FormHelperText>
+                            <FormHelperText id="keywords-helper">Comma seperated SEO Keywords</FormHelperText>
                         </FormControl>
                     </Form.Group>
                 </Row>
@@ -309,37 +288,50 @@ const subCategoryObj = {
                     <Form.Group controlId="description">
                         <FormControl className={classes.formControl}>
                             <TextField
-                                id="description"
+                                defaultValue={defaultDescription}
+                                {...register("description", {})}
                                 color="secondary"
                                 autoComplete="none"
                                 label="Description"
-                                onChange={changeDescriptionState}
-                                onBlur={changeDescriptionState}
                                 multiline
                                 rows={10}
-                                value={descriptionState.name}
                                 aria-describedby="description-helper"
                             />
-                            <FormHelperText id="description-helper">{descriptionState.helperText}</FormHelperText>
+                            <FormHelperText id="description-helper">Type a description for SEO Ex. This category is...</FormHelperText>
                         </FormControl>
                     </Form.Group>
                 </Row>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="active">
+
                         <FormControlLabel
-                            control={<Checkbox checked={checkboxes.active} onChange={handleActiveCheckbox} name="active" />}
-                            label="Active"
+                            control={
+                                <Controller
+                                    name={"active"}
+                                    control={control}
+                                    defaultValue={defaultActive}
+                                    render={(props) => (
+                                        <Checkbox
+
+                                            checked={props.field.value}
+                                            onChange={(e) => props.field.onChange(e.target.checked)}
+                                        />
+                                    )}
+                                />
+                            }
+                            label={"Active"}
                         />
+
                     </Form.Group>
                 </Row>
             </fieldset>
-            <Button className={classes.button} onClick={_ => setPressedBtn(1)} disabled={isDisabled} type="submit" variant="contained" color="primary">
+            <Button className={classes.button} onClick={_ => setPressedBtn(1)} type="submit" variant="contained" color="primary">
                 Save
             </Button>
-            <Button onClick={_ => setPressedBtn(2)} disabled={isDisabled} type="submit" variant="contained" color="primary">
+            <Button onClick={_ => setPressedBtn(2)} type="submit" variant="contained" color="primary">
                 Save and add another
             </Button>
-        </form>);
+        </Form>);
     },
 }
 

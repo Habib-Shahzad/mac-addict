@@ -47,8 +47,11 @@ router.get('/get-by-ids', async (req, res) => {
 });
 
 router.post('/delete', async (req, res) => {
-    await Size.deleteMany({ _id: req.body.ids });
-    res.json({ data: 'success' });
+    await Size.deleteMany({ _id: { $in: req.body.data } });
+    const sizes = await Size.find({});
+    res.json({ success: true, data: sizes });
 });
+
+
 
 module.exports = router;

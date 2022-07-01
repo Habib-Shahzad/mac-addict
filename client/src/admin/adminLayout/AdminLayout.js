@@ -15,12 +15,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import PinDropIcon from '@mui/icons-material/PinDrop';
 import PublicIcon from '@mui/icons-material/Public';
 import api from '../../api';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import WebIcon from '@mui/icons-material/Web';
-// import LockIcon from '@mui/icons-material/Lock';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import InvertColorsIcon from '@mui/icons-material/InvertColors';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -39,7 +37,6 @@ import './AdminLayout.scss';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import { Menu, MenuItem } from '@mui/material';
 import {
-    // BrowserRouter as Router,
     Switch as RouterSwitch,
     Link,
     Route,
@@ -160,7 +157,6 @@ function AdminLayout(props) {
     };
 
     const handleLogout = async e => {
-        // console.log(123);
         e.preventDefault();
         await fetch(`${api}/user/logout-admin`, {
             method: 'POST',
@@ -170,7 +166,6 @@ function AdminLayout(props) {
         });
         props.user.setAdminUserState(null);
     }
-
 
     return (
         <div className='primary'>
@@ -277,7 +272,7 @@ function AdminLayout(props) {
                         <Link to="/admin" style={{ textDecoration: 'none' }}>
                             <StyledTreeItem nodeId="1" labelText="Dashboard" labelIcon={DashboardIcon} />
                         </Link>
-                        <Link to="/admin" style={{ textDecoration: 'none' }}>
+                        <Link to="/admin/user" style={{ textDecoration: 'none' }}>
                             <StyledTreeItem nodeId="2" labelText="User" labelIcon={SupervisorAccountIcon} />
                         </Link>
                         <StyledTreeItem nodeId="3" labelText="Shop" labelIcon={StoreIcon}>
@@ -382,15 +377,7 @@ function AdminLayout(props) {
                                     bgColor="#f5daab"
                                 />
                             </Link>
-                            <Link to="/admin/area" style={{ textDecoration: 'none' }}>
-                                <StyledTreeItem
-                                    nodeId="17"
-                                    labelText="Area"
-                                    labelIcon={PinDropIcon}
-                                    color="#000000"
-                                    bgColor="#f5daab"
-                                />
-                            </Link>
+
                         </StyledTreeItem>
                     </TreeView>
                 </Drawer>
@@ -408,11 +395,10 @@ function AdminLayout(props) {
               timeout={300}
             > */}
                     <RouterSwitch>
-                        {/* <Route path="/admin/orders" children={<OrdersTable />} /> */}
                         <Route path="/admin/:model/edit/:id" children={<AdminForm />} />
                         <Route path="/admin/:model/add" children={<AdminForm />} />
-                        {/* <Route path="/admin/:model/delete" children={<DeleteConfirmation />} /> */}
                         <Route path="/admin/:model" children={<EnhancedTable />} />
+                        <Route path="/admin/:model/delete" children={<AdminForm />} />
                     </RouterSwitch>
                     {/* </CSSTransition>
           </TransitionGroup> */}

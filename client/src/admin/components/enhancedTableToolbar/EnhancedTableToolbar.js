@@ -47,7 +47,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 function EnhancedTableToolbar(props) {
   const { model } = useParams();
   const classes = useToolbarStyles();
-  const { selected, modelName, editAllowed, deleteAllowed, addAllowed, actionOptions, startAction, setOriginalTableRows, setTableRows } = props;
+  const { selected, modelName, editAllowed, deleteAllowed, addAllowed, actionOptions, startAction, setOriginalTableRows, setTableRows, deleteObjects } = props;
   const history = useHistory();
   const numSelected = selected.length;
 
@@ -91,10 +91,12 @@ function EnhancedTableToolbar(props) {
       {numSelected > 0 ? (
         <div style={{ display: 'flex' }}>
           {deleteAllowed === true ? (
-            <Link to={{
-              pathname: `/admin/${model}/delete`,
-              state: { selected: selected, modelName: modelName }
-            }}>
+            <Link onClick={(e) => {
+              e.preventDefault();
+              deleteObjects();
+            }}
+              to={""}
+            >
               <Tooltip title="Delete">
                 <IconButton aria-label="delete">
                   <DeleteIcon />
@@ -125,12 +127,10 @@ function EnhancedTableToolbar(props) {
                     {actionOptions.map((value, index) => (
                       <option key={index} value={value.value}>{value.label}</option>
                     ))}
-                    {/* <option value={10}>Ten</option>
-                  <option value={20}>Twenty</option>
-                  <option value={30}>Thirty</option> */}
+
                   </Select>
                 </FormControl>
-                <Button disabled={disabled} variant="contained" onClick={e => startAction(actionState, selected, setOriginalTableRows, setTableRows)} color="primary">
+                <Button disabled={disabled} variant="contained" onClick={e => { startAction(actionState, selected, setOriginalTableRows, setTableRows); }} color="primary">
                   Go
                 </Button>
               </>

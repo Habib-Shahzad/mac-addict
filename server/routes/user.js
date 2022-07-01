@@ -349,13 +349,18 @@ router.get("/table-data-auto", async (req, res) => {
 });
 
 
-
 router.post("/set-active", async (req, res) => {
-  const active = req.body.active;
-  const selected = req.body.selected;
-  await User.updateMany({}, { active: active }).where("_id").in(selected);
+  const { active, selected } = req.body;
+  await User.updateMany({ _id: { $in: selected } }, { active: active });
   const users = await User.find({}, { uid: 0 });
-  res.json({ data: users });
+  res.json({ success: true, data: users });
+});
+
+router.post("/set-admin", async (req, res) => {
+  const { admin, selected } = req.body;
+  await User.updateMany({ _id: { $in: selected } }, { admin: admin });
+  const users = await User.find({}, { uid: 0 });
+  res.json({ success: true, data: users });
 });
 
 router.post("/reset-password-check", async (req, res) => {

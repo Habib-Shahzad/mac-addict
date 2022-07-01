@@ -58,7 +58,6 @@ const createServer = async (callback) => {
     const countryRoutes = require('./routes/country');
     const provinceRoutes = require('./routes/province');
     const cityRoutes = require('./routes/city');
-    const areaRoutes = require('./routes/area');
     // const orderRoutes = require('./routes/order');
     const discountRoutes = require('./routes/discount');
 
@@ -74,7 +73,6 @@ const createServer = async (callback) => {
     app.use('/api/country', countryRoutes);
     app.use('/api/province', provinceRoutes);
     app.use('/api/city', cityRoutes);
-    app.use('/api/area', areaRoutes);
     // app.use('/api/orders', provinceRoutes);
     app.use('/api/discount', discountRoutes);
 

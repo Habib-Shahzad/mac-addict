@@ -4,16 +4,18 @@ import { Col, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import api from '../api';
 import TreeItem from '@mui/lab/TreeItem';
+import { useForm, Controller } from "react-hook-form";
+
 
 const createTableData = (data) => {
     const { _id, name, active } = data;
     return { _id, name, active };
 }
 
-const editObjCheck = (data, value, editObj) => {
-    if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
-    else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
-}
+// const editObjCheck = (data, value, editObj) => {
+//     if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
+//     else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
+// }
 
 const startAction = async (obj, selected, setOriginalTableRows, setTableRows) => {
     if (obj.type === 'active') {
@@ -80,23 +82,15 @@ const brandObj = {
         if (id != null) queryID = id;
         const [editObj, setEditObj] = useState(null);
 
-        const [nameState, setNameState] = useState({ name: '', helperText: 'Enter name Ex. LYS Beauty', error: false });
-        const [keywordsState, setKeywordsState] = useState({ name: '', helperText: 'Comma seperated SEO Keywords' });
-        const [descriptionState, setDescriptionState] = useState({ name: '', helperText: 'Type a description for SEO Ex. This brand is...' });
-        const [checkboxes, setCheckboxes] = useState({ active: true });
-
         const [categoriesArray, setCategoriesArray] = useState([]);
-        const [isDisabled, setCanSubmit] = useState(true);
         const [pressedBtn, setPressedBtn] = useState(null);
         const [loading, setLoading] = useState(true);
 
-        useEffect(() => {
-            let flag = true;
-            if (nameState.error === true) flag = true;
-            else if (nameState.name.length === 0) flag = true;
-            else flag = false;
-            setCanSubmit(flag);
-        }, [nameState]);
+
+        const [defaultName, setDefaultName] = useState('');
+        const [defaultKeywords, setDefaultKeywords] = useState('');
+        const [defaultDescription, setDefaultDescription] = useState('');
+        const [defaultActive, setDefaultActive] = useState(true);
 
         useEffect(() => {
             (
@@ -113,44 +107,25 @@ const brandObj = {
                     setCategoriesArray(content.data)
                     setLoading(false);
                 })();
-        }, [queryID, isDisabled]);
+        }, [queryID]);
 
         useEffect(() => {
             if (editObj) {
-                setNameState(prevState => ({ ...prevState, name: editObj.name }));
-                setKeywordsState(prevState => ({ ...prevState, name: editObj.keywords }));
-                setDescriptionState(prevState => ({ ...prevState, name: editObj.description }));
-                setCheckboxes(prevState => ({ ...prevState, active: editObj.active }))
+                setDefaultName(editObj.name);
+                setDefaultKeywords(editObj.keywords);
+                setDefaultDescription(editObj.description);
+                setDefaultActive(editObj.active);
             } else {
-                setNameState(prevState => ({ ...prevState, name: '' }));
-                setKeywordsState(prevState => ({ ...prevState, name: '' }));
-                setDescriptionState(prevState => ({ ...prevState, name: '' }));
-                setCheckboxes(prevState => ({ ...prevState, active: true }))
+
             }
         }, [editObj]);
 
-        function changeNameState(event) {
-            const { value } = event.target;
-            setNameState(prevState => ({ ...prevState, name: value }));
-            let obj = editObjCheck(categoriesArray, value, editObj);
-            if (obj) setNameState(prevState => ({ ...prevState, helperText: `${obj.name} already exists!`, error: true }));
-            else if (value === '') setNameState(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
-            else setNameState(prevState => ({ ...prevState, helperText: 'Enter name Ex. LYS Beauty', error: false }));
-        };
-        function changeKeywordsState(event) {
-            const { value } = event.target;
-            setKeywordsState(prevState => ({ ...prevState, name: value }));
-        };
-        function changeDescriptionState(event) {
-            const { value } = event.target;
-            setDescriptionState(prevState => ({ ...prevState, name: value }));
-        };
-        const handleActiveCheckbox = () => {
-            setCheckboxes(prevState => ({ ...prevState, active: !checkboxes.active }));
-        };
 
-        const onSubmit = async e => {
-            e.preventDefault();
+
+        const { register, handleSubmit, formState: { errors }, control, reset } = useForm();
+
+
+        const onSubmit = async (data) => {
             setLoading(true);
             if (queryID === '') {
                 const response = await fetch(`${api}/brand/add`, {
@@ -159,7 +134,7 @@ const brandObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ name: nameState.name, keywords: keywordsState.name, description: descriptionState.name, active: checkboxes.active }),
+                    body: JSON.stringify({ name: data.name, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();
                 setCategoriesArray([...categoriesArray, content.data]);
@@ -170,7 +145,7 @@ const brandObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ _id: queryID, name: nameState.name, keywords: keywordsState.name, description: descriptionState.name, active: checkboxes.active }),
+                    body: JSON.stringify({ _id: queryID, name: data.name, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();
                 const objArray = [...categoriesArray];
@@ -179,14 +154,12 @@ const brandObj = {
                 queryID = '';
                 setCategoriesArray(objArray);
             }
+            reset();
             if (pressedBtn === 1) {
                 history.push('/admin/brand');
             }
             else {
-                setNameState({ name: '', helperText: 'Enter name Ex. LYS Beauty', error: false });
-                setKeywordsState({ name: '', helperText: 'Comma seperated SEO Keywords' });
-                setDescriptionState({ name: '', helperText: 'Type a description for SEO Ex. This brand is...' })
-                setCheckboxes({ active: true });
+
                 setLoading(false);
                 queryID = '';
                 history.push('/admin/brand/add');
@@ -194,43 +167,42 @@ const brandObj = {
         };
         if (loading) return <div></div>
 
-        return (<form onSubmit={onSubmit} autoComplete="off">
+        return (<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <fieldset>
                 <legend>Details</legend>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="name">
                         <FormControl className={classes.formControl}>
-                            <InputLabel error={nameState.error} color="secondary" htmlFor="name">Name</InputLabel>
+                            <InputLabel error={errors.name ? true : false} color="secondary">Name</InputLabel>
                             <Input
+                                {...register("name", {
+                                    required: "Name is required!",
+                                })}
+                                defaultValue={defaultName}
                                 color="secondary"
                                 autoComplete="none"
-                                value={nameState.name}
                                 type="text"
-                                error={nameState.error}
-                                id="name"
-                                name="name"
-                                onChange={changeNameState}
-                                onBlur={changeNameState}
+                                error={errors.name ? true : false}
                                 aria-describedby="name-helper"
                             />
-                            <FormHelperText error={nameState.error} id="name-helper">{nameState.helperText}</FormHelperText>
+                            {!errors.name &&
+                                <FormHelperText id="name-helper">Enter name Ex. Sephora</FormHelperText>
+                            }
+                            <FormHelperText error={errors.name ? true : false} id="name-helper">{errors.name && <>{errors.name.message}</>}</FormHelperText>
                         </FormControl>
                     </Form.Group>
                     <Form.Group as={Col} md={6} controlId="keywords">
                         <FormControl className={classes.formControl}>
-                            <InputLabel color="secondary" htmlFor="keywords">Keywords</InputLabel>
+                            <InputLabel color="secondary">Keywords</InputLabel>
                             <Input
+                                defaultValue={defaultKeywords}
                                 color="secondary"
                                 autoComplete="none"
-                                value={keywordsState.name}
+                                {...register("keywords", {})}
                                 type="text"
-                                id="keywords"
-                                name="keywords"
-                                onChange={changeKeywordsState}
-                                onBlur={changeKeywordsState}
                                 aria-describedby="keywords-helper"
                             />
-                            <FormHelperText id="keywords-helper">{keywordsState.helperText}</FormHelperText>
+                            <FormHelperText id="keywords-helper">Comma seperated SEO Keywords</FormHelperText>
                         </FormControl>
                     </Form.Group>
                 </Row>
@@ -238,37 +210,49 @@ const brandObj = {
                     <Form.Group controlId="description">
                         <FormControl className={classes.formControl}>
                             <TextField
-                                id="description"
+                                defaultValue={defaultDescription}
+                                {...register("description", {})}
                                 color="secondary"
                                 autoComplete="none"
                                 label="Description"
-                                onChange={changeDescriptionState}
-                                onBlur={changeDescriptionState}
                                 multiline
                                 rows={10}
-                                value={descriptionState.name}
                                 aria-describedby="description-helper"
                             />
-                            <FormHelperText id="description-helper">{descriptionState.helperText}</FormHelperText>
+                            <FormHelperText id="description-helper">Type a description for SEO Ex. This category is...</FormHelperText>
                         </FormControl>
                     </Form.Group>
                 </Row>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="active">
+
                         <FormControlLabel
-                            control={<Checkbox checked={checkboxes.active} onChange={handleActiveCheckbox} name="active" />}
-                            label="Active"
+                            control={
+                                <Controller
+                                    name={"active"}
+                                    control={control}
+                                    defaultValue={defaultActive}
+                                    render={(props) => (
+                                        <Checkbox
+
+                                            checked={props.field.value}
+                                            onChange={(e) => props.field.onChange(e.target.checked)}
+                                        />
+                                    )}
+                                />
+                            }
+                            label={"Active"}
                         />
                     </Form.Group>
                 </Row>
             </fieldset>
-            <Button className={classes.button} onClick={_ => setPressedBtn(1)} disabled={isDisabled} type="submit" variant="contained" color="primary">
+            <Button className={classes.button} onClick={_ => setPressedBtn(1)} type="submit" variant="contained" color="primary">
                 Save
             </Button>
-            <Button onClick={_ => setPressedBtn(2)} disabled={isDisabled} type="submit" variant="contained" color="primary">
+            <Button onClick={_ => setPressedBtn(2)} type="submit" variant="contained" color="primary">
                 Save and add another
             </Button>
-        </form>);
+        </Form>);
     },
 }
 

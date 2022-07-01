@@ -90,4 +90,14 @@ router.post('/delete', async (req, res) => {
     }
 });
 
+
+
+router.post("/set-active", async (req, res) => {
+    const { active, selected } = req.body;
+    await Brand.updateMany({ _id: { $in: selected } }, { active: active });
+    const brands = await Brand.find({});
+    if (!brands) res.json({ data: [] });
+    else res.json({ data: brands });
+
+});
 module.exports = router;

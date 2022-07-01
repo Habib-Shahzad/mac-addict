@@ -1,5 +1,5 @@
 import { FormControl, FormControlLabel, Checkbox, Input, InputLabel, FormHelperText, Button, TextField, Divider, IconButton } from '@mui/material';
-import Autocomplete from '@mui/lab/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import React, { useState, useEffect } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';

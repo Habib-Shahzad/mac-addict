@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles'
 import { Container, Col, Row } from 'react-bootstrap';
-import { countryObj, provinceObj, cityObj, areaObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj } from '../../db';
+import { countryObj, provinceObj, cityObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj } from '../../db';
 import { useParams } from 'react-router';
 import './AdminForm.scss';
 
@@ -55,7 +55,6 @@ function AdminForm(props) {
     if (model === 'country') formFetch = countryObj;
     else if (model === 'province') formFetch = provinceObj;
     else if (model === 'city') formFetch = cityObj;
-    else if (model === 'area') formFetch = areaObj;
     else if (model === 'category') formFetch = categoryObj;
     else if (model === 'sub-category') formFetch = subCategoryObj;
     else if (model === 'further-sub-category') formFetch = furtherSubCategoryObj;
@@ -63,6 +62,12 @@ function AdminForm(props) {
     else if (model === 'product') formFetch = productObj;
     else if (model === 'color') formFetch = colorObj;
     else if (model === 'size') formFetch = sizeObj;
+    else formFetch = {};
+
+
+    if (Object.keys(formFetch).length === 0) {
+        return <div>No data</div>;
+    }
 
     return (
         <Container fluid className='adminForm'>

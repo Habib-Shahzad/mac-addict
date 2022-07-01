@@ -33,6 +33,7 @@
     "react-select": "^5.3.2",
     "react-slick": "^0.28.1",
     "react-transition-group": "^4.4.2",
+    "rgb-hex": "^4.0.0",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^1.0.1"
   },

@@ -9,17 +9,16 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import { countryObj, provinceObj, cityObj, areaObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj } from '../../db';
+import { countryObj, provinceObj, cityObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj, userObj } from '../../db';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
-// import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
-import Alert from '@mui/lab/Alert';
+import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
 import {
   useLocation,
 } from "react-router-dom";
-import { EnhancedTableHead, EnhancedTableToolbar } from '../components'
+import { EnhancedTableHead, EnhancedTableToolbar, DeleteConfirmModal } from '../components'
 import { useParams } from 'react-router';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -111,12 +110,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EnhancedTable(props) {
   const { model } = useParams();
+
   const location = useLocation();
   let tableFetch = {};
+
+
+
   if (model === 'country') tableFetch = countryObj;
   else if (model === 'province') tableFetch = provinceObj;
   else if (model === 'city') tableFetch = cityObj;
-  else if (model === 'area') tableFetch = areaObj;
   else if (model === 'category') tableFetch = categoryObj;
   else if (model === 'sub-category') tableFetch = subCategoryObj;
   else if (model === 'further-sub-category') tableFetch = furtherSubCategoryObj;
@@ -124,6 +126,8 @@ export default function EnhancedTable(props) {
   else if (model === 'product') tableFetch = productObj;
   else if (model === 'color') tableFetch = colorObj;
   else if (model === 'size') tableFetch = sizeObj;
+  else if (model === 'user') tableFetch = userObj;
+  else tableFetch = {};
 
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
@@ -139,16 +143,6 @@ export default function EnhancedTable(props) {
 
   const [open, setOpen] = React.useState([]);
   const [searchState, setSearchState] = React.useState('');
-
-  // const history = useHistory();
-
-  // history.listen((location, action) => {
-  //   setTableRows([]);
-  //   setOriginalTableRows([]);
-  //   setOpen([]);
-  //   setLoading(true);
-  //   setSelected([]);
-  // });
 
   useEffect(() => {
     try {
@@ -187,6 +181,7 @@ export default function EnhancedTable(props) {
           headers: { 'Content-Type': 'application/json' },
         });
         const content = await response.json();
+
         content.data.forEach(element => {
           rows.push(createTableData(element));
         });
@@ -211,6 +206,7 @@ export default function EnhancedTable(props) {
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
+
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -245,7 +241,6 @@ export default function EnhancedTable(props) {
         selected.slice(selectedIndex + 1),
       );
     }
-
     setSelected(newSelected);
   };
 
@@ -259,8 +254,57 @@ export default function EnhancedTable(props) {
   };
 
   const isSelected = (value) => selected.indexOf(value) !== -1;
+
+
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
+
+
+  if (Object.keys(tableFetch).length === 0) {
+    return <div>No data</div>;
+  }
+
+  const deleteAction = async (selected, setTableRows, setOriginalTableRows) => {
+    let rows = [];
+    const del_api = tableFetch.deleteApi[1];
+
+    const response = await fetch(del_api, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      withCredentials: true,
+      body: JSON.stringify({ data: selected })
+    });
+    const content = await response.json();
+    content.data.forEach(element => {
+      rows.push(tableFetch.createTableData(element));
+    });
+    setTableRows(rows);
+    setOriginalTableRows(rows);
+  }
+
+  // console.log(tableFetch);
+  const deleteObjects = async () => {
+    setDeleteLoading(true);
+    await deleteAction(selected, setTableRows, setOriginalTableRows);
+    setDeleteLoading(false);
+    handleCloseModal();
+    setSelected([]);
+  }
+
   return (
     <div id='data' className="table-admin">
+      <DeleteConfirmModal
+        loading={deleteLoading}
+        open={openModal}
+        handleClose={handleCloseModal}
+        yesButtonPressed={deleteObjects}
+      />
       {loading ? (
         <LinearProgress color="secondary" />
       ) : null}
@@ -296,7 +340,9 @@ export default function EnhancedTable(props) {
           setTableRows={setTableRows}
           startAction={tableFetch.startAction}
           actionOptions={tableFetch.actionOptions}
-          selected={selected} />
+          selected={selected}
+          deleteObjects={handleOpenModal}
+        />
         <TableContainer>
           <Table
             className={classes.table}

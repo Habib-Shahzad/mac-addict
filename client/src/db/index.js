@@ -1,7 +1,6 @@
 export { default as countryObj } from './country';
 export { default as provinceObj } from './province';
 export { default as cityObj } from './city';
-export { default as areaObj } from './area';
 export { default as categoryObj } from './category';
 export { default as subCategoryObj } from './subCategory';
 export { default as furtherSubCategoryObj } from './furtherSubCategory';
@@ -9,3 +8,4 @@ export { default as brandObj } from './brand';
 export { default as productObj } from './product';
 export { default as colorObj } from './color';
 export { default as sizeObj } from './size';
+export { default as userObj } from './user';

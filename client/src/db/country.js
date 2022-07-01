@@ -4,16 +4,18 @@ import { Col, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import api from '../api';
 import TreeItem from '@mui/lab/TreeItem';
+import { useForm, Controller } from "react-hook-form";
+
 
 const createTableData = (data) => {
     const { _id, name, active } = data;
     return { _id, name, active };
 }
 
-const editObjCheck = (data, value, editObj) => {
-    if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
-    else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
-}
+// const editObjCheck = (data, value, editObj) => {
+//     if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
+//     else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
+// }
 
 const startAction = async (obj, selected, setOriginalTableRows, setTableRows) => {
     if (obj.type === 'active') {
@@ -92,21 +94,13 @@ const countryObj = {
         if (id != null) queryID = id;
         const [editObj, setEditObj] = useState(null);
 
-        const [nameState, setNameState] = useState({ name: '', helperText: 'Enter name Ex. Pakistan', error: false });
-        const [checkboxes, setCheckboxes] = useState({ active: true });
 
         const [countriesArray, setCountriesArray] = useState([]);
-        const [isDisabled, setCanSubmit] = useState(true);
         const [pressedBtn, setPressedBtn] = useState(null);
         const [loading, setLoading] = useState(true);
 
-        useEffect(() => {
-            let flag = true;
-            if (nameState.error === true) flag = true;
-            else if (nameState.name.length === 0) flag = true;
-            else flag = false;
-            setCanSubmit(flag);
-        }, [nameState]);
+        const [defaultName, setDefaultName] = useState('');
+        const [defaultActive, setDefaultActive] = useState(true);
 
         useEffect(() => {
             (
@@ -123,33 +117,22 @@ const countryObj = {
                     setCountriesArray(content.data)
                     setLoading(false);
                 })();
-        }, [queryID, isDisabled]);
+        }, [queryID]);
 
         useEffect(() => {
             if (editObj) {
-                setNameState(prevState => ({ ...prevState, name: editObj.name }));
-                setCheckboxes(prevState => ({ ...prevState, active: editObj.active }));
+                setDefaultName(editObj.name);
+                setDefaultActive(editObj.active);
             } else {
-                setNameState(prevState => ({ ...prevState, name: '' }));
-                setCheckboxes(prevState => ({ ...prevState, active: true }));
+
             }
         }, [editObj]);
 
-        function changeNameState(event) {
-            const { value } = event.target;
-            setNameState(prevState => ({ ...prevState, name: value }));
-            let obj = editObjCheck(countriesArray, value, editObj);
-            if (obj) setNameState(prevState => ({ ...prevState, helperText: `${obj.name} already exists!`, error: true }));
-            else if (value === '') setNameState(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
-            else setNameState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Pakistan', error: false }));
-        };
 
-        const handleActiveCheckbox = () => {
-            setCheckboxes(prevState => ({ ...prevState, active: !checkboxes.active }));
-        };
+        const { register, handleSubmit, formState: { errors }, control, reset } = useForm();
 
-        const onSubmit = async e => {
-            e.preventDefault();
+
+        const onSubmit = async (data) => {
             setLoading(true);
             if (queryID === '') {
                 const response = await fetch(`${api}/country/add`, {
@@ -158,7 +141,7 @@ const countryObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ name: nameState.name, active: checkboxes.active }),
+                    body: JSON.stringify({ name: data.name, active: data.active }),
                 });
                 const content = await response.json();
                 setCountriesArray([...countriesArray, content.data]);
@@ -169,7 +152,7 @@ const countryObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ _id: queryID, name: nameState.name, active: checkboxes.active }),
+                    body: JSON.stringify({ _id: queryID, name: data.name, active: data.active }),
                 });
                 const content = await response.json();
                 const objArray = [...countriesArray];
@@ -178,12 +161,14 @@ const countryObj = {
                 queryID = '';
                 setCountriesArray(objArray);
             }
+
+            reset();
             if (pressedBtn === 1) {
                 history.push('/admin/country');
             }
             else {
-                setNameState({ name: '', helperText: 'Enter name Ex. Pakistan', error: false });
-                setCheckboxes({ active: true });
+                setDefaultName('');
+                setDefaultActive(true);
                 setLoading(false);
                 queryID = '';
                 history.push('/admin/country/add');
@@ -191,45 +176,62 @@ const countryObj = {
         };
         if (loading) return <div></div>;
 
-        return (<form onSubmit={onSubmit} autoComplete="off">
+        return (<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <fieldset>
                 <legend>Details</legend>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="name">
                         <FormControl className={classes.formControl}>
-                            <InputLabel error={nameState.error} color="secondary" htmlFor="name">Name</InputLabel>
+                            <InputLabel error={errors.name ? true : false} color="secondary" htmlFor="name">Name</InputLabel>
                             <Input
+                                {...register("name", {
+                                    required: "Name is required!",
+                                })}
+                                defaultValue={defaultName}
                                 color="secondary"
                                 autoComplete="none"
-                                value={nameState.name}
                                 type="text"
-                                error={nameState.error}
-                                id="name"
-                                name="name"
-                                onChange={changeNameState}
-                                onBlur={changeNameState}
+                                error={errors.name ? true : false}
                                 aria-describedby="name-helper"
                             />
-                            <FormHelperText error={nameState.error} id="name-helper">{nameState.helperText}</FormHelperText>
+                            {!errors.name &&
+                                <FormHelperText id="name-helper">Enter name Ex. Pakistan</FormHelperText>
+                            }
+                            <FormHelperText error={errors.name ? true : false} id="name-helper">{errors.name && <>{errors.name.message}</>}</FormHelperText>
+
                         </FormControl>
                     </Form.Group>
                 </Row>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="active">
+
                         <FormControlLabel
-                            control={<Checkbox checked={checkboxes.active} onChange={handleActiveCheckbox} name="active" />}
-                            label="Active"
+                            control={
+                                <Controller
+                                    name={"active"}
+                                    control={control}
+                                    defaultValue={defaultActive}
+                                    render={(props) => (
+                                        <Checkbox
+
+                                            checked={props.field.value}
+                                            onChange={(e) => props.field.onChange(e.target.checked)}
+                                        />
+                                    )}
+                                />
+                            }
+                            label={"Active"}
                         />
                     </Form.Group>
                 </Row>
             </fieldset>
-            <Button className={classes.button} onClick={_ => setPressedBtn(1)} disabled={isDisabled} type="submit" variant="contained" color="primary">
+            <Button className={classes.button} onClick={_ => setPressedBtn(1)} type="submit" variant="contained" color="primary">
                 Save
             </Button>
-            <Button onClick={_ => setPressedBtn(2)} disabled={isDisabled} type="submit" variant="contained" color="primary">
+            <Button onClick={_ => setPressedBtn(2)} type="submit" variant="contained" color="primary">
                 Save and add another
             </Button>
-        </form>);
+        </Form>);
     },
 }
 

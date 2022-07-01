@@ -48,8 +48,9 @@ router.get('/get-by-ids', async (req, res) => {
 });
 
 router.post('/delete', async (req, res) => {
-    await Color.deleteMany({ _id: req.body.ids });
-    res.json({ data: 'success' });
+    await Color.deleteMany({ _id: { $in: req.body.data } });
+    const colors = await Color.find({});
+    res.json({ success: true, data: colors });
 });
 
 module.exports = router;

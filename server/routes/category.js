@@ -90,23 +90,26 @@ router.get('/get-by-ids', async (req, res) => {
 });
 
 router.post('/delete', async (req, res) => {
-    try {
-        const data = req.body.data;
-        data.forEach(async category => {
-            category.subCategories.forEach(async subCategory => {
-                subCategory.furtherSubCategories.forEach(async furtherSubCategory => {
-                    await Product.deleteMany({ furtherSubCategory: furtherSubCategory._id });
-                })
-                await FurtherSubCategory.deleteMany({ subCategory: subCategory._id });
-            });
-            await SubCategory.deleteMany({ category: category._id });
-        });
-        await Category.deleteMany({ _id: req.body.ids });
-        res.json({ data: 'success' });
-    } catch (error) {
-        console.log(error);
-        res.json({ data: 'failed' });
-    }
+    await Category.deleteMany({ _id: { $in: req.body.data } });
+    const subCategories = await SubCategory.find({ category: { $in: req.body.data } });
+    await FurtherSubCategory.deleteMany({ subCategory: { $in: subCategories.map(x => x._id) } });
+    await SubCategory.deleteMany({ category: { $in: req.body.data } });
+
+    const categories = await Category.find({});
+    res.json({ success: true, data: categories });
 });
+
+router.post("/set-active", async (req, res) => {
+    const { active, selected } = req.body;
+
+    await Category.updateMany({ _id: { $in: selected } }, { active: active });
+    const categories = await Category.find({});
+
+    if (!categories) res.json({ data: [] });
+    else res.json({ data: categories });
+
+});
+
+
 
 module.exports = router;

@@ -1,10 +1,12 @@
 import { FormControl, FormControlLabel, Checkbox, Input, InputLabel, FormHelperText, Button, TextField } from '@mui/material';
-import Autocomplete from '@mui/lab/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import React, { useState, useEffect } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import api from '../api';
 import TreeItem from '@mui/lab/TreeItem';
+import { useForm, Controller } from "react-hook-form";
+
 
 const createTableData = (data) => {
     const { _id, name, province, active } = data;
@@ -32,10 +34,10 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
     }
 }
 
-const editObjCheck = (data, value, editObj) => {
-    if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
-    else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
-}
+// const editObjCheck = (data, value, editObj) => {
+//     if (editObj) return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim() && obj.name !== editObj.name);
+//     else return data.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim())
+// }
 
 const cityObj = {
     apiTable: `${api}/city/table-data`,
@@ -89,26 +91,16 @@ const cityObj = {
         if (id != null) queryID = id;
         const [editObj, setEditObj] = useState(null);
 
-        const [nameState, setNameState] = useState({ name: '', helperText: 'Enter name Ex. Karachi', error: false });
-        const [provinceState, setProvinceState] = useState({ name: '', obj: undefined, helperText: 'Enter name Ex. Sindh', error: false });
-        const [checkboxes, setCheckboxes] = useState({ active: true });
-
         const [citiesArray, setCitiesArray] = useState([]);
         const [provincesArray, setProvincesArray] = useState([]);
-        const [isDisabled, setCanSubmit] = useState(true);
         const [pressedBtn, setPressedBtn] = useState(null);
         const [loading, setLoading] = useState(true);
 
-        useEffect(() => {
-            let flag = true;
-            if (nameState.error === true) flag = true;
-            else if (nameState.name.length === 0) flag = true;
-            else if (provinceState.error === true) flag = true;
-            else if (provinceState.name.length === 0) flag = true;
-            else if (provinceState.obj === undefined) flag = true;
-            else flag = false;
-            setCanSubmit(flag);
-        }, [nameState, provinceState]);
+
+        const [defaultName, setDefaultName] = useState('');
+        const [defaultProvince, setDefaultProvince] = useState('');
+        const [defaultActive, setDefaultActive] = useState(true);
+
 
         useEffect(() => {
             (
@@ -143,37 +135,19 @@ const cityObj = {
 
         useEffect(() => {
             if (editObj) {
-                setNameState(prevState => ({ ...prevState, name: editObj.name }));
-                setProvinceState(prevState => ({ ...prevState, name: editObj.name, obj: editObj.province }));
-                setCheckboxes({ active: editObj.active });
+                setDefaultName(editObj.name);
+                setDefaultProvince(editObj.province);
+                setDefaultActive(editObj.active);
+
             } else {
-                setNameState(prevState => ({ ...prevState, name: '' }));
-                setProvinceState(prevState => ({ ...prevState, name: '', obj: undefined }));
-                setCheckboxes({ active: true });
+
             }
         }, [editObj]);
 
-        function changeNameState(event) {
-            const { value } = event.target;
-            setNameState(prevState => ({ ...prevState, name: value }));
-            let obj = editObjCheck(citiesArray, value, editObj);
-            if (obj) setNameState(prevState => ({ ...prevState, helperText: `${obj.name} already exists!`, error: true }));
-            else if (value === '') setNameState(prevState => ({ ...prevState, helperText: 'Name is required!', error: true }));
-            else setNameState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Karachi', error: false }));
-        };
-        function changeProvinceState(event) {
-            const { value } = event.target;
-            const obj = provincesArray.find(obj => obj.name.toLowerCase().trim() === value.toLowerCase().trim());
-            setProvinceState(prevState => ({ ...prevState, name: value, obj: obj }));
-            if (value === '') setProvinceState(prevState => ({ ...prevState, helperText: 'Province is required!', error: true }));
-            else setProvinceState(prevState => ({ ...prevState, helperText: 'Enter name Ex. Sindh', error: false }));
-        };
-        function ChangeChexboxesState(event) {
-            setCheckboxes(prevState => ({ ...prevState, active: !checkboxes.active }));
-        }
+        const { register, handleSubmit, formState: { errors }, control, reset } = useForm();
 
-        const onSubmit = async e => {
-            e.preventDefault();
+
+        const onSubmit = async (data) => {
             setLoading(true);
             if (queryID === '') {
                 const response = await fetch(`${api}/city/add`, {
@@ -182,7 +156,7 @@ const cityObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ name: nameState.name, province: provinceState.obj, active: checkboxes.active }),
+                    body: JSON.stringify({ name: data.name, province: data.province, active: data.active }),
                 });
                 const content = await response.json();
                 setCitiesArray([...citiesArray, content.data]);
@@ -193,7 +167,7 @@ const cityObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
-                    body: JSON.stringify({ _id: queryID, name: nameState.name, province: provinceState.obj, active: checkboxes.active }),
+                    body: JSON.stringify({ _id: queryID, name: data.name, province: data.province, active: data.active }),
                 });
                 const content = await response.json();
                 const objArray = [...citiesArray];
@@ -202,89 +176,122 @@ const cityObj = {
                 queryID = '';
                 setCitiesArray(objArray);
             }
+            reset();
             if (pressedBtn === 1) {
                 if (queryID === '') {
                     history.push({
                         pathname: `/admin/city`,
-                        state: { data: 'added', name: nameState.name }
+                        state: { data: 'added', name: data.name }
                     });
                 } else {
                     history.push({
                         pathname: `/admin/city`,
-                        state: { data: 'edited', name: nameState.name }
+                        state: { data: 'edited', name: data.name }
                     });
                 }
             }
             else {
-                setNameState({ name: '', helperText: 'Enter name Ex. Karachi', error: false });
-                setProvinceState({ name: '', obj: undefined, helperText: 'Enter name Ex. Sindh', error: false });
-                setCheckboxes({ active: true });
+                setDefaultName('');
+                setDefaultProvince('');
+                setDefaultActive(true);
                 setLoading(false);
                 history.push('/admin/city/add');
             }
         };
         if (loading) return <div></div>
 
-        return (<form onSubmit={onSubmit} autoComplete="off">
+        return (<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <fieldset>
                 <legend>Details</legend>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="name">
                         <FormControl className={classes.formControl}>
-                            <InputLabel error={nameState.error} color="secondary" htmlFor="name">Name</InputLabel>
+                            <InputLabel error={errors.name ? true : false} color="secondary" htmlFor="name">Name</InputLabel>
                             <Input
+                                {...register("name", {
+                                    required: "Name is required!",
+                                })}
+                                defaultValue={defaultName}
                                 color="secondary"
                                 autoComplete="none"
-                                value={nameState.name}
                                 type="text"
-                                error={nameState.error}
-                                id="name"
-                                name="name"
-                                onChange={changeNameState}
-                                onBlur={changeNameState}
+                                error={errors.name ? true : false}
                                 aria-describedby="name-helper"
                             />
-                            <FormHelperText error={nameState.error} id="name-helper">{nameState.helperText}</FormHelperText>
+                            {!errors.name &&
+                                <FormHelperText id="name-helper">Enter name Ex. Karachi</FormHelperText>
+                            }
+                            <FormHelperText error={errors.name ? true : false} id="name-helper">{errors.name && <>{errors.name.message}</>}</FormHelperText>
+
                         </FormControl>
                     </Form.Group>
                     <Form.Group as={Col} md={6} controlId="province">
                         <FormControl className={classes.formControl}>
-                            <Autocomplete
-                                id="combo-box-demo"
-                                color="secondary"
-                                options={provincesArray}
-                                getOptionLabel={(option) => option.name}
-                                value={provinceState.obj ? provinceState.obj : null}
-                                // style={{ width: 300 }}
-                                renderInput={(params) => <TextField
-                                    color="secondary"
-                                    error={provinceState.error}
-                                    onChange={changeProvinceState}
-                                    onBlur={changeProvinceState}
-                                    {...params} label="Province"
-                                />
-                                }
+                            <Controller
+                                render={(props) => (
+                                    <Autocomplete
+                                        defaultValue={editObj ? defaultProvince : undefined}
+                                        isOptionEqualToValue={(option, value) => option._id === value._id}
+                                        id="combo-box-demo"
+                                        color="secondary"
+                                        options={provincesArray}
+                                        getOptionLabel={(option) => option.name}
+                                        onChange={(e, data) => props.field.onChange(data)}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                error={errors.province ? true : false}
+                                                color="secondary"
+                                                {...params}
+                                                label="Province"
+                                            />
+                                        }
+                                    />
+                                )}
+                                rules={{ required: "Province is required!" }}
+                                onChange={([, data]) => data}
+                                defaultValue={defaultProvince}
+                                name={"province"}
+                                control={control}
                             />
-                            <FormHelperText error={provinceState.error} id="provinceState-helper">{provinceState.helperText}</FormHelperText>
+                            {!errors.province &&
+                                <FormHelperText id="name-helper">Select province Ex. Sindh</FormHelperText>
+                            }
+                            <FormHelperText error={errors.province ? true : false} id="name-helper">{errors.province && <>{errors.province.message}</>}</FormHelperText>
+
                         </FormControl>
                     </Form.Group>
                 </Row>
                 <Row className={classes.rowGap}>
-                    <Form.Group as={Col} md={6} controlId="name">
+                    <Form.Group as={Col} md={6} controlId="active">
+
                         <FormControlLabel
-                            control={<Checkbox checked={checkboxes.active} onChange={ChangeChexboxesState} name="active" />}
-                            label="Active"
+                            control={
+                                <Controller
+                                    name={"active"}
+                                    control={control}
+                                    defaultValue={defaultActive}
+                                    render={(props) => (
+                                        <Checkbox
+
+                                            checked={props.field.value}
+                                            onChange={(e) => props.field.onChange(e.target.checked)}
+                                        />
+                                    )}
+                                />
+                            }
+                            label={"Active"}
                         />
+
                     </Form.Group>
                 </Row>
             </fieldset>
-            <Button className={classes.button} onClick={_ => setPressedBtn(1)} disabled={isDisabled} type="submit" variant="contained" color="primary">
+            <Button className={classes.button} onClick={_ => setPressedBtn(1)} type="submit" variant="contained" color="primary">
                 Save
             </Button>
-            <Button onClick={_ => setPressedBtn(2)} disabled={isDisabled} type="submit" variant="contained" color="primary">
+            <Button onClick={_ => setPressedBtn(2)} type="submit" variant="contained" color="primary">
                 Save and add another
             </Button>
-        </form>);
+        </Form>);
     },
 }
 

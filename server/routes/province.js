@@ -67,23 +67,22 @@ router.get('/get-by-ids', async (req, res) => {
 });
 
 router.post('/delete', async (req, res) => {
-    try {
-        const data = req.body.data;
-        data.forEach(async province => {
-            province.cities.forEach(async city => {
-                city.areas.forEach(async area => {
-                    await Address.deleteMany({ area: area._id });
-                });
-                await Area.deleteMany({ city: city._id });
-            });
-            await City.deleteMany({ province: province._id });
-        });
-        await Province.deleteMany({ _id: req.body.ids });
-        res.json({ data: 'success' });
-    } catch (error) {
-        console.log(error);
-        res.json({ data: 'failed' });
-    }
+    await Province.deleteMany({ _id: { $in: req.body.data } });
+    await City.deleteMany({ province: { $in: req.body.data } });
+    const provinces = await Province.find({}).populate('country');
+    res.json({ success: true, data: provinces });
+});
+
+
+router.post("/set-active", async (req, res) => {
+    const { active, selected } = req.body;
+
+    await Province.updateMany({ _id: { $in: selected } }, { active: active });
+    const provinces = await Province.find({}).populate('country');
+
+    if (!provinces) res.json({ data: [] });
+    else res.json({ data: provinces });
+
 });
 
 module.exports = router;

@@ -86,23 +86,13 @@ router.get("/get-by-ids", async (req, res) => {
   else res.json({ data: subCategories });
 });
 
-router.post("/delete", async (req, res) => {
-  try {
-    const data = req.body.data;
-    data.forEach(async (subCategory) => {
-      subCategory.furtherSubCategories.forEach(async (furtherSubCategory) => {
-        await Product.deleteMany({
-          furtherSubCategory: furtherSubCategory._id,
-        });
-      });
-      await FurtherSubCategory.deleteMany({ subCategory: subCategory._id });
-    });
-    await SubCategory.deleteMany({ _id: req.body.ids });
-    res.json({ data: "success" });
-  } catch (error) {
-    console.log(error);
-    res.json({ data: "failed" });
-  }
+
+router.post('/delete', async (req, res) => {
+  await SubCategory.deleteMany({ _id: { $in: req.body.data } });
+  await FurtherSubCategory.deleteMany({ subCategory: { $in: req.body.data } });
+  const sub_categories = await SubCategory.find({});
+  res.json({ success: true, data: sub_categories });
 });
+
 
 module.exports = router;

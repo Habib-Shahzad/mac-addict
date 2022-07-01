@@ -19,14 +19,9 @@ function Cart(props) {
     }, []);
 
     const user = useContext(UserContext);
-
-
-
     const history = useHistory();
     const location = useLocation();
     const pathname = location.pathname;
-
-    // const cart = useContext(CartContext);
 
     let active = {};
     let activeCompClass = {};
@@ -45,9 +40,7 @@ function Cart(props) {
         if (!user.userState) {
             history.push('/signin');
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [history, user.userState])
 
 
     const cartPage = e => {

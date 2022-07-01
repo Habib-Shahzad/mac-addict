@@ -4,7 +4,6 @@ const productDetail = require('./productDetail');
 const country = require('./country');
 const province = require('./province');
 const city = require('./city');
-const area = require('./area');
 const address = require('./address');
 const color = require('./color');
 const size = require('./size');
@@ -21,7 +20,6 @@ module.exports = {
     country,
     province,
     city,
-    area,
     address,
     color,
     size,
