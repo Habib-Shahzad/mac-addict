@@ -43,85 +43,63 @@ router.get('/get-product-slug', async (req, res) => {
 });
 
 router.post('/add', async (req, res) => {
-    const data = req.body;
-    let i = 0;
-    let slug = '';
-    while (true) {
-        slug = `${slugify(data.name, { lower: true })}-${i}`;
-        const objExists = await Product.exists({ slug: slug });
-        if (objExists) i += 1;
-        else break;
-    }
-    const newProduct = new Product({
-        name: data.name,
-        slug: slug,
-        keywords: data.keywords,
-        description: data.description,
-        imagePath: data.imagePath,
-        active: data.active,
-        hasColor: data.hasColor,
-        category: data.category,
-        subCategory: data.subCategory,
-        furtherSubCategory: data.furtherSubCategory,
-        brand: data.brand,
-    });
-    newProduct.save();
-    data.productDetails.forEach(async productDetail => {
-        const newProductDetail = new ProductDetail({
-            imagePath: productDetail.imagePath,
-            product: newProduct,
-            quantity: productDetail.qty,
-            price: productDetail.price,
-            points: productDetail.points,
-            preOrder: productDetail.preOrder,
-            size: productDetail.size,
-            color: productDetail.color,
-        });
-        newProductDetail.save()
-    });
-    res.json({ data: newProduct });
-});
+    try {
 
-router.post('/update', async (req, res) => {
-    const data = req.body;
-    const product = await Product.findOne({ _id: data._id });
-    let slug = '';
-    if (product.name === data.name) slug = product.slug;
-    else {
+        const data = req.body;
         let i = 0;
+        let slug = '';
         while (true) {
             slug = `${slugify(data.name, { lower: true })}-${i}`;
             const objExists = await Product.exists({ slug: slug });
             if (objExists) i += 1;
             else break;
         }
+
+        const newProduct = new Product({
+            name: data.name,
+            slug: slug,
+            product_description: data.product_description,
+            productDetails: data.productDetails,
+            active: data.active,
+            hasColor: data.hasColor,
+            category: data.category,
+            subCategory: data.subCategory,
+            furtherSubCategory: data.furtherSubCategory,
+            brand: data.brand,
+            keywords: data.keywords,
+            description: data.description,
+        });
+
+        await newProduct.save();
+
+        res.json({ success: true, data: newProduct });
     }
-    await ProductDetail.deleteMany({ product: product });
+    catch (err) {
+        console.log(err);
+        res.json({ success: false, data: null });
+    }
+});
+
+router.post('/update', async (req, res) => {
+    const data = req.body;
+    console.log(data);
+    const product = await Product.findOne({ _id: data._id });
+
     product.name = data.name;
-    product.slug = slug;
-    product.keywords = data.keywords;
-    product.description = data.description;
-    product.imagePath = data.imagePath;
+    product.product_description = data.product_description;
+    product.productDetails = data.productDetails;
     product.active = data.active;
+    product.hasColor = data.hasColor;
     product.category = data.category;
     product.subCategory = data.subCategory;
     product.furtherSubCategory = data.furtherSubCategory;
     product.brand = data.brand;
-    product.save();
-    data.productDetails.forEach(async productDetail => {
-        const newProductDetail = new ProductDetail({
-            imagePath: productDetail.imagePath,
-            product: product,
-            quantity: productDetail.qty,
-            price: productDetail.price,
-            points: productDetail.points,
-            preOrder: productDetail.preOrder,
-            size: productDetail.size,
-            color: productDetail.color,
-        });
-        newProductDetail.save();
-    });
-    res.json({ data: 'success' });
+    product.keywords = data.keywords;
+    product.description = data.description;
+
+    await product.save();
+    res.json({ data: product });
+
 });
 
 router.get('/get-by-ids', async (req, res) => {
@@ -169,13 +147,13 @@ router.get('/client-all-products', async (req, res) => {
     let products = [];
     if (req.query['further-sub-category'] !== 'undefined') {
         furtherSubCategory = await FurtherSubCategory.findOne({ slug: req.query['further-sub-category'] });
-        products = await Product.find({ subCategory: subCategory, furtherSubCategory: furtherSubCategory, active: true }, {}, {skip: number, limit: size}).populate('brand').populate(
+        products = await Product.find({ subCategory: subCategory, furtherSubCategory: furtherSubCategory, active: true }, {}, { skip: number, limit: size }).populate('brand').populate(
             {
                 path: 'productDetails'
             }
         ).sort('name');
     } else {
-        products = await Product.find({ subCategory: subCategory, active: true }, {}, {skip: number, limit: size}).populate('brand').populate(
+        products = await Product.find({ subCategory: subCategory, active: true }, {}, { skip: number, limit: size }).populate('brand').populate(
             {
                 path: 'productDetails'
             }
@@ -195,7 +173,7 @@ router.get('/total-pages', async (req, res) => {
     } else {
         count = await Product.countDocuments({ subCategory: subCategory, active: true });
     }
-    res.json({data: Math.ceil(count / size)});
+    res.json({ data: Math.ceil(count / size) });
 });
 
 router.get('/client-category-products', async (req, res) => {
@@ -212,6 +190,19 @@ router.get('/client-category-products', async (req, res) => {
         products[subCategory.name] = { name: subCategory.name, slug: subCategory.slug, products: productsFromCategory };
     }
     res.json({ data: products })
+});
+
+
+
+router.post("/set-active", async (req, res) => {
+    const { active, selected } = req.body;
+
+    await Product.updateMany({ _id: { $in: selected } }, { active: active });
+    const products = await Product.find({});
+
+    if (!products) res.json({ data: [] });
+    else res.json({ data: products });
+
 });
 
 module.exports = router;

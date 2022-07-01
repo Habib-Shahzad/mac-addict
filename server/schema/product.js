@@ -5,7 +5,8 @@ const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     keywords: String,
-    description: { type: String, required: true },
+    description: String,
+    product_description: { type: String, required: true },
 
     active: { type: Boolean, required: true },
     hasColor: { type: Boolean, required: true },
@@ -30,13 +31,12 @@ const ProductSchema = new mongoose.Schema({
     },
 
     productDetails: [{
-        imagePath: { type: String, required: true },
-        price: [
-            {
-                amount: { type: Number, required: true },
-                active: { type: Boolean, required: true }
-            }
-        ],
+        imageList: [{
+            image: { type: String },
+        }],
+
+        price: { type: Number, required: true },
+        quantity: { type: Number, required: true },
         points: { type: Number, required: true },
         preOrder: { type: Boolean, required: true },
         size: {
