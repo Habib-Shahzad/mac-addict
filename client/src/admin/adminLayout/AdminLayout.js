@@ -22,14 +22,21 @@ import WebIcon from '@mui/icons-material/Web';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import InvertColorsIcon from '@mui/icons-material/InvertColors';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import FlagIcon from '@mui/icons-material/Flag';
+
 import MoneyOffIcon from '@mui/icons-material/MoneyOff';
 import { StyledTreeItem } from '../components';
+
+import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
+import CategoryIcon from '@mui/icons-material/Category';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import CategoryTwoToneIcon from '@mui/icons-material/CategoryTwoTone';
+import InventoryIcon from '@mui/icons-material/Inventory';
+
 import PaletteIcon from '@mui/icons-material/Palette';
 import FormatSizeIcon from '@mui/icons-material/FormatSize';
 import TreeView from '@mui/lab/TreeView';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import StoreIcon from '@mui/icons-material/Store';
@@ -280,7 +287,7 @@ function AdminLayout(props) {
                                 <StyledTreeItem
                                     nodeId="4"
                                     labelText="Brand"
-                                    labelIcon={BookmarkIcon}
+                                    labelIcon={BrandingWatermarkIcon}
                                     // labelInfo="90"
                                     color="#000000"
                                     bgColor="#f5daab"
@@ -290,7 +297,7 @@ function AdminLayout(props) {
                                 <StyledTreeItem
                                     nodeId="5"
                                     labelText="Category"
-                                    labelIcon={BookmarkIcon}
+                                    labelIcon={CategoryIcon}
                                     // labelInfo="90"
                                     color="#000000"
                                     bgColor="#f5daab"
@@ -300,7 +307,7 @@ function AdminLayout(props) {
                                 <StyledTreeItem
                                     nodeId="6"
                                     labelText="Sub Category"
-                                    labelIcon={BookmarkIcon}
+                                    labelIcon={CategoryOutlinedIcon}
                                     color="#000000"
                                     bgColor="#f5daab"
                                 />
@@ -309,7 +316,7 @@ function AdminLayout(props) {
                                 <StyledTreeItem
                                     nodeId="7"
                                     labelText="Further Sub Category"
-                                    labelIcon={BookmarkIcon}
+                                    labelIcon={CategoryTwoToneIcon}
                                     color="#000000"
                                     bgColor="#f5daab"
                                 />
@@ -318,7 +325,7 @@ function AdminLayout(props) {
                                 <StyledTreeItem
                                     nodeId="8"
                                     labelText="Product"
-                                    labelIcon={LocalOfferIcon}
+                                    labelIcon={InventoryIcon}
                                     color="#000000"
                                     bgColor="#f5daab"
                                 />
@@ -353,7 +360,7 @@ function AdminLayout(props) {
                                 <StyledTreeItem
                                     nodeId="14"
                                     labelText="Country"
-                                    labelIcon={LocationOnIcon}
+                                    labelIcon={FlagIcon}
                                     // labelInfo="90"
                                     color="#000000"
                                     bgColor="#f5daab"
