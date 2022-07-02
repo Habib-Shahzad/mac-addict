@@ -82,7 +82,6 @@ router.post('/add', async (req, res) => {
 
 router.post('/update', async (req, res) => {
     const data = req.body;
-    console.log(data);
     const product = await Product.findOne({ _id: data._id });
 
     product.name = data.name;

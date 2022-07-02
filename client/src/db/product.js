@@ -11,6 +11,15 @@ import api from '../api';
 import TreeItem from '@mui/lab/TreeItem';
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 
+import { EditorState, ContentState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import DOMPurify from 'dompurify';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import '../../src/db.scss';
+
 
 const NestedArray = ({ nestIndex, control, register }) => {
 
@@ -391,6 +400,7 @@ const productObj = {
                 list_products.push(product);
             });
 
+
             data["productDetailsList"] = list_products;
 
             setLoading(true);
@@ -467,12 +477,52 @@ const productObj = {
             }
         }
 
+        const [editorState, setEditorState] = useState(
+            () => EditorState.createEmpty(),
+        );
+
+        const htmlToDraftBlocks = (html) => {
+            const blocksFromHtml = htmlToDraft(html);
+            const { contentBlocks, entityMap } = blocksFromHtml;
+            const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+            const editorState = EditorState.createWithContent(contentState);
+            return editorState;
+        }
+
+
+        useEffect(() => {
+            setEditorState(htmlToDraftBlocks(defaultProductDescription));
+        }, [defaultProductDescription])
+
+        const [convertedContent, setConvertedContent] = useState(null);
+        const [viewPreview, setViewPreview] = useState(false);
+
+        const handleEditorChange = (state) => {
+            setEditorState(state);
+        }
+
+        const draft_html_content = (state) => {
+            const currentContent = state.getCurrentContent();
+            let currentContentAsHTML = draftToHtml(convertToRaw(currentContent));
+            return currentContentAsHTML
+        }
+
+        const updatePreview = () => {
+            setConvertedContent(draft_html_content(editorState));
+        }
+
+        const createMarkup = (html) => {
+            return {
+                __html: DOMPurify.sanitize(html)
+            }
+        }
 
 
         if (loading) return <div></div>
 
         return (<Form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <fieldset>
+
                 <legend>Details</legend>
                 <Row className={classes.rowGap}>
                     <Form.Group as={Col} md={6} controlId="name">
@@ -646,27 +696,71 @@ const productObj = {
                 </Row>
 
 
-
+                <legend>Product Description</legend>
                 <Row style={{ marginTop: '1rem' }} className={classes.rowGap}>
                     <Form.Group controlId="product_description">
                         <FormControl className={classes.formControl}>
-                            <TextField
-                                defaultValue={defaultProductDescription}
-                                {...register("product_description", {})}
-                                color="secondary"
-                                autoComplete="none"
-                                label="Product Description"
-                                multiline
-                                rows={10}
-                                aria-describedby="product-description-helper"
-                            />
-                            <FormHelperText id="product-description-helper">Type Product Description</FormHelperText>
+                            <div>
+                                <Controller
+                                    name={"product_description"}
+                                    control={control}
+                                    defaultValue={editObj ? defaultProductDescription : undefined}
+                                    rules={{ required: "Product Description is required!" }}
+                                    render={(props) => (
+                                        <Editor
+                                            editorState={editorState}
+                                            onEditorStateChange={(c) => { handleEditorChange(c); props.field.onChange(draft_html_content(c)); }}
+                                            wrapperClassName="wrapper-class"
+                                            editorClassName="editor-class"
+                                            toolbarClassName="toolbar-class"
+                                        />
+                                    )}
+                                />
+                            </div>
+
+                            {!errors.product_description &&
+                                <FormHelperText id="name-helper">Type product description in the editor</FormHelperText>
+                            }
+                            <FormHelperText error={errors.product_description ? true : false} id="name-helper">{errors.product_description && <>{errors.product_description.message}</>}</FormHelperText>
+
                         </FormControl>
                     </Form.Group>
                 </Row>
 
 
-                <Row className={classes.rowGap}>
+                {!viewPreview ? (
+                    <Button
+                        onClick={() => { setViewPreview(true); }}
+                        variant="contained" color="primary">
+                        Show description preview
+                    </Button>) : (
+                    <>
+                        <Button
+                            onClick={() => { setViewPreview(false); }}
+                            style={{ marginLeft: '1rem' }} variant="contained" color="primary">
+                            Hide Preview
+                        </Button>
+
+                        <Button onClick={() => { updatePreview(); }} style={{ marginLeft: '1rem' }} variant="contained" color="primary">
+                            Update Preview
+                        </Button>
+                    </>
+                )}
+
+                <br />
+
+                {viewPreview &&
+                    <>
+                        <legend style={{ width: 'fit-content', marginTop: '1rem' }}>Product Description Preview</legend>
+
+                        <Row>
+                            <div className="preview" dangerouslySetInnerHTML={createMarkup(convertedContent)}></div>
+                        </Row>
+                    </>
+                }
+
+
+                <Row style={{ marginTop: '1.2rem' }} className={classes.rowGap}>
                     <Form.Group as={Col} md={3} controlId="active">
                         <FormControlLabel
                             control={
@@ -685,6 +779,7 @@ const productObj = {
                             label={"Active"}
                         />
                     </Form.Group>
+
 
                     <Form.Group as={Col} md={3} controlId="active">
                         <FormControlLabel
