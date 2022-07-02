@@ -19,13 +19,26 @@ router.get('/getCart', async (req, res) => {
     };
 });
 
+
+
+function makeid(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
+}
+
 router.post('/addToCart', async (req, res) => {
     const cartCookie = req.cookies['cart'];
 
     if (cartCookie) {
         const cartObj = cartCookie;
 
-        let key = `${req.body.productSlug}-.-.-${req.body.size.name}-.-.-${req.body.color.name}-.-.-${req.body.user_id}`;
+        const key = `${req.body.product_id}-${req.body.size.name}-${req.body.color.name}-${req.body.user_id}`;
 
         if (cartObj[key]) {
             cartObj[key].quantity += 1;
@@ -49,7 +62,7 @@ router.post('/addToCart', async (req, res) => {
             }
         }
         const expiryDate = new Date(Number(new Date()) + 315360000000);
-        await res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
+        await res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate, sameSite: 'lax' });
         res.json({ data: cartObj });
 
     } else {
