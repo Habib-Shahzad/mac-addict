@@ -43,6 +43,9 @@ function Cart(props) {
     }, [history, user.userState])
 
 
+
+
+
     const cartPage = e => {
         history.push('/cart');
     }
@@ -57,8 +60,10 @@ function Cart(props) {
         return <div></div>
     }
 
+
     return (
         <div>
+
             <div className="margin-global-top-5" />
             <Container className="cart">
                 <Row className="justify-content-center cart-circles">

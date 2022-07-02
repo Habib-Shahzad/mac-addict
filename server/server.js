@@ -19,8 +19,7 @@ const createServer = async (callback) => {
         .connect(process.env.DATABASE_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false,
+
         })
         .then(() => {
             console.log("Successfully connected to database", process.env.DATABASE_NAME);
@@ -58,7 +57,7 @@ const createServer = async (callback) => {
     const countryRoutes = require('./routes/country');
     const provinceRoutes = require('./routes/province');
     const cityRoutes = require('./routes/city');
-    // const orderRoutes = require('./routes/order');
+    const orderRoutes = require('./routes/order');
     const discountRoutes = require('./routes/discount');
 
     app.use('/api/user', userRoutes);
@@ -73,12 +72,14 @@ const createServer = async (callback) => {
     app.use('/api/country', countryRoutes);
     app.use('/api/province', provinceRoutes);
     app.use('/api/city', cityRoutes);
-    // app.use('/api/orders', provinceRoutes);
+    app.use('/api/order', orderRoutes);
     app.use('/api/discount', discountRoutes);
 
-    app.get('*', function (req, res) {
-        res.sendFile(path.join(__dirname, '../client/build/index.html'));
-    });
+    // app.get('*', function (req, res) {
+    //     res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    // });
+
+
 
     app.listen(port, () => {
         console.log(`Example app listening at http://localhost:${port}`);

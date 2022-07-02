@@ -18,6 +18,12 @@ router.get('/table-data', async (req, res) => {
     else res.json({ data: products });
 });
 
+router.get('/table-data-list', async (req, res) => {
+    const products = await Product.find({}).populate('category').populate('subCategory').populate('furtherSubCategory').populate('brand');
+    if (!products) res.json({ success: false, data: [] });
+    else res.json({ success: true, data: products });
+});
+
 router.get('/table-data-auto', async (req, res) => {
     const products = await Product.find({});
     if (!products) res.json({ data: [] });
@@ -58,6 +64,7 @@ router.post('/add', async (req, res) => {
         const newProduct = new Product({
             name: data.name,
             slug: slug,
+            default_image: data.default_image,
             product_description: data.product_description,
             productDetails: data.productDetails,
             active: data.active,
@@ -85,6 +92,7 @@ router.post('/update', async (req, res) => {
     const product = await Product.findOne({ _id: data._id });
 
     product.name = data.name;
+    product.default_image = data.default_image;
     product.product_description = data.product_description;
     product.productDetails = data.productDetails;
     product.active = data.active;
@@ -101,6 +109,20 @@ router.post('/update', async (req, res) => {
 
 });
 
+
+router.get('/get-by-slug/:slug', async (req, res) => {
+    const product = await Product.findOne({ slug: req.params.slug }).populate('furtherSubCategory').populate('brand').populate({
+        path: 'productDetails',
+        populate: [
+            { path: 'size' },
+            { path: 'color' }
+        ]
+    });
+    ;
+    if (!product) res.json({ success: false, data: null });
+    else res.json({ success: true, data: product });
+});
+
 router.get('/get-by-ids', async (req, res) => {
     let id = '';
     if ('id' in req.query) id = req.query.id;
@@ -113,11 +135,13 @@ router.get('/get-by-ids', async (req, res) => {
 router.post('/delete', async (req, res) => {
     try {
         // const data = req.body.data;
-        await Product.deleteMany({ _id: req.body.ids });
-        res.json({ data: 'success' });
+        await Product.deleteMany({ _id: { $in: req.body.data } });
+        const products = await Product.find({});
+        res.json({ success: true, data: products });
+
     } catch (error) {
         console.log(error);
-        res.json({ data: 'failed' });
+        res.json({ success: true, data: [] });
     }
 });
 

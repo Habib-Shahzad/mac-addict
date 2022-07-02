@@ -35,9 +35,9 @@ router.post("/logout-admin", async (req, res) => {
 });
 
 
-router.get("/loggedIn", async (req, res) => {
+router.get("/loggedIn", async (req, res, next) => {
 
-  const user_token = (req.cookies['access_token']);
+  const user_token = (req.cookies?.['access_token']);
   let user = null;
 
   if (user_token) {
@@ -45,7 +45,7 @@ router.get("/loggedIn", async (req, res) => {
     user = await User.findOne({ _id: user_data.user_id });
   }
 
-  const admin_token = (req.cookies['access_token_admin']);
+  const admin_token = (req.cookies?.['access_token_admin']);
   let admin_user = null;
 
   if (admin_token) {
@@ -53,12 +53,14 @@ router.get("/loggedIn", async (req, res) => {
     admin_user = await User.findOne({ _id: admin_data.user_id });
   }
 
-  return res.json({
+  res.json({
     successUser: user != null,
     successAdmin: admin_user != null,
     user: user,
     admin_user: admin_user
   });
+
+  next();
 
 });
 
@@ -167,18 +169,22 @@ router.post("/login", async (req, res) => {
 
       res.cookie("access_token", token, {
         httpOnly: true,
+        secure: false,
         maxAge: 1000 * 60 * 60 * 7,
-      })
-        .status(200)
-        .json({
-          data: user
-        });
+      });
+
+      res.json({
+        data: user
+      });
+
+
+
     }
     else {
       res.json({ data: null });
     }
   } catch (err) {
-
+    console.log(err);
     res.json({ data: null });
   }
 });

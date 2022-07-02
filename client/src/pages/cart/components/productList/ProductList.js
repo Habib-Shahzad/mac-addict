@@ -1,20 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { MainHeading, Heading2, Heading1, LinkButton } from '../../../../components';
+import { MainHeading, Heading2, Heading1, LinkButton, ParaText } from '../../../../components';
 import CartContext from '../../../../contexts/cart';
 import UserContext from '../../../../contexts/user';
 import api from '../../../../api';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import './ProductList.scss';
-// import DiscountContext from '../../../../contexts/discount';
 
 function ProductList(props) {
 
     const user = useContext(UserContext);
     const cart = useContext(CartContext);
     const [cost, setCost] = useState(0);
-
 
     const [cartProducts, setCartProducts] = useState([]);
 
@@ -41,10 +39,7 @@ function ProductList(props) {
         });
         const content = await response.json();
         cart.setCart(content.data);
-
     }
-
-
 
     useEffect(() => {
         (
@@ -89,7 +84,7 @@ function ProductList(props) {
         let totalPrice = 0;
         for (var i = 0; i < cartProducts.length; i++) {
             let element = cartProducts[i];
-            totalPrice += element.price.amount * element.quantity;
+            totalPrice += element.price * element.quantity;
         }
         setCost(totalPrice);
     }, [cartProducts])
@@ -97,77 +92,98 @@ function ProductList(props) {
 
     return (
         <Container fluid className="product-list-back">
-            <Container className="product-list">
-                {
-                    cartProducts?.map((element, key) => {
-                        return (
-                            <Row key={key} className="product-row">
-                                <div className="global-mt-2 display-992" />
-                                <Col lg={3}>
-                                    <img src={element.images[0].imagePath} alt={element.name} />
-                                </Col>
-                                <div className="global-mt-3 display-992" />
-                                <Col lg={5}>
-                                    <Heading2
-                                        bold={element.name}
-                                        link="/"
-                                        classes="text-uppercase"
-                                    />
-                                    {element.description}
-                                </Col>
-                                <Col lg={1}>
-                                    <div className="center-relative">
-                                        <input value={element.quantity} type="text" readOnly={true} />
-                                        <div className="add-remove-icons horizontal-center-relative">
-                                            <RemoveIcon onClick={() => { removeCartItem(element.key) }} className="cart-icon" />
-                                            <AddIcon onClick={() => { addCartItem(element.key) }} className="cart-icon" />
-                                        </div>
-                                    </div>
-                                </Col>
-                                <div className="global-mt-3 display-992" />
-                                <Col className="align-middle">
-                                    <div className="center-relative">
-                                        <Heading1
-                                            bold={`PKR.${parseInt(element.price.amount) * element.quantity}`}
-                                            classes={`text-uppercase text-center`}
-                                        />
-                                    </div>
-                                </Col>
-                                <div className="global-mt-2 display-992" />
-                            </Row>
-                        );
-                    })
-                }
-            </Container>
+            {cartProducts.length > 0 ?
+                (<div>
+                    <Container className="product-list">
+                        {
+                            cartProducts?.map((element, key) => {
+                                return (
+                                    <Row key={key} className="product-row">
+                                        <div className="global-mt-2 display-992" />
+                                        <Col lg={3}>
+                                            <img src={element?.images[0]?.image} alt={element.name} />
+                                        </Col>
+                                        <div className="global-mt-3 display-992" />
+                                        <Col lg={5}>
+                                            <Heading2
+                                                bold={element.name}
+                                                link="/"
+                                                classes="text-uppercase"
+                                            />
+                                            <ParaText
+                                                text={`Color: ${element.color.name}`}
+                                                classes="margin-bottom-0"
+                                                href='/'
+                                            />
+
+
+                                            <ParaText
+                                                text={`Size: ${element.size.name}`}
+                                                classes="margin-bottom-0"
+                                                href='/'
+                                            />
+                                        </Col>
+
+                                        <Col lg={1}>
+                                            <div className="center-relative">
+                                                <input value={element.quantity} type="text" readOnly={true} />
+                                                <div className="add-remove-icons horizontal-center-relative">
+                                                    <RemoveIcon onClick={() => { removeCartItem(element.key) }} className="cart-icon" />
+                                                    <AddIcon onClick={() => { addCartItem(element.key) }} className="cart-icon" />
+                                                </div>
+                                            </div>
+                                        </Col>
+                                        <div className="global-mt-3 display-992" />
+                                        <Col className="align-middle">
+                                            <div className="center-relative">
+                                                <Heading1
+                                                    bold={`PKR.${parseInt(element.price) * element.quantity}`}
+                                                    classes={`text-uppercase text-center`}
+                                                />
+                                            </div>
+                                        </Col>
+                                        <div className="global-mt-2 display-992" />
+                                    </Row>
+                                );
+                            })
+                        }
+                    </Container>
 
 
 
-            <div className="margin-global-top-3" />
-            <Row>
-                <MainHeading
-                    text={`Total Cost: PKR.${cost}`}
-                    classes="text-uppercase text-center"
-                />
-            </Row>
-            <div className="margin-global-top-3" />
-            <Row>
-                <div className="horizontal-center-margin">
+                    <div className="margin-global-top-3" />
+                    <Row>
+                        <MainHeading
+                            text={`Total Cost: PKR.${cost}`}
+                            classes="text-uppercase text-center"
+                        />
+                    </Row>
+                    <div className="margin-global-top-3" />
+                    <Row>
+                        <div className="horizontal-center-margin">
 
 
-                    <LinkButton
-                        onClick={() => { }}
-                        classes="text-uppercase product-card-size"
-                        text={"Proceed"}
-                        button={false}
-                        to={"/cart/delivery-info"}
-                    />
+                            <LinkButton
+                                onClick={() => { }}
+                                classes="text-uppercase product-card-size"
+                                text={"Proceed"}
+                                button={false}
+                                to={"/cart/delivery-info"}
+                            />
 
 
-                </div>
-            </Row>
+                        </div>
+                    </Row>
 
-
-
+                </div>) : (
+                    <div style={{ textAlign: 'center' }}>
+                        <Heading1
+                            first="Cart"
+                            bold="is empty"
+                            classes="text-uppercase"
+                        />
+                    </div>)
+            }
         </Container>
     );
 }

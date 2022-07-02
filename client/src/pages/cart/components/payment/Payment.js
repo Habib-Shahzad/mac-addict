@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import { Radio, FormControlLabel, RadioGroup } from '@mui/material';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
-import { DescriptionText, SubHeading } from '../../../../components';
-import {
-    useHistory,
-    useLocation
-} from "react-router-dom";
+import { DescriptionText, SubHeading, Heading1, LinkButton } from '../../../../components';
+import { OrderConfirmedModal } from '../../components';
+
 import './Payment.scss'
 // import api from '../../../../api';
 // import DiscountContext from '../../../../contexts/discount';
-// import CartContext from '../../../../contexts/cart';
+import CartContext from '../../../../contexts/cart';
+import UserContext from '../../../../contexts/user';
+import AddressContext from '../../../../contexts/address';
 
 function Payment(props) {
     const theme = createTheme({
@@ -31,11 +31,10 @@ function Payment(props) {
     });
     const [display, setDisplay] = useState('none');
     const [radioBoxes, setRadioBoxes] = useState({ method: 'Cash on Delivery' });
-    // const discount = useContext(DiscountContext);
-    // const cart = useContext(CartContext);
 
-    const location = useLocation();
-    const history = useHistory();
+    const cart = useContext(CartContext);
+    const user = useContext(UserContext);
+    const address = useContext(AddressContext);
 
     const handleChange = (event) => {
         setRadioBoxes({ method: event.target.value });
@@ -43,58 +42,104 @@ function Payment(props) {
         else setDisplay('block');
     };
 
-    useEffect(() => {
-        if (location.state === undefined) {
-            alert('Fill delivery form!')
-            history.push('/cart/delivery-info');
-        }
-    }, [history, location.state])
+    const [cartProducts, setCartProducts] = useState([]);
 
-    // const onClick = async event => {
-    //     event.preventDefault();
-    //     let orderDiscount = null;
-    //     if (discount && discount.type === 'Bill') {
-    //         const cartCurrentPrice = cart.cartObj.cartTotalPrice
-    //         if (cartCurrentPrice >= discount.minAmount && cartCurrentPrice <= discount.maxAmount) {
-    //             orderDiscount = discount
-    //         }
-    //     } else if (discount && discount.type === 'DIY') orderDiscount = discount
-    //     else if (discount && discount.type === 'Product') orderDiscount = discount
-    //     const response = await fetch(`${api}/orders/confirmOrder`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         credentials: 'include',
-    //         withCredentials: true,
-    //         body: JSON.stringify({
-    //             firstName: location.state.firstName,
-    //             lastName: location.state.lastName,
-    //             phoneNumber: location.state.phoneNumber,
-    //             email: location.state.email,
-    //             firstName1: location.state.firstName1,
-    //             lastName1: location.state.lastName1,
-    //             phoneNumber1: location.state.phoneNumber1,
-    //             email1: location.state.email1,
-    //             area: location.state.area,
-    //             addressLine1: location.state.addressLine1,
-    //             landmark: location.state.landmark,
-    //             addressLine2: location.state.addressLine2,
-    //             date: location.state.date,
-    //             message: location.state.message,
-    //             checkBoxes: location.state.checkBoxes,
-    //             radioBoxes: radioBoxes,
-    //             discount: orderDiscount
-    //         })
-    //     });
-    //     const content = await response.json();
-    //     if (content.data === 'success') history.push('/thankyou');
-    //     else history.push('/');
-    // }
+    useEffect(() => {
+
+        let lst = [];
+        let i = 0;
+
+        if (user.userState) {
+            for (const [key, value] of Object.entries(cart.cartObj)) {
+                if (value.user_id === user.userState._id) {
+                    lst.push(value);
+                    lst[i].key = key;
+                    i += 1;
+                }
+            }
+        }
+        setCartProducts(lst);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cart, user])
+
+
+
+    const [showModal, setShowModal] = useState(false);
+    const handleClose = () => {
+        setShowModal(false);
+    }
+    const handleShow = () => {
+        setShowModal(true);
+    }
+
+
+    const [cost, setCost] = useState(0);
+
+    useEffect(() => {
+        let totalPrice = 0;
+        for (var i = 0; i < cartProducts.length; i++) {
+            let element = cartProducts[i];
+            totalPrice += element.price * element.quantity;
+        }
+        setCost(totalPrice);
+    }, [cartProducts])
+
+
+    if (!user.userState) {
+        return (
+            <div style={{ textAlign: 'center' }}>
+                <Heading1
+                    first="Sign"
+                    bold="in"
+                    classes="text-uppercase"
+                />
+            </div>
+        )
+    }
+
+    if (!cartProducts.length === 0) {
+        return (
+            <div style={{ textAlign: 'center' }}>
+                <Heading1
+                    first="Cart"
+                    bold="is empty"
+                    classes="text-uppercase"
+                />
+            </div>
+        )
+    }
+
+
+    if (!address.selectedAddress) {
+        return (
+            <div style={{ textAlign: 'center' }}>
+                <Heading1
+                    first="Address"
+                    bold="not selected"
+                    classes="text-uppercase"
+                />
+            </div>
+        )
+    }
+
+
 
     return (
         <div>
             <Container className="payment-cart">
+                <OrderConfirmedModal
+                    paymentMethod={radioBoxes.method}
+                    deliveryAddress={address.selectedAddress}
+                    cartProducts={cartProducts}
+                    cost={cost}
+                    show={showModal}
+                    handleClose={handleClose}
+                    handleShow={handleShow}
+                    user_id={user.userState._id}
+                    setCart={cart.setCart}
+                />
+
                 <Form className="form-style">
                     <Row>
                         <Col>
@@ -191,35 +236,12 @@ function Payment(props) {
             <div className="global-mt-2"></div>
             <Row>
                 <div className="horizontal-center-margin">
-                    {/* <Button
-                        // firstName={firstName}
-                        // lastName={lastName}
-                        // phoneNumber={phoneNumber}
-                        // email={email}
-
-                        // firstName1={firstName1}
-                        // lastName1={lastName1}
-                        // phoneNumber1={phoneNumber1}
-                        // email1={email1}
-
-                        // area={area}
-                        // addressLine1={addressLine1}
-                        // landmark={landmark}
-                        // addressLine2={addressLine2}
-
-                        // date={date}
-                        // message={message}
-
-                        // checkBoxes={checkBoxes}
-
-                        // radioBoxes={radioBoxes}
-
-                        // cartForm={4}
-                        onClick={onClick}
-                        to="/"
-                        text="Send"
-                        classes="text-uppercase"
-                    /> */}
+                    <LinkButton
+                        classes="text-uppercase product-card-size"
+                        text={"Proceed"}
+                        button={true}
+                        onClick={(e) => { e.preventDefault(); handleShow(); }}
+                    />
                 </div>
             </Row>
         </div>

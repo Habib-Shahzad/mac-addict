@@ -6,14 +6,20 @@ import api from "./api";
 import React, { useState, useEffect } from "react";
 import UserContext from "./contexts/user";
 import AdminUserContext from './contexts/adminUser';
+import AddressContext from './contexts/address';
+
 
 function App() {
   const [userState, setUserState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [adminUserState, setAdminUserState] = React.useState(null);
 
+  const [selectedAddress, setSelectedAddress] = React.useState(null);
+
+
   useEffect(() => {
     (async () => {
+
       const response = await fetch(`${api}/user/loggedIn`, {
         method: "GET",
         headers: {
@@ -40,9 +46,6 @@ function App() {
 
 
 
-
-
-
   if (loading) return <div></div>;
 
   return (
@@ -52,16 +55,18 @@ function App() {
       <UserContext.Provider
         value={{ userState: userState, setUserState: setUserState }}
       >
-        <Router>
-          <Switch>
-            <Route path="/admin">
-              <Admin loading={loading} />
-            </Route>
-            <Route path="*">
-              <Routes />
-            </Route>
-          </Switch>
-        </Router>
+        <AddressContext.Provider value={{ selectedAddress: selectedAddress, setSelectedAddress: setSelectedAddress }}>
+          <Router>
+            <Switch>
+              <Route path="/admin">
+                <Admin loading={loading} />
+              </Route>
+              <Route path="*">
+                <Routes />
+              </Route>
+            </Switch>
+          </Router>
+        </AddressContext.Provider>
       </UserContext.Provider>
     </AdminUserContext.Provider>
 

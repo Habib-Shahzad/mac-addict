@@ -2,24 +2,43 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row } from 'react-bootstrap';
 import { Poster, Banner } from './components';
 import { MainHeading, SlickSlider } from '../../components';
+import api from '../../api';
 import './Home.scss';
 
 function Home(props) {
 
     const [arrivals, setArrivals] = useState([]);
     const [hotsellers, setHotsellers] = useState([]);
+    const [productsList, setProductsList] = useState([]);
 
     useEffect(() => {
-
-        const product = { imagePath: 'https://www.sephora.com/productimages/sku/s2432946-main-zoom.jpg', name: 'Instant Look All Over Face Palette Look of Love Collection', brand: 'Charlotte Tilbury', price: 'PKR. 11520', points: 'Points: 300', slug: 'product-slug' }
-        let products = [];
-        for (let i = 0; i < 10; i++) {
-            products.push(product);
-        }
-        setArrivals(products);
-        setHotsellers(products);
-
+        (async () => {
+            const response = await fetch(`${api}/product/table-data-list`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                withCredentials: true
+            });
+            const content = await response.json();
+            if (content.success) {
+                setProductsList(content.data);
+            }
+        })();
     }, [])
+
+    useEffect(() => {
+        if (productsList?.length > 0) {
+            const fetched_product = productsList[0];
+            let products = [];
+            for (let i = 0; i < 10; i++) {
+                products.push(fetched_product);
+            }
+            setArrivals(products);
+            setHotsellers(products);
+        }
+    }, [productsList])
 
 
     return (

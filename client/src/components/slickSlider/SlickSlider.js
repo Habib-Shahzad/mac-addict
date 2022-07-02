@@ -14,20 +14,20 @@ function SlickSlider(props) {
         slidesToShow: 4,
         slidesToScroll: 4,
         responsive: [
-          {
-            breakpoint: 1200,
-            settings: {
-              slidesToShow: 3,
-              slidesToScroll: 3,
-            }
-          },
-          {
-            breakpoint: 767,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 2,
-            }
-          },
+            {
+                breakpoint: 1200,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                }
+            },
+            {
+                breakpoint: 767,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                }
+            },
         ]
         // nextArrow: <SampleNextArrow />,
         // prevArrow: <SamplePrevArrow />
@@ -41,9 +41,9 @@ function SlickSlider(props) {
                             {
                                 props.type === 'price' ? (
                                     <SmallProductCard
-                                        src={value.imagePath}
+                                        src={value.default_image}
                                         name={value.name}
-                                        brand={value.brand}
+                                        brand={value.brand.name}
                                         pricePoints={value.price}
                                         classes="center-relative-horizontal"
                                         quicklook={
@@ -55,9 +55,9 @@ function SlickSlider(props) {
                                     />
                                 ) : (
                                     <SmallProductCard
-                                        src={value.imagePath}
+                                        src={value.default_image}
                                         name={value.name}
-                                        brand={value.brand}
+                                        brand={value.brand.name}
                                         pricePoints={value.points}
                                         classes="center-relative-horizontal"
                                         quicklook=""

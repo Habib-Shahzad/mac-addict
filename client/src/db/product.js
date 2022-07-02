@@ -20,7 +20,6 @@ import htmlToDraft from 'html-to-draftjs';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import '../../src/db.scss';
 
-
 const NestedArray = ({ nestIndex, control, register }) => {
 
     const { fields, remove, append } = useFieldArray({
@@ -105,6 +104,8 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
     }
 }
 
+
+
 const productObj = {
     apiTable: `${api}/product/table-data`,
     deleteApi: [`${api}/product/get-by-ids`, `${api}/product/delete`],
@@ -155,6 +156,7 @@ const productObj = {
         const [loading, setLoading] = useState(true);
 
         const [defaultName, setDefaultName] = useState('');
+        const [defaultImage, setDefaultImage] = useState('');
         const [defaultCategory, setDefaultCategory] = useState(null);
         const [defaultSubCategory, setDefaultSubCategory] = useState(null);
         const [defaultFurtherSubCategory, setDefaultFurtherSubCategory] = useState(null);
@@ -329,6 +331,7 @@ const productObj = {
 
                 setDefaultName(editObj.name);
                 setDefaultCategory(editObj.category);
+                setDefaultImage(editObj.default_image);
                 setDefaultSubCategory(editObj.subCategory);
                 setDefaultFurtherSubCategory(editObj.furtherSubCategory);
                 setDefaultBrand(editObj.brand);
@@ -419,6 +422,7 @@ const productObj = {
                         subCategory: data.subCategory ?? null,
                         furtherSubCategory: data.furtherSubCategory ?? null,
                         keywords: data.keywords,
+                        default_image: data.default_image,
                         description: data.description,
                         active: data.active,
                         productDetails: data.productDetailsList,
@@ -440,6 +444,7 @@ const productObj = {
                         name: data.name,
                         category: data.category,
                         product_description: data.product_description,
+                        default_image: data.default_image,
                         subCategory: data.subCategory ?? null,
                         furtherSubCategory: data.furtherSubCategory ?? null,
                         keywords: data.keywords,
@@ -693,8 +698,25 @@ const productObj = {
 
                         </FormControl>
                     </Form.Group>
-                </Row>
 
+                    <Form.Group as={Col} md={3} controlId={`default_image`}>
+                        <FormControl >
+                            <InputLabel color="secondary" htmlFor="imagePath">Default Image URL</InputLabel>
+                            <Input
+                                error={errors.default_image ? true : false}
+                                defaultValue={editObj ? defaultImage : undefined}
+                                {...register(`default_image`, { required: true })}
+                                color="secondary"
+                                autoComplete="none"
+                                type="text"
+                            />
+                            {!errors[`default_image`] &&
+                                <FormHelperText >Enter Image url</FormHelperText>
+                            }
+                            <FormHelperText error={errors[`default_image`] ? true : false}>{errors[`default_image`] && <>{errors[`default_image`].message}</>}</FormHelperText>
+                        </FormControl>
+                    </Form.Group>
+                </Row>
 
                 <legend>Product Description</legend>
                 <Row style={{ marginTop: '1rem' }} className={classes.rowGap}>

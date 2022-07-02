@@ -7,6 +7,7 @@ const ProductSchema = new mongoose.Schema({
     keywords: String,
     description: String,
     product_description: { type: String, required: true },
+    default_image: { type: String, required: true },
 
     active: { type: Boolean, required: true },
     hasColor: { type: Boolean, required: true },

@@ -35,7 +35,7 @@ router.get('/get-discount', async (req, res) => {
 
 router.post('/add', async (req, res) => {
     const data = req.body;
-    console.log(data);
+    // console.log(data);
     const newDiscount = new Discount({
         name: data.name,
         type: data.type,

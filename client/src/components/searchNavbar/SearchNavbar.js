@@ -77,7 +77,6 @@ function SearchNavbar(props) {
     }
 
     useEffect(() => {
-
         let lst = [];
         let i = 0;
         if (user.userState) {
@@ -114,10 +113,11 @@ function SearchNavbar(props) {
         let totalPrice = 0;
         for (var i = 0; i < data.length; i++) {
             let element = data[i];
-            totalPrice += element.price.amount * element.quantity;
+            totalPrice += element.price * element.quantity;
         }
         setCost(totalPrice);
     }, [data])
+
 
     return (
         <Container className="custom-navbar" fluid>
@@ -192,6 +192,7 @@ function SearchNavbar(props) {
                                         </ThemeProvider>
                                     </Link>)
 
+
                             }
                             <div className="box-list cart-box">
                                 {
@@ -214,20 +215,36 @@ function SearchNavbar(props) {
                                                                 <li className="cart-list-item" key={`${element.key}-${index}`}>
                                                                     <Row>
                                                                         <Col md={3}>
-                                                                            <img src={element.images[0].imagePath} alt={element.name} />
+                                                                            <img src={element?.images[0]?.image} alt={element.name} />
                                                                         </Col>
                                                                         <Col md={5}>
                                                                             <div className="vertical-center-relative">
-                                                                                <Heading3
-                                                                                    bold={element.name}
-                                                                                    classes="text-uppercase"
-                                                                                />
+                                                                                <div style={{ textIndent: '0' }}>
+                                                                                    <Heading3
+                                                                                        first={element.name}
+                                                                                        classes="text-uppercase"
+                                                                                    />
+                                                                                </div>
 
                                                                                 <ParaText
                                                                                     text={`Quantity: ${element.quantity}`}
                                                                                     classes="margin-bottom-0"
                                                                                     href='/'
                                                                                 />
+
+                                                                                <ParaText
+                                                                                    text={`Color: ${element.color.name}`}
+                                                                                    classes="margin-bottom-0"
+                                                                                    href='/'
+                                                                                />
+
+
+                                                                                <ParaText
+                                                                                    text={`Size: ${element.size.name}`}
+                                                                                    classes="margin-bottom-0"
+                                                                                    href='/'
+                                                                                />
+
                                                                                 <div className="add-remove-icons">
                                                                                     <RemoveIcon onClick={() => { removeCartItem(element.key) }} className="cart-icon" />
                                                                                     <AddIcon onClick={() => { addCartItem(element.key) }} className="cart-icon" />
@@ -237,7 +254,7 @@ function SearchNavbar(props) {
                                                                         <Col className="align-middle">
                                                                             <div className="vertical-center-relative">
                                                                                 <Heading3
-                                                                                    bold={`PKR.${parseInt(element.price.amount) * element.quantity}`}
+                                                                                    bold={`PKR.${parseInt(element.price) * element.quantity}`}
                                                                                     classes={`text-uppercase text-center`}
                                                                                 />
                                                                             </div>
@@ -267,8 +284,8 @@ function SearchNavbar(props) {
                                         )
                                     ) : (<div className="center-relative-fit-content">
                                         <Heading2
-                                            first="Login to"
-                                            link="/"
+                                            linkTag="Login to"
+                                            link="/signin"
                                             bold="View Cart!"
                                             classes="text-uppercase"
                                         />
