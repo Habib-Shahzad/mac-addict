@@ -19,7 +19,6 @@ const createServer = async (callback) => {
         .connect(process.env.DATABASE_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-
         })
         .then(() => {
             console.log("Successfully connected to database", process.env.DATABASE_NAME);
@@ -29,7 +28,6 @@ const createServer = async (callback) => {
             console.error(error);
             process.exit(1);
         });
-
 
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());

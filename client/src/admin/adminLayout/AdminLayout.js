@@ -349,7 +349,7 @@ function AdminLayout(props) {
                                 />
                             </Link>
                         </StyledTreeItem>
-                        <Link to="/admin" style={{ textDecoration: 'none' }}>
+                        <Link to="/admin/order" style={{ textDecoration: 'none' }}>
                             <StyledTreeItem nodeId="11" labelText="Order" labelIcon={MonetizationOnIcon} />
                         </Link>
                         <Link to="/admin" style={{ textDecoration: 'none' }}>

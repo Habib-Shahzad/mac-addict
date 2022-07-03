@@ -3,12 +3,13 @@ const City = require('../schema').city;
 const Address = require('../schema').address;
 
 router.get('/table-data', async (req, res) => {
-    const cities = await City.find({}).populate({
-        path: 'province',
-        populate: {
-            path: 'country',
-        }
-    });
+    const cities = await City.find({}).populate(
+        {
+            path: 'province',
+            populate: {
+                path: 'country',
+            }
+        });
     if (!cities) res.json({ data: [] });
     else res.json({ data: cities });
 });
@@ -83,12 +84,13 @@ router.post("/set-active", async (req, res) => {
     const { active, selected } = req.body;
     await City.updateMany({ _id: { $in: selected } }, { active: active });
 
-    const cities = await City.find({}).populate({
-        path: 'province',
-        populate: {
-            path: 'country',
-        }
-    });
+    const cities = await City.find({}).populate(
+        {
+            path: 'province',
+            populate: {
+                path: 'country',
+            }
+        });
 
 
     if (!cities) res.json({ data: [] });

@@ -122,9 +122,9 @@ router.post("/clear-cart", async (req, res) => {
         }
         const expiryDate = new Date(Number(new Date()) + 315360000000);
         await res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
-        res.json({ data: cartObj });
+        res.json({ success: true, data: cartObj });
     } else {
-        res.json({ data: null });
+        res.json({ success: true, data: null });
     }
 });
 

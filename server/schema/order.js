@@ -15,9 +15,10 @@ const orderSchema = new mongoose.Schema({
     landmark: { type: String },
   },
 
+  orderNumber: { type: String, required: true },
   orderDate: { type: Date, required: true, default: new Date() },
   paymentMethod: { type: String, required: true, default: null },
-  orderStatus: { type: String, required: true, default: false },
+  orderStatus: { type: Boolean, required: true, default: false },
   totalPrice: { type: Number, required: true },
 
   orderItems: [{

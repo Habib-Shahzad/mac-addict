@@ -9,3 +9,4 @@ export { default as productObj } from './product';
 export { default as colorObj } from './color';
 export { default as sizeObj } from './size';
 export { default as userObj } from './user';
+export { default as orderObj } from './order';

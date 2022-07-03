@@ -9,12 +9,13 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import { countryObj, provinceObj, cityObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj, userObj } from '../../db';
+import { countryObj, provinceObj, cityObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj, userObj, orderObj } from '../../db';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 import CheckIcon from '@mui/icons-material/Check';
+import { Typography } from '@mui/material';
 import {
   useLocation,
 } from "react-router-dom";
@@ -25,7 +26,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TableHead from '@mui/material/TableHead';
 import Box from '@mui/material/Box';
-import { Row, Col, Container } from 'react-bootstrap';
+// import { Row, Col, Container } from 'react-bootstrap';
 import LinearProgress from '@mui/material/LinearProgress';
 import './EnhancedTable.scss';
 
@@ -108,6 +109,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
+// function CollapsibleTable() {
+//   return (
+//     <TableContainer component={Paper}>
+//       <Table aria-label="collapsible table">
+//         <TableHead>
+//           <TableRow>
+//             <TableCell />
+//             <TableCell>Dessert (100g serving)</TableCell>
+//             <TableCell align="right">Calories</TableCell>
+//             <TableCell align="right">Fat&nbsp;(g)</TableCell>
+//             <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+//             <TableCell align="right">Protein&nbsp;(g)</TableCell>
+//           </TableRow>
+//         </TableHead>
+//         <TableBody>
+//           {rows.map((row) => (
+//             <Row key={row.name} row={row} />
+//           ))}
+//         </TableBody>
+//       </Table>
+//     </TableContainer>
+//   );
+// }
+
 export default function EnhancedTable(props) {
   const { model } = useParams();
 
@@ -127,6 +154,7 @@ export default function EnhancedTable(props) {
   else if (model === 'color') tableFetch = colorObj;
   else if (model === 'size') tableFetch = sizeObj;
   else if (model === 'user') tableFetch = userObj;
+  else if (model === 'order') tableFetch = orderObj;
   else tableFetch = {};
 
   const classes = useStyles();
@@ -366,22 +394,22 @@ export default function EnhancedTable(props) {
                 .map((row, index) => {
                   const isItemSelected = isSelected(row[tableFetch['checkboxSelection']]);
                   const labelId = `enhanced-table-checkbox-${index}`;
-                  // const tableRow123 = [
-                  //   <TableCell component="th" id={labelId} scope="row" padding="none">
-                  //       {row.name}
-                  //     </TableCell>,
-                  //     <TableCell align="right">{row.calories}</TableCell>,
-                  //     <TableCell align="right">{row.fat}</TableCell>,
-                  //     <TableCell align="right">{row.carbs}</TableCell>,
-                  //     <TableCell align="right">{row.protein}</TableCell>,
-                  // ]
+
                   const tableRow = [];
+                  let order_data = null;
+
                   let c = 0;
-                  let recieptData = null;
+
                   for (const key in row) {
                     let textPosition = '';
                     if (tableFetch.rightAllign.includes(key)) textPosition = 'right';
-                    if (key === '_id') {
+
+
+                    if (key === 'order_data') {
+                      order_data = row[key];
+                    }
+
+                    else if (key === '_id') {
                       tableRow.push(
                         <TableCell style={{ display: 'none' }} key={c}>{row[key]}</TableCell>
                       );
@@ -391,7 +419,7 @@ export default function EnhancedTable(props) {
                           {row[key]}
                         </TableCell>
                       );
-                    } else if (key === 'imagePath') {
+                    } else if (key === 'image') {
                       tableRow.push(
                         <TableCell key={c} component="th" id={labelId} scope="row" padding="none">
                           <img className={classes.img} src={row[key]} alt="Preview"></img>
@@ -411,103 +439,33 @@ export default function EnhancedTable(props) {
                       tableRow.push(
                         <TableCell key={c}><CheckIcon className={classes.checkIcon} color="primary" /></TableCell>
                       );
-                    } else if (typeof row[key] === "object") {
-                      recieptData = row[key];
-                    } else {
+                    }
+                    else if (key === "orderDate") {
+                      var options_date = { year: 'numeric', month: 'short', day: 'numeric' };
+                      var date_order = new Date(row[key]).toLocaleDateString('en-GB', options_date);
+                      tableRow.push(
+                        <TableCell style={{ textAlign: textPosition }} key={c}>{date_order}</TableCell>
+                      );
+                    }
+
+                    else {
                       tableRow.push(
                         <TableCell style={{ textAlign: textPosition }} key={c}>{row[key]}</TableCell>
                       );
                     }
-                    c += 1;
-                  }
-                  // console.log(recieptData.items);
-                  const subTotalPrices = [];
-                  if (tableFetch.type === 'collapse' && recieptData) {
-                    var dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-                    var orderDate = new Date(recieptData.orderDate).toLocaleDateString('en-GB', dateOptions);
-                    var orderRows = [];
-                    let rowIndex = 1;
-                    let discountPercentageNotBill = 0;
-                    if (recieptData.discount) {
-                      discountPercentageNotBill = recieptData.discount.discountPercentage;
-                    }
-                    for (const key in recieptData.items) {
-                      if (Object.hasOwnProperty.call(recieptData.items, key)) {
-                        const value = recieptData.items[key];
-                        let discountedPriceHTML = <></>;
-                        let subtotal = 0;
-                        let classLine = '';
-                        if (value.type === 'diy' && recieptData.discount && recieptData.discount.type === 'DIY') {
-                          let newPrice = ((100 - discountPercentageNotBill) / 100) * value.item.price;
-                          subtotal = newPrice * value.count
-                          discountedPriceHTML = <><br /><span style={{ color: 'rgb(177, 0, 0)' }}>{newPrice}</span> ({discountPercentageNotBill}% off)</>
-                          classLine = 'line-through';
-                        } else if (value.type === 'product' && recieptData.discount && recieptData.discount.type === 'Product') {
-                          const discObj = recieptData.discount.products.find(prod => value.item.name === prod.item.name);
-                          // console.log(value)
-                          if (discObj) {
-                            console.log(discObj)
-                            let newPrice = ((100 - discObj.discountPercentage) / 100) * value.item.price;
-                            subtotal = newPrice * value.count
-                            discountedPriceHTML = <><br /><span style={{ color: 'rgb(177, 0, 0)' }}>{newPrice}</span> ({discObj.discountPercentage}% off)</>
-                            classLine = 'line-through';
-                          } else subtotal = value.totalPrice;
-                        } else subtotal = value.totalPrice;
-                        subTotalPrices.push(subtotal);
-                        let paraText = <TableCell className="reciept-table-cell table-cell-description">{value.item.description}
-                        </TableCell>
-                        if (value.type === 'diy') {
-                          const flowers = value.item.flowers.map((element, index) => {
-                            return element.name;
-                          }).join(', ');
-                          const addons = value.item.addons.map((element, index) => {
-                            return element.name;
-                          }).join(', ');
-                          paraText = (
-                            <TableCell className="reciept-table-cell table-cell-description text-capatalize margin-bottom-0">
-                              <p><strong>Size: </strong>{value.item.size}</p>
-                              <p><strong>Base: </strong>{value.item.base}</p>
-                              <p><strong>Color: </strong>{value.item.color}</p>
-                              <p><strong>Flowers: </strong>{flowers}</p>
-                              {
-                                value.item.addons.length === 0 ? (
-                                  <p><strong>Addons: </strong>No Addons</p>
-                                ) : (
-                                  <p><strong>Addons: </strong>{addons}</p>
-                                )
-                              }
-                            </TableCell>
-                          )
-                        }
-                        orderRows.push(
-                          <TableRow key={key}>
-                            <TableCell className="reciept-table-cell table-cell-no" component="th" scope="row" align="right">
-                              {rowIndex}
-                            </TableCell>
-                            <TableCell className="reciept-table-cell table-cell-name">{value.item.name}</TableCell>
-                            {paraText}
-                            <TableCell className="reciept-table-cell table-cell-price" align="right">
-                              <span className={classLine}>{value.item.price}</span>{discountedPriceHTML}
-                            </TableCell>
-                            <TableCell className="reciept-table-cell table-cell-qty" align="right">{value.count}</TableCell>
-                            <TableCell className="reciept-table-cell table-cell-total-price" align="right">{subtotal}</TableCell>
-                          </TableRow>
-                        )
-                        rowIndex += 1;
-                      }
+
+                    if (key !== 'order_data') {
+                      c += 1;
                     }
                   }
-                  const finalSubtotalPrice = subTotalPrices.reduce((a, b) => a + b, 0);
-                  let discountPercentage = 0;
-                  if (recieptData && recieptData.discount && recieptData.discount.type === 'Bill') {
-                    discountPercentage = recieptData.discount.discountPercentage;
-                  }
+
                   return (
                     <React.Fragment
                       key={row[tableFetch['checkboxSelection']]}
                     >
                       {
                         tableFetch.type !== 'collapse' ? (
+
                           <TableRow
                             hover
                             onClick={(event) => handleClick(event, row[tableFetch['checkboxSelection']])}
@@ -522,151 +480,136 @@ export default function EnhancedTable(props) {
                                 inputProps={{ 'aria-labelledby': labelId }}
                               />
                             </TableCell>
+
                             {tableRow}
-                          </TableRow>
-                        ) : (
-                          <>
-                            {
-                              recieptData !== null ? (
-                                <>
-                                  <TableRow
-                                    aria-checked={isItemSelected}
-                                    tabIndex={-1}
-                                    selected={isItemSelected}
-                                  >
-                                    <TableCell padding="checkbox">
-                                      <Checkbox
-                                        onClick={(event) => handleClick(event, row[tableFetch['checkboxSelection']])}
-                                        checked={isItemSelected}
-                                        inputProps={{ 'aria-labelledby': labelId }}
-                                      />
-                                    </TableCell>
-                                    {tableRow}
-                                    <TableCell>
-                                      <IconButton aria-label="expand row" size="small" onClick={() => handleSetOpen(index)}>
-                                        {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                      </IconButton>
-                                    </TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-                                      <Collapse in={open[index]} timeout="auto" unmountOnExit>
-                                        <Box className="order-container">
-                                          <Container>
-                                            <Row className="justify-content-between">
-                                              <Col md={4}>
-                                                <p className="order-no">
-                                                  Order No. {recieptData.orderNumber}
-                                                </p>
-                                                <p className="order-date">
-                                                  Order Date: {orderDate}
-                                                </p>
-                                              </Col>
-                                              <Col md={4}>
-                                                <p className="order-no">
-                                                  {recieptData.status}
-                                                </p>
-                                                <p className="order-date">
-                                                  Payment method: {recieptData.paymentMethod}
-                                                </p>
-                                              </Col>
-                                            </Row>
-                                            <Row className="order-contact justify-content-between">
-                                              <Col md={4}>
-                                                <p>
-                                                  {recieptData.firstName} {recieptData.lastName}
-                                                </p>
-                                                <p>
-                                                  {recieptData.email}
-                                                </p>
-                                                <p>
-                                                  {recieptData.phoneNumber}
-                                                </p>
-                                                <br />
-                                                <p>
-                                                  <strong>Delivery Date:</strong>
-                                                </p>
-                                                <p>
-                                                  {recieptData.deliveryDate}
-                                                </p>
-                                              </Col>
-                                              <Col md={4}>
-                                                <p>
-                                                  {recieptData.firstName1} {recieptData.lastName1}
-                                                </p>
-                                                <p>
-                                                  {recieptData.email1}
-                                                </p>
-                                                <p>
-                                                  {recieptData.phoneNumber1}
-                                                </p>
-                                                <p>
-                                                  {recieptData.addressLine1}
-                                                </p>
-                                                <p>
-                                                  {recieptData.addressLine2}
-                                                </p>
-                                                <p>
-                                                  Near {recieptData.landmark}
-                                                </p>
-                                                <p>
-                                                  {recieptData.area.name}
-                                                </p>
-                                              </Col>
-                                            </Row>
+                          </TableRow>)
+                          : (
+                            <>
+                              {
+                                order_data !== null ? (
+                                  <>
+                                    <TableRow
+                                      aria-checked={isItemSelected}
+                                      tabIndex={-1}
+                                      selected={isItemSelected}
+                                    >
+                                      <TableCell padding="checkbox">
+                                        <Checkbox
+                                          onClick={(event) => handleClick(event, row[tableFetch['checkboxSelection']])}
+                                          checked={isItemSelected}
+                                          inputProps={{ 'aria-labelledby': labelId }}
+                                        />
+                                      </TableCell>
+                                      {tableRow}
+                                      <TableCell>
+                                        <IconButton aria-label="expand row" size="small" onClick={() => handleSetOpen(index)}>
+                                          {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                        </IconButton>
+                                      </TableCell>
+                                    </TableRow>
+
+                                    <TableRow>
+                                      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+                                        <Collapse in={open[index]} timeout="auto" unmountOnExit>
+                                          <Box sx={{ margin: 1 }}>
+                                            <Typography variant="h6" gutterBottom component="div">
+                                              Order Items
+                                            </Typography>
+
                                             <Table size="small" aria-label="purchases">
                                               <TableHead>
                                                 <TableRow>
-                                                  <TableCell className="reciept-table-cell table-cell-no" align="right">No.</TableCell>
-                                                  <TableCell className="reciept-table-cell table-cell-name">Name</TableCell>
-                                                  <TableCell className="reciept-table-cell table-cell-description">Description</TableCell>
-                                                  <TableCell className="reciept-table-cell table-cell-price" align="right">Price</TableCell>
-                                                  <TableCell className="reciept-table-cell table-cell-qty" align="right">Quantity</TableCell>
-                                                  <TableCell className="reciept-table-cell table-cell-total-price" align="right">Sub-Total</TableCell>
+                                                  <TableCell>Name</TableCell>
+                                                  <TableCell>Brand</TableCell>
+                                                  <TableCell>Size</TableCell>
+                                                  <TableCell>Color</TableCell>
+                                                  <TableCell>Quantity</TableCell>
+                                                  <TableCell>Total Price</TableCell>
                                                 </TableRow>
                                               </TableHead>
                                               <TableBody>
-                                                {orderRows}
-                                                <TableRow>
-                                                  <TableCell rowSpan={4} />
-                                                  <TableCell rowSpan={4} />
-                                                  <TableCell rowSpan={4} />
-                                                  <TableCell colSpan={2}>Sub-Total</TableCell>
-                                                  <TableCell align="right">{finalSubtotalPrice}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                  <TableCell colSpan={2}>Discount (%)</TableCell>
-                                                  <TableCell align="right">{discountPercentage}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                  <TableCell colSpan={2}>Delivery Fee</TableCell>
-                                                  <TableCell align="right">100</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                  <TableCell colSpan={2}>Grand Total (PKR)</TableCell>
-                                                  <TableCell align="right">{((((100 - discountPercentage) / 100) * finalSubtotalPrice) + 100)}</TableCell>
-                                                </TableRow>
+                                                {order_data?.orderItems?.map((item, index) => (
+                                                  <TableRow key={index}>
+                                                    <TableCell component="th" scope="row">
+                                                      {item.name}
+                                                    </TableCell>
+
+                                                    <TableCell component="th" scope="row">
+                                                      {item.brand.name}
+                                                    </TableCell>
+
+                                                    <TableCell component="th" scope="row">
+                                                      {item.size.name}
+                                                    </TableCell>
+
+                                                    <TableCell component="th" scope="row">
+                                                      {item.color.name}
+                                                    </TableCell>
+
+                                                    <TableCell component="th" scope="row">
+                                                      {item.quantity}
+                                                    </TableCell>
+
+                                                    <TableCell component="th" scope="row">
+                                                      {item.price * item.quantity}
+                                                    </TableCell>
+
+                                                  </TableRow>
+                                                ))}
                                               </TableBody>
                                             </Table>
-                                            <Row style={{ marginTop: '2rem' }}>
-                                              <Col md={6}>
-                                                <strong><p style={{ marginBottom: 0 }}>Message:</p></strong>
-                                                <p>{recieptData.message}</p>
-                                                <strong><p style={{ marginBottom: 0 }}>Call me incase of unavailable items:</p></strong>
-                                                <p>{recieptData.callMe}</p>
-                                              </Col>
-                                            </Row>
-                                          </Container>
-                                        </Box>
-                                      </Collapse>
-                                    </TableCell>
-                                  </TableRow>
-                                </>
-                              ) : null
-                            }
-                          </>
-                        )
+
+                                            <Typography style={{ marginTop: '1rem' }} variant="h6" gutterBottom component="div">
+                                              Delivery Address
+                                            </Typography>
+
+                                            <Typography variant="body2" gutterBottom>
+                                              {order_data.deliveryAddress.firstName} {order_data.deliveryAddress.lastName}
+                                            </Typography>
+                                            <Typography variant="body2" gutterBottom>
+                                              {order_data.customer.email1}
+                                            </Typography>
+
+                                            <Typography variant="body2" gutterBottom>
+                                              {order_data.deliveryAddress.contactNumber}
+                                            </Typography>
+
+                                            <Typography variant="body2" gutterBottom>
+                                              {order_data.deliveryAddress.addressLine1}
+                                            </Typography>
+
+                                            <Typography variant="body2" gutterBottom>
+                                              {order_data.deliveryAddress.addressLine2}
+                                            </Typography>
+
+
+                                            <Typography variant="body2" gutterBottom>
+                                              Landmark: {order_data.deliveryAddress.landmark ? order_data.deliveryAddress.landmark : '-'}
+                                            </Typography>
+
+                                            <Typography variant="body2" gutterBottom>
+                                              {order_data.deliveryAddress.area}
+                                            </Typography>
+
+
+                                            <Typography variant="body2" gutterBottom>
+                                              {order_data.deliveryAddress.city.name}, {order_data.deliveryAddress.city.province.name}, {order_data.deliveryAddress.city.province.country.name}
+                                            </Typography>
+
+                                          </Box>
+                                        </Collapse>
+                                      </TableCell>
+                                    </TableRow>
+                                  </>
+                                ) :
+                                  (
+                                    null
+                                  )
+                              }
+                            </>
+                          )
                       }
+
                     </React.Fragment>
                   );
                 })}
