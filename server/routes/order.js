@@ -46,6 +46,39 @@ router.get('/table-data-auto', async (req, res) => {
     else res.json({ data: orders });
 });
 
+router.get('/get-orders/:userID', async (req, res) => {
+    const orders = await Order.find({ user: req.params.userID })
+        .populate('user')
+        .populate({
+            path: 'orderItems',
+            populate: { path: 'brand' }
+        })
+        .populate({
+            path: 'orderItems',
+            populate: { path: 'color' }
+        })
+        .populate({
+            path: 'orderItems',
+            populate: { path: 'size' }
+        })
+        .populate({
+            path: 'deliveryAddress',
+            populate: {
+                path: 'city',
+                populate: {
+                    path: 'province',
+                    populate: {
+                        path: 'country',
+                    }
+                }
+            }
+        }
+        )
+        ;
+    if (!orders) res.json({ data: [] });
+    else res.json({ data: orders });
+});
+
 router.post('/delete', async (req, res) => {
     await Order.deleteMany({ _id: { $in: req.body.data } });
     const orders = await Order.find({});

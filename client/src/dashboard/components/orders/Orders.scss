@@ -1,38 +1,38 @@
 .my-orders {
-    Table {
-        margin-bottom: 0;
-        th,
-        td {
-            font-size: 1rem;
-        }
-        th {
-            font-weight: 500;
-        }
-        td {
-            font-weight: 300;
-        }
-        a {
-            color: black;
-            transition: 0.3s ease-in-out;
-            &:hover {
-                color: #cf993d;
-            }
-        }
+  Table {
+    margin-bottom: 0;
+    th,
+    td {
+      font-size: 1rem;
     }
-    label,
-    .dataTables_info {
-        display: none;
+    th {
+      font-weight: 500;
     }
-    .pagination {
-        margin-bottom: 0;
-        .page-item.active {
-            .page-link {
-                &:hover {
-                    background-color: #cf993d;
-                }
-                background-color: #cf993d;
-                border-radius: 100px;
-            }
+    td {
+      font-weight: 300;
+    }
+    a {
+      color: black;
+      transition: 0.3s ease-in-out;
+      &:hover {
+        color: #cf993d;
+      }
+    }
+  }
+  label,
+  .dataTables_info {
+    display: none;
+  }
+  .pagination {
+    margin-bottom: 0;
+    .page-item.active {
+      .page-link {
+        &:hover {
+          background-color: #cf993d;
         }
+        background-color: #cf993d;
+        border-radius: 100px;
+      }
     }
+  }
 }

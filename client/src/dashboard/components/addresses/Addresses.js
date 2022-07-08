@@ -6,11 +6,11 @@ import { MdCancel } from 'react-icons/md';
 
 import { MainHeading, DescriptionText, SubHeading } from '../../../components';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import './Addresses.scss';
 import { useForm, Controller } from "react-hook-form";
 import CountriesContext from '../../../contexts/country';
 import api from '../../../api';
 import { AddressModal } from "../../components";
+import './Addresses.scss';
 
 function Addresses(props) {
 
