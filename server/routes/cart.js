@@ -1,5 +1,7 @@
 const router = require('express').Router();
-
+const Product = require('../schema').product;
+const User = require("../schema").user;
+const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -10,97 +12,145 @@ router.get('/getCart', async (req, res) => {
 
     if (!cartCookie) {
         const expiryDate = new Date(Number(new Date()) + 315360000000);
-        await res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
+        res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
         res.json({ data: cartObj });
+
     } else {
         const expiryDate = new Date(Number(new Date()) + 315360000000);
-        await res.cookie("cart", cartCookie, { httpOnly: true, maxAge: expiryDate });
-        res.json({ data: cartCookie })
+        res.cookie("cart", cartCookie, { httpOnly: true, maxAge: expiryDate });
+
+        const user_token = (req.cookies?.['access_token']);
+        let logged_user = null;
+
+        if (user_token) {
+            const user_data = jwt.verify(user_token, process.env.TOKEN_SECRET);
+            logged_user = await User.findOne({ _id: user_data.user_id });
+        }
+
+        let cart_products = {};
+
+        for (const key in cartCookie) {
+            const keys = key.split('-');
+            const product_id = keys[0];
+            const product_detail_id = keys[1];
+            const user_id = keys[2];
+
+            const product = await Product.findOne({ _id: product_id })
+                .populate({
+                    path: 'productDetails',
+                    populate: [
+                        { path: 'size' },
+                        { path: 'color' }
+                    ]
+                });
+
+            const product_detail = product.productDetails.find(product_detail => product_detail._id.toString() === product_detail_id);
+
+            const product_obj = {
+                user_id: user_id,
+                name: product.name,
+                default_image: product.default_image,
+                quantity: cartCookie[key],
+                price: product_detail.price,
+                points: product_detail.points,
+                size: product_detail.size,
+                color: product_detail.color,
+            };
+
+            cart_products[key] = product_obj;
+
+        }
+
+        res.json({ data: cart_products })
     };
 });
 
 
-
-function makeid(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() *
-            charactersLength));
-    }
-    return result;
-}
-
 router.post('/addToCart', async (req, res) => {
     const cartCookie = req.cookies['cart'];
 
+    const { cart_products, product_id, product_detail_id, user_id } = req.body;
+
     if (cartCookie) {
         const cartObj = cartCookie;
 
-        const key = `${req.body.product_id}-${req.body.size.name}-${req.body.color.name}-${req.body.user_id}`;
+        const key = `${product_id}-${product_detail_id}-${user_id}`;
 
         if (cartObj[key]) {
-            cartObj[key].quantity += 1;
+            cartObj[key] += 1;
         } else {
-            cartObj[key] = {
-                user_id: req.body.user_id,
-                images: req.body.imageList,
-                default_image: req.body.default_image,
-                product_id: req.body.product_id,
-                name: req.body.name,
-                slug: req.body.productSlug,
-                description: req.body.description,
-                brand: req.body.brand,
-                hasColor: req.body.hasColor,
-                size: req.body.size,
-                quantity: 1,
-                color: req.body.color,
-                price: req.body.price,
-                points: req.body.points,
-                preOrder: req.body.preOrder,
-            }
+            cartObj[key] = 1;
         }
+
         const expiryDate = new Date(Number(new Date()) + 315360000000);
-        await res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate, sameSite: 'lax' });
-        res.json({ data: cartObj });
+        res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
+
+        const product = await Product.findOne({ _id: product_id })
+            .populate({
+                path: 'productDetails',
+                populate: [
+                    { path: 'size' },
+                    { path: 'color' }
+                ]
+            });
+        const product_detail = product.productDetails.find(product_detail => product_detail._id.toString() === product_detail_id);
+
+        const product_obj = {
+            user_id: user_id,
+            name: product.name,
+            default_image: product.default_image,
+            quantity: cartObj[key],
+            price: product_detail.price,
+            points: product_detail.points,
+            size: product_detail.size,
+            color: product_detail.color,
+        };
+
+        cart_products[key] = product_obj;
+
+        res.json({ data: cart_products });
 
     } else {
         res.json({ data: null });
     }
-
-
 });
 
 
 
-router.get('/removeItem', async (req, res) => {
+router.post('/removeItem', async (req, res) => {
     const cartCookie = req.cookies['cart'];
     const { key } = req.query;
+    const { cart_products } = req.body;
+
     if (cartCookie) {
         const cartObj = cartCookie;
-        cartObj[key].quantity -= 1;
-        if (cartObj[key].quantity === 0) {
+        cartObj[key] -= 1;
+        cart_products[key].quantity -= 1;
+
+        if (cartObj[key] === 0) {
             delete cartObj[key];
+            delete cart_products[key];
         }
         const expiryDate = new Date(Number(new Date()) + 315360000000);
-        await res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
-        res.json({ data: cartObj });
+        res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
+        res.json({ data: cart_products });
     } else {
         res.json({ data: null });
     }
 
 });
 
-router.get('/addItem', async (req, res) => {
+router.post('/addItem', async (req, res) => {
     const cartCookie = req.cookies['cart'];
     const { key } = req.query;
+    const { cart_products } = req.body;
     if (cartCookie) {
         const cartObj = cartCookie;
-        cartObj[key].quantity += 1;
+        cartObj[key] += 1;
+        cart_products[key].quantity += 1;
         const expiryDate = new Date(Number(new Date()) + 315360000000);
-        await res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
-        res.json({ data: cartObj });
+        res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
+        res.json({ data: cart_products });
     } else {
         res.json({ data: null });
     }
@@ -115,13 +165,16 @@ router.post("/clear-cart", async (req, res) => {
 
     if (cartCookie) {
         const cartObj = cartCookie;
-        for (const [key, value] of Object.entries(cartObj)) {
-            if (value.user_id === user_id) {
+        for (const key in cartCookie) {
+            const keys = key.split('-');
+            const key_user_id = keys[2];
+            if (key_user_id === user_id) {
                 delete cartObj[key];
             }
         }
+
         const expiryDate = new Date(Number(new Date()) + 315360000000);
-        await res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
+        res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
         res.json({ success: true, data: cartObj });
     } else {
         res.json({ success: true, data: null });

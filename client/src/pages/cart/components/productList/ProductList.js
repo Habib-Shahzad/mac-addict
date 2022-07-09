@@ -18,24 +18,33 @@ function ProductList(props) {
 
     const removeCartItem = async (key) => {
         const response = await fetch(`${api}/cart/removeItem?key=${key}`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
             withCredentials: true,
+
+            body: JSON.stringify({
+                cart_products: cart.cartObj
+            })
         });
         const content = await response.json();
         cart.setCart(content.data);
-
     }
 
     const addCartItem = async (key) => {
         const response = await fetch(`${api}/cart/addItem?key=${key}`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
             withCredentials: true,
+
+            body: JSON.stringify({
+                cart_products: cart.cartObj
+            })
         });
         const content = await response.json();
         cart.setCart(content.data);
@@ -58,15 +67,13 @@ function ProductList(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
 
+    useEffect(() => {
         let lst = [];
         let i = 0;
-
-
         if (user.userState) {
             for (const [key, value] of Object.entries(cart.cartObj)) {
-                if (value.user_id === user.userState._id) {
+                if (value?.user_id === user.userState._id) {
                     lst.push(value);
                     lst[i].key = key;
                     i += 1;
@@ -75,7 +82,6 @@ function ProductList(props) {
         }
         setCartProducts(lst);
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cart, user])
 
 
@@ -84,7 +90,7 @@ function ProductList(props) {
         let totalPrice = 0;
         for (var i = 0; i < cartProducts.length; i++) {
             let element = cartProducts[i];
-            totalPrice += element.price * element.quantity;
+            totalPrice += element?.price * element?.quantity;
         }
         setCost(totalPrice);
     }, [cartProducts])
@@ -101,24 +107,24 @@ function ProductList(props) {
                                     <Row key={key} className="product-row">
                                         <div className="global-mt-2 display-992" />
                                         <Col lg={3}>
-                                            <img src={element?.images[0]?.image} alt={element.name} />
+                                            <img src={element?.default_image} alt={element?.name} />
                                         </Col>
                                         <div className="global-mt-3 display-992" />
                                         <Col lg={5}>
                                             <Heading2
-                                                bold={element.name}
+                                                bold={element?.name}
                                                 link="/"
                                                 classes="text-uppercase"
                                             />
                                             <ParaText
-                                                text={`Color: ${element.color.name}`}
+                                                text={`Color: ${element?.color?.name}`}
                                                 classes="margin-bottom-0"
                                                 href='/'
                                             />
 
 
                                             <ParaText
-                                                text={`Size: ${element.size.name}`}
+                                                text={`Size: ${element?.size?.name}`}
                                                 classes="margin-bottom-0"
                                                 href='/'
                                             />
@@ -126,10 +132,10 @@ function ProductList(props) {
 
                                         <Col lg={1}>
                                             <div className="center-relative">
-                                                <input value={element.quantity} type="text" readOnly={true} />
+                                                <input value={element?.quantity} type="text" readOnly={true} />
                                                 <div className="add-remove-icons horizontal-center-relative">
-                                                    <RemoveIcon onClick={() => { removeCartItem(element.key) }} className="cart-icon" />
-                                                    <AddIcon onClick={() => { addCartItem(element.key) }} className="cart-icon" />
+                                                    <RemoveIcon onClick={() => { removeCartItem(element?.key) }} className="cart-icon" />
+                                                    <AddIcon onClick={() => { addCartItem(element?.key) }} className="cart-icon" />
                                                 </div>
                                             </div>
                                         </Col>
@@ -137,7 +143,7 @@ function ProductList(props) {
                                         <Col className="align-middle">
                                             <div className="center-relative">
                                                 <Heading1
-                                                    bold={`PKR.${parseInt(element.price) * element.quantity}`}
+                                                    bold={`PKR.${parseInt(element?.price) * element?.quantity}`}
                                                     classes={`text-uppercase text-center`}
                                                 />
                                             </div>

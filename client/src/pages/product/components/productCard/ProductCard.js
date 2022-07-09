@@ -80,21 +80,6 @@ function ProductCard(props) {
 
     useEffect(() => {
 
-        // let productGet = {
-        //     _id: '61044598217db513f839d483',
-        //     name: 'Instant Look All Over Face Palette Look of Love Collection',
-        //     slug: 'Instant-Look-All-Over-Face-Palette-Look-of-Love-Collection',
-        //     brand: { name: "Sephora" },
-        //     description: ['Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem'],
-        //     hasColor: true,
-        //     productDetails: [
-        //         { imageList: [{ imagePath: "https://www.sephora.com/productimages/sku/s2070571-main-zoom.jpg" }, { imagePath: "https://www.sephora.com/productimages/sku/s2449908-main-zoom.jpg" }], imagePath: "https://www.sephora.com/productimages/sku/s2070571-main-zoom.jpg", preOrder: true, price: [{ amount: 1000, active: true }], points: 100, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Red', hexCode: '#FF0000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Small' } },
-        //         { imageList: [{ imagePath: "https://www.sephora.com/productimages/sku/s2432946-main-zoom.jpg" },], preOrder: false, price: [{ amount: 2000, active: true }], points: 300, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Maroon', hexCode: '#800000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Small' } },
-        //         { imageList: [{ imagePath: "https://www.sephora.com/productimages/sku/s2432946-av-06-zoom.jpg" },], preOrder: false, price: [{ amount: 3000, active: true }], points: 400, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Yellow', hexCode: '#FFFF00' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Medium' } },
-        //         { imageList: [{ imagePath: "https://www.sephora.com/productimages/sku/s2432946-av-05-zoom.jpg" },], preOrder: false, price: [{ amount: 4000, active: true }], points: 500, color: { _id: '6103f1fb9aa8e50aace400f8', name: 'Olive', hexCode: '#808000' }, size: { _id: '6103f4d59aa8e50aace4012e', name: 'Large' } },
-        //     ],
-        // };
-
         const data = {};
         if (Object.keys(productGet).length > 0) {
 
@@ -152,8 +137,6 @@ function ProductCard(props) {
     const addToCart = async event => {
         event.preventDefault();
         const activeProduct = data[activeSize][activeColor];
-
-
         const response = await fetch(`${api}/cart/addToCart`, {
             method: 'POST',
             headers: {
@@ -164,18 +147,8 @@ function ProductCard(props) {
             body: JSON.stringify({
                 user_id: user.userState._id,
                 product_id: product._id,
-                default_image: product.default_image,
-                name: product.name,
-                productSlug: product.slug,
-                description: product.description,
-                brand: product.brand,
-                hasColor: product.hasColor,
-                size: activeProduct.size,
-                color: activeProduct.color,
-                price: activeProduct.price,
-                points: activeProduct.points,
-                preOrder: activeProduct.preOrder,
-                imageList: activeProduct.images,
+                product_detail_id: activeProduct._id,
+                cart_products: cart.cartObj
             })
         });
 
@@ -183,7 +156,6 @@ function ProductCard(props) {
         cart.setCart(content.data);
 
         setButtonText({ text: 'Added', classes1: 'disabled-shop-button' });
-
         setTimeout(() => {
             setButtonText({ text: 'Shop it', classes1: '' });
         }, 1500);

@@ -7,19 +7,28 @@ const ProductDetail = require('../schema').productDetail;
 const slugify = require('slugify');
 
 router.get('/table-data', async (req, res) => {
-    const products = await Product.find({}).populate('category').populate('subCategory').populate('furtherSubCategory').populate('brand').populate({
-        path: 'productDetails',
-        populate: [
-            { path: 'size' },
-            { path: 'color' }
-        ]
-    });
+    const products = await Product.find({})
+        .populate('category')
+        .populate('subCategory')
+        .populate('furtherSubCategory')
+        .populate('brand')
+        .populate({
+            path: 'productDetails',
+            populate: [
+                { path: 'size' },
+                { path: 'color' }
+            ]
+        });
     if (!products) res.json({ data: [] });
     else res.json({ data: products });
 });
 
 router.get('/table-data-list', async (req, res) => {
-    const products = await Product.find({}).populate('category').populate('subCategory').populate('furtherSubCategory').populate('brand');
+    const products = await Product.find({})
+        .populate('category')
+        .populate('subCategory')
+        .populate('furtherSubCategory')
+        .populate('brand');
     if (!products) res.json({ success: false, data: [] });
     else res.json({ success: true, data: products });
 });
@@ -37,13 +46,16 @@ router.get('/get-products', async (req, res) => {
 });
 
 router.get('/get-product-slug', async (req, res) => {
-    const product = await Product.findOne({ slug: 'cool' }, { _id: 0 }).populate('furtherSubCategory').populate('brand').populate({
-        path: 'productDetails',
-        populate: [
-            { path: 'size' },
-            { path: 'color' }
-        ]
-    });
+    const product = await Product.findOne({ slug: 'cool' }, { _id: 0 })
+        .populate('furtherSubCategory')
+        .populate('brand')
+        .populate({
+            path: 'productDetails',
+            populate: [
+                { path: 'size' },
+                { path: 'color' }
+            ]
+        });
     if (!product) res.json({ data: null });
     else res.json({ data: product });
 });

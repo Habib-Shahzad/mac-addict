@@ -34,11 +34,16 @@ function SearchNavbar(props) {
 
     const removeCartItem = async (key) => {
         const response = await fetch(`${api}/cart/removeItem?key=${key}`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
             withCredentials: true,
+
+            body: JSON.stringify({
+                cart_products: cart.cartObj
+            })
         });
         const content = await response.json();
         cart.setCart(content.data);
@@ -46,24 +51,20 @@ function SearchNavbar(props) {
 
     const addCartItem = async (key) => {
         const response = await fetch(`${api}/cart/addItem?key=${key}`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
             withCredentials: true,
+
+            body: JSON.stringify({
+                cart_products: cart.cartObj
+            })
         });
         const content = await response.json();
         cart.setCart(content.data);
     }
-
-    const handleClick = itemOptions => {
-        /* 
-            do something with the item you clicked.
-            you can also send custom properties of your choice
-            in the options array you'll be getting those here
-            whenever you click that item
-        */
-    };
 
     const handleLogout = async event => {
 
@@ -75,13 +76,12 @@ function SearchNavbar(props) {
         });
         user.setUserState(null);
     }
-
     useEffect(() => {
         let lst = [];
         let i = 0;
         if (user.userState) {
             for (const [key, value] of Object.entries(cart.cartObj)) {
-                if (value.user_id === user.userState._id) {
+                if (value?.user_id === user.userState._id) {
                     lst.push(value);
                     lst[i].key = key;
                     i += 1;
@@ -90,8 +90,8 @@ function SearchNavbar(props) {
         }
         setData(lst);
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cart, user])
+
 
     const theme = createTheme({
         palette: {
@@ -113,7 +113,7 @@ function SearchNavbar(props) {
         let totalPrice = 0;
         for (var i = 0; i < data.length; i++) {
             let element = data[i];
-            totalPrice += element.price * element.quantity;
+            totalPrice += element?.price * element?.quantity;
         }
         setCost(totalPrice);
     }, [data])
@@ -212,49 +212,49 @@ function SearchNavbar(props) {
                                                     {
                                                         data.map((element, index) => {
                                                             return (
-                                                                <li className="cart-list-item" key={`${element.key}-${index}`}>
+                                                                <li className="cart-list-item" key={`${element?.key}-${index}`}>
                                                                     <Row>
                                                                         <Col md={3}>
-                                                                            <img src={element?.images[0]?.image} alt={element.name} />
+                                                                            <img src={element?.default_image} alt={element?.name} />
                                                                         </Col>
                                                                         <Col md={5}>
                                                                             <div className="vertical-center-relative">
                                                                                 <div style={{ textIndent: '0' }}>
                                                                                     <Heading3
-                                                                                        first={element.name}
+                                                                                        first={element?.name}
                                                                                         classes="text-uppercase"
                                                                                     />
                                                                                 </div>
 
                                                                                 <ParaText
-                                                                                    text={`Quantity: ${element.quantity}`}
+                                                                                    text={`Quantity: ${element?.quantity}`}
                                                                                     classes="margin-bottom-0"
                                                                                     href='/'
                                                                                 />
 
                                                                                 <ParaText
-                                                                                    text={`Color: ${element.color.name}`}
+                                                                                    text={`Color: ${element?.color?.name}`}
                                                                                     classes="margin-bottom-0"
                                                                                     href='/'
                                                                                 />
 
 
                                                                                 <ParaText
-                                                                                    text={`Size: ${element.size.name}`}
+                                                                                    text={`Size: ${element?.size?.name}`}
                                                                                     classes="margin-bottom-0"
                                                                                     href='/'
                                                                                 />
 
                                                                                 <div className="add-remove-icons">
-                                                                                    <RemoveIcon onClick={() => { removeCartItem(element.key) }} className="cart-icon" />
-                                                                                    <AddIcon onClick={() => { addCartItem(element.key) }} className="cart-icon" />
+                                                                                    <RemoveIcon onClick={() => { removeCartItem(element?.key) }} className="cart-icon" />
+                                                                                    <AddIcon onClick={() => { addCartItem(element?.key) }} className="cart-icon" />
                                                                                 </div>
                                                                             </div>
                                                                         </Col>
                                                                         <Col className="align-middle">
                                                                             <div className="vertical-center-relative">
                                                                                 <Heading3
-                                                                                    bold={`PKR.${parseInt(element.price) * element.quantity}`}
+                                                                                    bold={`PKR.${parseInt(element?.price) * element?.quantity}`}
                                                                                     classes={`text-uppercase text-center`}
                                                                                 />
                                                                             </div>
@@ -302,12 +302,12 @@ function SearchNavbar(props) {
                 <Sidebar
                     open={open}
                     handleSidebarToggle={handleSidebarToggle}
-                    handleClick={handleClick}
+                    handleClick={() => { }}
                     options={props.options}
                     onToggle={handleSidebarToggle}
                     header={<img src="/logo.png" alt="MAC Addict" />}
                     headerClassName="side-bar-logo"
-                    onItemClick={handleClick}
+                    onItemClick={() => { }}
                 />
             </div>
             <div className="margin-global-top-1" />

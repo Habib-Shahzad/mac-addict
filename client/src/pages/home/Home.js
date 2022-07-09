@@ -30,15 +30,11 @@ function Home(props) {
 
     useEffect(() => {
         if (productsList?.length > 0) {
-            const fetched_product = productsList[0];
-            let products = [];
-            for (let i = 0; i < 10; i++) {
-                products.push(fetched_product);
-            }
-            setArrivals(products);
-            setHotsellers(products);
+            setArrivals(productsList);
+            setHotsellers(productsList);
         }
     }, [productsList])
+
 
 
     return (
@@ -51,6 +47,7 @@ function Home(props) {
             />
             <div className="margin-global-top-5" />
             <SlickSlider type="price" data={arrivals} />
+
             <div className="margin-global-top-5" />
             <Row className="justify-content-center">
                 <Banner
