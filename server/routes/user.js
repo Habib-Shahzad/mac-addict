@@ -343,13 +343,13 @@ router.post("/admin-login", async (req, res) => {
 
 // -----------------------------------------------------------------
 
-router.get("/table-data", async (req, res) => {
+router.get("/table-data", admin_auth, async (req, res) => {
   const users = await User.find({}, { uid: 0 });
   if (!users) res.json({ data: [] });
   else res.json({ data: users });
 });
 
-router.get("/table-data-auto", async (req, res) => {
+router.get("/table-data-auto", admin_auth, async (req, res) => {
   const users = await User.find({}, { uid: 0 });
   if (!users) res.json({ data: [] });
   else res.json({ data: users });

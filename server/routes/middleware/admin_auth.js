@@ -1,11 +1,4 @@
-const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
-
-const express = require('express');
-const app = express();
-app.use(cookieParser());
-
 
 const verifyToken = (req, res, next) => {
     const token = req.cookies?.['access_token_admin'];

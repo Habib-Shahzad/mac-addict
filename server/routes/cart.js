@@ -2,10 +2,9 @@ const router = require('express').Router();
 const Product = require('../schema').product;
 require('dotenv').config();
 
-
 const user_auth = require('./middleware/user_auth');
 
-router.get('/getCart', user_auth, async (req, res) => {
+router.get('/getCart', async (req, res) => {
     const cartCookie = req.cookies?.['cart'];
     const cartObj = {}
 
@@ -51,7 +50,6 @@ router.get('/getCart', user_auth, async (req, res) => {
             };
 
             cart_products[key] = product_obj;
-
         }
 
         res.json({ data: cart_products })
