@@ -22,7 +22,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const sizeObj = {
     apiTable: `${api}/size/table-data`,
-    deleteApi: [`${api}/size/get-by-ids`, `${api}/size/delete`],
+    deleteApi: `${api}/size/delete`,
     createTableData: createTableData,
     headCells: [
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
@@ -104,6 +104,8 @@ const sizeObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ name: data.name }),
                 });
                 const content = await response.json();
@@ -115,6 +117,8 @@ const sizeObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ _id: queryID, name: data.name }),
                 });
                 const content = await response.json();

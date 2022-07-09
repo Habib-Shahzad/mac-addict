@@ -1,10 +1,11 @@
 const router = require('express').Router();
 const Product = require('../schema').product;
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config();
 
 
-router.get('/getCart', async (req, res) => {
+const user_auth = require('./middleware/user_auth');
+
+router.get('/getCart', user_auth, async (req, res) => {
     const cartCookie = req.cookies?.['cart'];
     const cartObj = {}
 
@@ -58,7 +59,7 @@ router.get('/getCart', async (req, res) => {
 });
 
 
-router.post('/addToCart', async (req, res) => {
+router.post('/addToCart', user_auth, async (req, res) => {
     const cartCookie = req.cookies['cart'];
 
     const { cart_products, product_id, product_detail_id, user_id } = req.body;
@@ -110,7 +111,7 @@ router.post('/addToCart', async (req, res) => {
 
 
 
-router.post('/removeItem', async (req, res) => {
+router.post('/removeItem', user_auth, async (req, res) => {
     const cartCookie = req.cookies['cart'];
     const { key } = req.query;
     const { cart_products } = req.body;
@@ -133,7 +134,7 @@ router.post('/removeItem', async (req, res) => {
 
 });
 
-router.post('/addItem', async (req, res) => {
+router.post('/addItem', user_auth, async (req, res) => {
     const cartCookie = req.cookies['cart'];
     const { key } = req.query;
     const { cart_products } = req.body;
@@ -151,7 +152,7 @@ router.post('/addItem', async (req, res) => {
 });
 
 
-router.post("/clear-cart", async (req, res) => {
+router.post("/clear-cart", user_auth, async (req, res) => {
     const cartCookie = req.cookies['cart'];
 
     const { user_id, cart_products } = req.body;

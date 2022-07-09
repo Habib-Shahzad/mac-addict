@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const Discount = require('../schema').discount;
 
+const admin_auth = require('./middleware/admin_auth');
+
+
 router.get('/table-data', async (req, res) => {
     const discounts = await Discount.find({});
     if (!discounts) res.json({ data: [] });
@@ -33,7 +36,7 @@ router.get('/get-discount', async (req, res) => {
     res.json({ data: discounts });
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', admin_auth, async (req, res) => {
     const data = req.body;
     // console.log(data);
     const newDiscount = new Discount({
@@ -50,7 +53,7 @@ router.post('/add', async (req, res) => {
     res.json({ data: newDiscount });
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const discount = await Discount.findOne({ _id: data._id });
     discount.name = data.name;
@@ -58,16 +61,8 @@ router.post('/update', async (req, res) => {
     res.json({ data: discount });
 });
 
-router.get('/get-by-ids', async (req, res) => {
-    let id = '';
-    if ('id' in req.query) id = req.query.id;
-    const getIds = id.split(',');
-    const discounts = await Discount.find({ _id: getIds });
-    if (!discounts) res.json({ data: [] });
-    else res.json({ data: discounts });
-});
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', admin_auth, async (req, res) => {
     await Discount.deleteMany({ _id: req.body.ids });
     res.json({ data: 'success' });
 });

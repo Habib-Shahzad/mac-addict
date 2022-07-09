@@ -8,10 +8,9 @@ const path = require('path');
 require('dotenv').config();
 const app = express();
 
-const url = process.env.DATABASE_URL;
 const port = parseInt(process.env.PORT);
 
-const createServer = async (callback) => {
+const createServer = async () => {
 
     console.log("Server Says Hello!");
 
@@ -76,8 +75,6 @@ const createServer = async (callback) => {
     // app.get('*', function (req, res) {
     //     res.sendFile(path.join(__dirname, '../client/build/index.html'));
     // });
-
-
 
     app.listen(port, () => {
         console.log(`Example app listening at http://localhost:${port}`);

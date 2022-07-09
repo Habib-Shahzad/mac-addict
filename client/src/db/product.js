@@ -93,6 +93,8 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
         const response = await fetch(`${api}/product/set-active`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            withCredentials: true,
             body: JSON.stringify({ active: active, selected: selected })
         });
         const content = await response.json();
@@ -108,7 +110,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const productObj = {
     apiTable: `${api}/product/table-data`,
-    deleteApi: [`${api}/product/get-by-ids`, `${api}/product/delete`],
+    deleteApi: `${api}/product/delete`,
     createTableData: createTableData,
     headCells: [
         { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
@@ -415,6 +417,8 @@ const productObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({
                         name: data.name,
                         category: data.category,
@@ -439,6 +443,8 @@ const productObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({
                         _id: queryID,
                         name: data.name,

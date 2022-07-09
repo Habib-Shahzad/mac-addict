@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const Color = require('../schema').color;
 
+const admin_auth = require('./middleware/admin_auth');
+
+
 router.get('/table-data', async (req, res) => {
     const colors = await Color.find({});
     if (!colors) res.json({ data: [] });
@@ -19,7 +22,7 @@ router.get('/get-Color', async (req, res) => {
     else res.json({ data: colors });
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', admin_auth, async (req, res) => {
     const data = req.body;
     const newColor = new Color({
         name: data.name,
@@ -29,7 +32,7 @@ router.post('/add', async (req, res) => {
     res.json({ data: newColor });
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const color = await Color.findOne({ _id: data._id });
     color.name = data.name;
@@ -38,16 +41,9 @@ router.post('/update', async (req, res) => {
     res.json({ data: color });
 });
 
-router.get('/get-by-ids', async (req, res) => {
-    let id = '';
-    if ('id' in req.query) id = req.query.id;
-    const getIds = id.split(',');
-    const colors = await Color.find({ _id: getIds });
-    if (!colors) res.json({ data: [] });
-    else res.json({ data: colors });
-});
 
-router.post('/delete', async (req, res) => {
+
+router.post('/delete', admin_auth, async (req, res) => {
     await Color.deleteMany({ _id: { $in: req.body.data } });
     const colors = await Color.find({});
     res.json({ success: true, data: colors });

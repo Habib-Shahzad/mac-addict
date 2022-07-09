@@ -3,6 +3,9 @@ const Brand = require('../schema').brand;
 const Product = require('../schema').product;
 const slugify = require('slugify');
 
+const admin_auth = require('./middleware/admin_auth');
+
+
 router.get('/table-data', async (req, res) => {
     const brands = await Brand.find({});
     if (!brands) res.json({ data: [] });
@@ -15,13 +18,9 @@ router.get('/table-data-auto', async (req, res) => {
     else res.json({ data: brands });
 });
 
-router.get('/get-brands', async (req, res) => {
-    const brands = await Brand.find({}, { _id: 0 });
-    if (!brands) res.json({ data: [] });
-    else res.json({ data: brands });
-});
 
-router.post('/add', async (req, res) => {
+
+router.post('/add', admin_auth, async (req, res) => {
     const data = req.body;
     let i = 0;
     let slug = '';
@@ -42,7 +41,7 @@ router.post('/add', async (req, res) => {
     res.json({ data: newBrand });
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const brand = await Brand.findOne({ _id: data._id });
     let slug = '';
@@ -65,39 +64,32 @@ router.post('/update', async (req, res) => {
     res.json({ data: brand });
 });
 
-router.get('/get-by-ids', async (req, res) => {
-    let id = '';
-    if ('id' in req.query) id = req.query.id;
-    const getIds = id.split(',');
-    const brands = await Brand.find({ _id: getIds }).populate({
-        path: 'products'
-    });
-    if (!brands) res.json({ data: [] });
-    else res.json({ data: brands });
-});
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', admin_auth, async (req, res) => {
     try {
-        const data = req.body.data;
-        data.forEach(async brand => {
-            await Product.deleteMany({ brand: brand._id });
+
+        req?.body?.data.forEach(async brand_id => {
+            await Product.deleteMany({ brand: brand_id });
         });
-        await Brand.deleteMany({ _id: req.body.ids });
-        res.json({ data: 'success' });
+
+        await Brand.deleteMany({ _id: { $in: req.body.data } });
+
+        const brands = await Brand.find({});
+        res.json({ success: true, data: brands });
     } catch (error) {
         console.log(error);
-        res.json({ data: 'failed' });
+        res.json({ success: false, data: [] });
     }
 });
 
 
 
-router.post("/set-active", async (req, res) => {
+router.post("/set-active", admin_auth, async (req, res) => {
     const { active, selected } = req.body;
     await Brand.updateMany({ _id: { $in: selected } }, { active: active });
     const brands = await Brand.find({});
     if (!brands) res.json({ data: [] });
     else res.json({ data: brands });
-
 });
+
 module.exports = router;

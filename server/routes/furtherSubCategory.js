@@ -3,6 +3,9 @@ const FurtherSubCategory = require('../schema').furtherSubCategory;
 const Product = require('../schema').product;
 const slugify = require('slugify');
 
+const admin_auth = require('./middleware/admin_auth');
+
+
 router.get('/table-data', async (req, res) => {
     const furtherSubCategories = await FurtherSubCategory.find({}).populate({
         path: 'subCategory',
@@ -30,7 +33,7 @@ router.get('/get-further-sub-categories', async (req, res) => {
     else res.json({ data: furtherSubCategories });
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', admin_auth, async (req, res) => {
     const data = req.body;
     let i = 0;
     let slug = '';
@@ -52,7 +55,7 @@ router.post('/add', async (req, res) => {
     res.json({ data: newFurtherSubCategory });
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const furtherSubCategory = await FurtherSubCategory.findOne({ _id: data._id });
     let slug = '';
@@ -76,18 +79,8 @@ router.post('/update', async (req, res) => {
     res.json({ data: furtherSubCategory });
 });
 
-router.get('/get-by-ids', async (req, res) => {
-    let id = '';
-    if ('id' in req.query) id = req.query.id;
-    const getIds = id.split(',');
-    const furtherSubCategories = await FurtherSubCategory.find({ _id: getIds }).populate({
-        path: 'products',
-    });
-    if (!furtherSubCategories) res.json({ data: [] });
-    else res.json({ data: furtherSubCategories });
-});
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', admin_auth, async (req, res) => {
     try {
         const data = req.body.data;
         data.forEach(async furtherSubCategory => {
@@ -99,6 +92,20 @@ router.post('/delete', async (req, res) => {
         console.log(error);
         res.json({ data: 'failed' });
     }
+});
+
+router.post("/set-active", admin_auth, async (req, res) => {
+    const { active, selected } = req.body;
+
+    await FurtherSubCategory.updateMany({ _id: { $in: selected } }, { active: active });
+    const furtherSubCategories = await FurtherSubCategory.find({}).populate({
+        path: 'subCategory',
+        populate: {
+            path: 'category'
+        }
+    });
+    if (!furtherSubCategories) res.json({ data: [] });
+    else res.json({ data: furtherSubCategories });
 });
 
 module.exports = router;

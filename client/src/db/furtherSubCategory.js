@@ -22,6 +22,8 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
         const response = await fetch(`${api}/further-Sub-category/set-active`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            withCredentials: true,
             body: JSON.stringify({ active: active, selected: selected })
         });
         const content = await response.json();
@@ -40,7 +42,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const furtherSubCategoryObj = {
     apiTable: `${api}/further-sub-category/table-data`,
-    deleteApi: [`${api}/further-sub-category/get-by-ids`, `${api}/further-sub-category/delete`],
+    deleteApi: `${api}/further-sub-category/delete`,
     createTableData: createTableData,
     headCells: [
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
@@ -159,6 +161,8 @@ const furtherSubCategoryObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ name: data.name, subCategory: data.subCategory, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();
@@ -170,6 +174,8 @@ const furtherSubCategoryObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ _id: queryID, name: data.name, subCategory: data.subCategory, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();

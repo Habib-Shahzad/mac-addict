@@ -2,6 +2,9 @@ const router = require('express').Router();
 const City = require('../schema').city;
 const Address = require('../schema').address;
 
+const admin_auth = require('./middleware/admin_auth');
+
+
 router.get('/table-data', async (req, res) => {
     const cities = await City.find({}).populate(
         {
@@ -35,7 +38,7 @@ router.get('/get-cities-search', async (req, res) => {
     } else res.json({ data: [] });
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', admin_auth, async (req, res) => {
     const data = req.body;
     const newCity = new City({
         name: data.name,
@@ -46,7 +49,7 @@ router.post('/add', async (req, res) => {
     res.json({ data: newCity });
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const city = await City.findOne({ _id: data._id });
     city.name = data.name;
@@ -56,18 +59,8 @@ router.post('/update', async (req, res) => {
     res.json({ data: city });
 });
 
-router.get('/get-by-ids', async (req, res) => {
-    let id = '';
-    if ('id' in req.query) id = req.query.id;
-    const getIds = id.split(',');
-    const cities = await City.find({ _id: getIds }).populate({
-        path: 'areas',
-    });
-    if (!cities) res.json({ data: [] });
-    else res.json({ data: cities });
-});
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', admin_auth, async (req, res) => {
     await City.deleteMany({ _id: { $in: req.body.data } });
     await Address.deleteMany({ city: { $in: req.body.data } });
     const cities = await City.find({}).populate({
@@ -80,7 +73,7 @@ router.post('/delete', async (req, res) => {
 });
 
 
-router.post("/set-active", async (req, res) => {
+router.post("/set-active", admin_auth, async (req, res) => {
     const { active, selected } = req.body;
     await City.updateMany({ _id: { $in: selected } }, { active: active });
 

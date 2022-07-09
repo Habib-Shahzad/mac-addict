@@ -6,6 +6,9 @@ const FurtherSubCategory = require('../schema').furtherSubCategory;
 const ProductDetail = require('../schema').productDetail;
 const slugify = require('slugify');
 
+
+const admin_auth = require('./middleware/admin_auth');
+
 router.get('/table-data', async (req, res) => {
     const products = await Product.find({})
         .populate('category')
@@ -60,7 +63,7 @@ router.get('/get-product-slug', async (req, res) => {
     else res.json({ data: product });
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', admin_auth, async (req, res) => {
     try {
 
         const data = req.body;
@@ -99,7 +102,7 @@ router.post('/add', async (req, res) => {
     }
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const product = await Product.findOne({ _id: data._id });
 
@@ -135,16 +138,8 @@ router.get('/get-by-slug/:slug', async (req, res) => {
     else res.json({ success: true, data: product });
 });
 
-router.get('/get-by-ids', async (req, res) => {
-    let id = '';
-    if ('id' in req.query) id = req.query.id;
-    const getIds = id.split(',');
-    const products = await Product.find({ _id: getIds });
-    if (!products) res.json({ data: [] });
-    else res.json({ data: products });
-});
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', admin_auth, async (req, res) => {
     try {
         // const data = req.body.data;
         await Product.deleteMany({ _id: { $in: req.body.data } });
@@ -229,7 +224,7 @@ router.get('/client-category-products', async (req, res) => {
 
 
 
-router.post("/set-active", async (req, res) => {
+router.post("/set-active", admin_auth, async (req, res) => {
     const { active, selected } = req.body;
 
     await Product.updateMany({ _id: { $in: selected } }, { active: active });

@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const Order = require('../schema/order');
-const slugify = require('slugify');
-const Product = require('../schema/product');
 const crypto = require('crypto');
 
+const user_auth = require('./middleware/user_auth');
+const admin_auth = require('./middleware/admin_auth');
 
 router.get('/table-data', async (req, res) => {
     const orders = await Order.find({})
@@ -85,7 +85,7 @@ router.post('/delete', async (req, res) => {
 });
 
 
-router.post('/add-order', async (req, res) => {
+router.post('/add-order', user_auth, async (req, res) => {
     const data = req.body;
 
     let deliveryAddress = data.deliveryAddress;
@@ -116,7 +116,7 @@ router.post('/add-order', async (req, res) => {
 });
 
 
-router.post("/set-complete", async (req, res) => {
+router.post("/set-complete", admin_auth, async (req, res) => {
     const { completed, selected } = req.body;
     await Order.updateMany({ _id: { $in: selected } }, { orderStatus: completed });
 

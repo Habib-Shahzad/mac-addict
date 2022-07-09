@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const SubCategory = require("../schema").subCategory;
 const FurtherSubCategory = require("../schema").furtherSubCategory;
-const Product = require("../schema").product;
 const slugify = require("slugify");
+
+const admin_auth = require("./middleware/admin_auth");
 
 router.get("/table-data", async (req, res) => {
   const subCategories = await SubCategory.find({}).populate("category");
@@ -26,7 +27,7 @@ router.get("/get-sub-categories", async (req, res) => {
   else res.json({ data: subCategories });
 });
 
-router.post("/add", async (req, res) => {
+router.post("/add", admin_auth, async (req, res) => {
   const data = req.body;
   let i = 0;
   let slug = "";
@@ -48,7 +49,7 @@ router.post("/add", async (req, res) => {
   res.json({ data: newSubCategory });
 });
 
-router.post("/update", async (req, res) => {
+router.post("/update", admin_auth, async (req, res) => {
   const data = req.body;
   const subCategory = await SubCategory.findOne({ _id: data._id });
   let slug = "";
@@ -72,27 +73,22 @@ router.post("/update", async (req, res) => {
   res.json({ data: subCategory });
 });
 
-router.get("/get-by-ids", async (req, res) => {
-  let id = "";
-  if ("id" in req.query) id = req.query.id;
-  const getIds = id.split(",");
-  const subCategories = await SubCategory.find({ _id: getIds }).populate({
-    path: "furtherSubCategories",
-    populate: {
-      path: "products",
-    },
-  });
-  if (!subCategories) res.json({ data: [] });
-  else res.json({ data: subCategories });
-});
 
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', admin_auth, async (req, res) => {
   await SubCategory.deleteMany({ _id: { $in: req.body.data } });
   await FurtherSubCategory.deleteMany({ subCategory: { $in: req.body.data } });
   const sub_categories = await SubCategory.find({});
   res.json({ success: true, data: sub_categories });
 });
 
+
+router.post("/set-active", admin_auth, async (req, res) => {
+  const { active, selected } = req.body;
+  await SubCategory.updateMany({ _id: { $in: selected } }, { active: active });
+  const subCategories = await SubCategory.find({}).populate("category");
+  if (!subCategories) res.json({ data: [] });
+  else res.json({ data: subCategories });
+});
 
 module.exports = router;

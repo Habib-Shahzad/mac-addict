@@ -2,7 +2,9 @@ const router = require("express").Router();
 const User = require("../schema").user;
 const Address = require("../schema").address;
 
-// const auth = require(".././middleware/auth");
+
+const admin_auth = require("./middleware/admin_auth");
+const user_auth = require("./middleware/user_auth");
 
 require("dotenv").config();
 
@@ -20,14 +22,14 @@ const jwt = require("jsonwebtoken");
 // });
 
 
-router.post("/logout", async (req, res) => {
+router.post("/logout", user_auth, async (req, res) => {
   return res
     .clearCookie("access_token")
     .status(200)
     .json({ message: "Successfully logged out" });
 });
 
-router.post("/logout-admin", async (req, res) => {
+router.post("/logout-admin", admin_auth, async (req, res) => {
   return res
     .clearCookie("access_token_admin")
     .status(200)
@@ -189,7 +191,7 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.post("/add-address", async (req, res) => {
+router.post("/add-address", user_auth, async (req, res) => {
   const {
     firstName,
     lastName,
@@ -255,7 +257,7 @@ router.post("/add-address", async (req, res) => {
 });
 
 
-router.post("/delete-address", async (req, res) => {
+router.post("/delete-address", user_auth, async (req, res) => {
   const { address_id } = req.body;
   const address = await Address.findOne({ _id: address_id });
 
@@ -354,14 +356,14 @@ router.get("/table-data-auto", async (req, res) => {
 });
 
 
-router.post("/set-active", async (req, res) => {
+router.post("/set-active", admin_auth, async (req, res) => {
   const { active, selected } = req.body;
   await User.updateMany({ _id: { $in: selected } }, { active: active });
   const users = await User.find({}, { uid: 0 });
   res.json({ success: true, data: users });
 });
 
-router.post("/set-admin", async (req, res) => {
+router.post("/set-admin", admin_auth, async (req, res) => {
   const { admin, selected } = req.body;
   await User.updateMany({ _id: { $in: selected } }, { admin: admin });
   const users = await User.find({}, { uid: 0 });
@@ -389,7 +391,7 @@ router.post("/verify-email", async (req, res) => {
 });
 
 
-router.post("/change-password", async (req, res) => {
+router.post("/change-password", user_auth, async (req, res) => {
 
   const { newPassword, oldPassword } = req.body;
 
@@ -422,7 +424,7 @@ router.post("/change-password", async (req, res) => {
 
 
 
-router.post("/change-profile", async (req, res) => {
+router.post("/change-profile", user_auth, async (req, res) => {
 
   const { firstName, lastName, email, contactNumber, password } = req.body;
 
@@ -457,21 +459,12 @@ router.post("/change-profile", async (req, res) => {
 
 });
 
-router.get("/get-personal-info", async (req, res) => {
-  res.json({ data: null });
+
+router.post('/delete', admin_auth, async (req, res) => {
+  await User.deleteMany({ _id: { $in: req.body.data } });
+  const users = await User.find({});
+  res.json({ success: true, data: users });
 });
 
-
-router.post("/add", async (req, res) => {
-  res.json({ data: null });
-});
-
-router.get("/get-by-ids", async (req, res) => {
-  res.json({ data: null });
-});
-
-router.post("/delete", async (req, res) => {
-  res.json({ data: null });
-});
 
 module.exports = router;

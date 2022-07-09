@@ -23,6 +23,8 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
         const response = await fetch(`${api}/city/set-active`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            withCredentials: true,
             body: JSON.stringify({ active: active, selected: selected })
         });
         const content = await response.json();
@@ -41,7 +43,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const cityObj = {
     apiTable: `${api}/city/table-data`,
-    deleteApi: [`${api}/city/get-by-ids`, `${api}/city/delete`],
+    deleteApi: `${api}/city/delete`,
     createTableData: createTableData,
     headCells: [
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
@@ -156,6 +158,8 @@ const cityObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ name: data.name, province: data.province, active: data.active }),
                 });
                 const content = await response.json();
@@ -167,6 +171,8 @@ const cityObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ _id: queryID, name: data.name, province: data.province, active: data.active }),
                 });
                 const content = await response.json();

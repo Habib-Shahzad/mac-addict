@@ -5,6 +5,10 @@ const FurtherSubCategory = require('../schema').furtherSubCategory;
 const Product = require('../schema').product;
 const slugify = require('slugify');
 
+
+const admin_auth = require('./middleware/admin_auth');
+
+
 router.get('/table-data', async (req, res) => {
     const categories = await Category.find({});
     if (!categories) res.json({ data: [] });
@@ -28,7 +32,7 @@ router.get('/client-categories', async (req, res) => {
     else res.json({ data: categories });
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', admin_auth, async (req, res) => {
     const data = req.body;
     let i = 0;
     let slug = '';
@@ -49,7 +53,7 @@ router.post('/add', async (req, res) => {
     res.json({ data: newCategory });
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const category = await Category.findOne({ _id: data._id });
     let slug = '';
@@ -72,24 +76,8 @@ router.post('/update', async (req, res) => {
     res.json({ data: category });
 });
 
-router.get('/get-by-ids', async (req, res) => {
-    let id = '';
-    if ('id' in req.query) id = req.query.id;
-    const getIds = id.split(',');
-    const categories = await Category.find({ _id: getIds }).populate({
-        path: 'subCategories',
-        populate: {
-            path: 'furtherSubCategories',
-            populate: {
-                path: 'products',
-            }
-        }
-    });
-    if (!categories) res.json({ data: [] });
-    else res.json({ data: categories });
-});
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', admin_auth, async (req, res) => {
     await Category.deleteMany({ _id: { $in: req.body.data } });
     const subCategories = await SubCategory.find({ category: { $in: req.body.data } });
     await FurtherSubCategory.deleteMany({ subCategory: { $in: subCategories.map(x => x._id) } });
@@ -99,7 +87,7 @@ router.post('/delete', async (req, res) => {
     res.json({ success: true, data: categories });
 });
 
-router.post("/set-active", async (req, res) => {
+router.post("/set-active", admin_auth, async (req, res) => {
     const { active, selected } = req.body;
 
     await Category.updateMany({ _id: { $in: selected } }, { active: active });

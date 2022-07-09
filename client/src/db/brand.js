@@ -25,6 +25,8 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
         const response = await fetch(`${api}/brand/set-active`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            withCredentials: true,
             body: JSON.stringify({ active: active, selected: selected })
         });
         const content = await response.json();
@@ -38,7 +40,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const brandObj = {
     apiTable: `${api}/brand/table-data`,
-    deleteApi: [`${api}/brand/get-by-ids`, `${api}/brand/delete`],
+    deleteApi: `${api}/brand/delete`,
     createTableData: createTableData,
     headCells: [
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
@@ -125,6 +127,8 @@ const brandObj = {
         const { register, handleSubmit, formState: { errors }, control, reset } = useForm();
 
 
+
+
         const onSubmit = async (data) => {
             setLoading(true);
             if (queryID === '') {
@@ -134,17 +138,22 @@ const brandObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ name: data.name, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();
                 setCategoriesArray([...categoriesArray, content.data]);
-            } else {
+            }
+            else {
                 const response = await fetch(`${api}/brand/update`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ _id: queryID, name: data.name, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();

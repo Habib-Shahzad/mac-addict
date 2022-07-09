@@ -18,6 +18,8 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
         const response = await fetch(`${api}/user/set-active`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            withCredentials: true,
             body: JSON.stringify({ active: active, selected: selected })
         });
         const content = await response.json();
@@ -35,6 +37,8 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
         const response = await fetch(`${api}/user/set-admin`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            withCredentials: true,
             body: JSON.stringify({ admin: admin, selected: selected })
         });
         const content = await response.json();
@@ -48,7 +52,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const userObj = {
     apiTable: `${api}/user/table-data`,
-    deleteApi: [`${api}/user/get-by-ids`, `${api}/user/delete`],
+    deleteApi: `${api}/user/delete`,
     createTableData: createTableData,
     headCells: [
         { id: 'firstName', numeric: false, disablePadding: true, label: 'First Name' },

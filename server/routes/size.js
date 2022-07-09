@@ -1,5 +1,8 @@
 const router = require('express').Router();
 const Size = require('../schema').size;
+require('dotenv').config();
+
+const admin_auth = require('./middleware/admin_auth');
 
 router.get('/table-data', async (req, res) => {
     const sizes = await Size.find({});
@@ -19,16 +22,13 @@ router.get('/get-size', async (req, res) => {
     else res.json({ data: sizes });
 });
 
-router.post('/add', async (req, res) => {
-    const data = req.body;
-    const newSize = new Size({
-        name: data.name,
-    });
-    newSize.save();
+router.post('/add', admin_auth, async (req, res) => {
+    const newSize = new Size({ name: req.body.name });
+    await newSize.save();
     res.json({ data: newSize });
 });
 
-router.post('/update', async (req, res) => {
+router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const size = await Size.findOne({ _id: data._id });
     size.name = data.name;
@@ -37,16 +37,8 @@ router.post('/update', async (req, res) => {
     res.json({ data: size });
 });
 
-router.get('/get-by-ids', async (req, res) => {
-    let id = '';
-    if ('id' in req.query) id = req.query.id;
-    const getIds = id.split(',');
-    const sizes = await Size.find({ _id: getIds });
-    if (!sizes) res.json({ data: [] });
-    else res.json({ data: sizes });
-});
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', admin_auth, async (req, res) => {
     await Size.deleteMany({ _id: { $in: req.body.data } });
     const sizes = await Size.find({});
     res.json({ success: true, data: sizes });

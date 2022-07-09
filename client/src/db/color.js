@@ -24,7 +24,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const colorObj = {
     apiTable: `${api}/color/table-data`,
-    deleteApi: [`${api}/color/get-by-ids`, `${api}/color/delete`],
+    deleteApi: `${api}/color/delete`,
     createTableData: createTableData,
     headCells: [
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
@@ -110,6 +110,8 @@ const colorObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ name: data.name, hexCode: data.color.hex }),
                 });
                 const content = await response.json();
@@ -121,6 +123,8 @@ const colorObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ _id: queryID, name: data.name, hexCode: data.color.hex }),
                 });
                 const content = await response.json();

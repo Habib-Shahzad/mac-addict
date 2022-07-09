@@ -297,7 +297,7 @@ export default function EnhancedTable(props) {
 
   const deleteAction = async (selected, setTableRows, setOriginalTableRows) => {
     let rows = [];
-    const del_api = tableFetch.deleteApi[1];
+    const del_api = tableFetch.deleteApi;
 
     const response = await fetch(del_api, {
       method: 'POST',

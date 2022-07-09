@@ -44,7 +44,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const categoryObj = {
     apiTable: `${api}/category/table-data`,
-    deleteApi: [`${api}/category/get-by-ids`, `${api}/category/delete`],
+    deleteApi: `${api}/category/delete`,
     createTableData: createTableData,
     headCells: [
         // { id: '_id', numeric: false, disablePadding: true, label: 'ID' },
@@ -152,6 +152,8 @@ const categoryObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ name: data.name, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();
@@ -163,6 +165,8 @@ const categoryObj = {
                         'Content-Type': 'application/json',
                         'Cache-Control': 'no-store'
                     },
+                    credentials: 'include',
+                    withCredentials: true,
                     body: JSON.stringify({ _id: queryID, name: data.name, keywords: data.keywords, description: data.description, active: data.active }),
                 });
                 const content = await response.json();

@@ -24,6 +24,8 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
         const response = await fetch(`${api}/order/set-complete`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            withCredentials: true,
             body: JSON.stringify({ completed: completed, selected: selected })
         });
         const content = await response.json();
@@ -37,7 +39,7 @@ const startAction = async (obj, selected, setOriginalTableRows, setTableRows) =>
 
 const orderObj = {
     apiTable: `${api}/order/table-data`,
-    deleteApi: [`${api}/order/get-by-ids`, `${api}/order/delete`],
+    deleteApi: `${api}/order/delete`,
     createTableData: createTableData,
     headCells: [
         { id: 'customerName', numeric: false, disablePadding: false, label: 'Customer Name' },
