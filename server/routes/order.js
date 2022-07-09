@@ -116,4 +116,41 @@ router.post('/add-order', async (req, res) => {
 });
 
 
+router.post("/set-complete", async (req, res) => {
+    const { completed, selected } = req.body;
+    await Order.updateMany({ _id: { $in: selected } }, { orderStatus: completed });
+
+    const orders = await Order.find({})
+        .populate('user')
+        .populate({
+            path: 'orderItems',
+            populate: { path: 'brand' }
+        })
+        .populate({
+            path: 'orderItems',
+            populate: { path: 'color' }
+        })
+        .populate({
+            path: 'orderItems',
+            populate: { path: 'size' }
+        })
+        .populate({
+            path: 'deliveryAddress',
+            populate: {
+                path: 'city',
+                populate: {
+                    path: 'province',
+                    populate: {
+                        path: 'country',
+                    }
+                }
+            }
+        }
+        )
+        ;
+    if (!orders) res.json({ data: [] });
+    else res.json({ data: orders });
+});
+
+
 module.exports = router;

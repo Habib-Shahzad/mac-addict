@@ -441,7 +441,7 @@ export default function EnhancedTable(props) {
                       );
                     }
                     else if (key === "orderDate") {
-                      var options_date = { year: 'numeric', month: 'short', day: 'numeric' };
+                      var options_date = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
                       var date_order = new Date(row[key]).toLocaleDateString('en-GB', options_date);
                       tableRow.push(
                         <TableCell style={{ textAlign: textPosition }} key={c}>{date_order}</TableCell>

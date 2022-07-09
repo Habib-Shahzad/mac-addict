@@ -17,7 +17,22 @@ const createTableData = (data) => {
 
 
 const startAction = async (obj, selected, setOriginalTableRows, setTableRows) => {
-
+    if (obj.type === 'status') {
+        const rows = [];
+        let completed = true;
+        if (obj.value === 'incomplete') completed = false;
+        const response = await fetch(`${api}/order/set-complete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ completed: completed, selected: selected })
+        });
+        const content = await response.json();
+        content.data.forEach(element => {
+            rows.push(createTableData(element));
+        });
+        setTableRows(rows);
+        setOriginalTableRows(rows);
+    }
 }
 
 const orderObj = {
@@ -48,13 +63,15 @@ const orderObj = {
     deleteAllowed: true,
     addAllowed: false,
     modelName: 'Order',
-    ordering: 'totalPrice',
-    searchField: 'totalPrice',
+    ordering: 'orderDate',
+    searchField: 'customerName',
     rightAllign: [],
     type: 'collapse',
     startAction: startAction,
     actionOptions: [
         { label: '', value: '', type: '' },
+        { label: 'Set order status as completed', value: 'completed', type: 'status' },
+        { label: 'Set order status as incomplete', value: 'incomplete', type: 'status' }
     ],
     Form: function (id, classes) {
         return (<></>);
