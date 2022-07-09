@@ -294,7 +294,7 @@ export default function AddAddressForm(props) {
                     </Form>
                 </div>
             </Row>
-            )
+
         </div>
     );
 }

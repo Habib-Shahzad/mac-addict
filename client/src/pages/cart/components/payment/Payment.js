@@ -138,6 +138,7 @@ function Payment(props) {
                     handleShow={handleShow}
                     user_id={user.userState._id}
                     setCart={cart.setCart}
+                    cartObj={cart.cartObj}
                 />
 
                 <Form className="form-style">

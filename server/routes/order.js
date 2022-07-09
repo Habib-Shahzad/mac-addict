@@ -1,8 +1,7 @@
 const router = require('express').Router();
-// const Order = require('../schema').orders;
 const Order = require('../schema/order');
 const slugify = require('slugify');
-
+const Product = require('../schema/product');
 const crypto = require('crypto');
 
 
@@ -89,19 +88,8 @@ router.post('/delete', async (req, res) => {
 router.post('/add-order', async (req, res) => {
     const data = req.body;
 
-
     let deliveryAddress = data.deliveryAddress;
     delete deliveryAddress["_id"];
-
-    let products = [];
-    data.products.forEach(product => {
-        let productObj = product;
-        delete productObj["user_id"];
-        delete productObj["default_image"];
-        delete productObj["slug"];
-        delete productObj["description"];
-        products.push(productObj);
-    });
 
 
     let orderNumber = null;
@@ -113,7 +101,7 @@ router.post('/add-order', async (req, res) => {
 
     const order = new Order({
         totalPrice: data.cost,
-        orderItems: products,
+        orderItems: data.products,
         deliveryAddress: deliveryAddress,
         paymentMethod: data.paymentMethod,
         user: data.user_id,

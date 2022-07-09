@@ -22,9 +22,11 @@ const orderSchema = new mongoose.Schema({
   totalPrice: { type: Number, required: true },
 
   orderItems: [{
-    images: [{ image: { type: String } }],
+    default_image: { type: String, required: true },
+    key: { type: String, required: true },
     product_id: { type: Schema.Types.ObjectId, ref: "products", required: true },
     name: { type: String, required: true },
+    quantity: { type: Number, required: true },
 
     brand: {
       type: Schema.Types.ObjectId,
@@ -32,15 +34,12 @@ const orderSchema = new mongoose.Schema({
       required: true
     },
 
-    hasColor: { type: Boolean, required: true },
-
     size: {
       type: Schema.Types.ObjectId,
       ref: 'sizes',
       required: true
     },
 
-    quantity: { type: Number, required: true },
 
     color: {
       type: Schema.Types.ObjectId,
@@ -49,9 +48,6 @@ const orderSchema = new mongoose.Schema({
 
     price: { type: Number, required: true },
     points: { type: Number, required: true },
-    preOrder: { type: Boolean, required: true },
-    key: { type: String, required: true }
-
   }],
 
   discount: { type: Schema.Types.ObjectId, ref: 'discounts', default: null },

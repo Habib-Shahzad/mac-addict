@@ -1,7 +1,5 @@
 const router = require('express').Router();
 const Product = require('../schema').product;
-const User = require("../schema").user;
-const jwt = require("jsonwebtoken");
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -18,14 +16,6 @@ router.get('/getCart', async (req, res) => {
     } else {
         const expiryDate = new Date(Number(new Date()) + 315360000000);
         res.cookie("cart", cartCookie, { httpOnly: true, maxAge: expiryDate });
-
-        const user_token = (req.cookies?.['access_token']);
-        let logged_user = null;
-
-        if (user_token) {
-            const user_data = jwt.verify(user_token, process.env.TOKEN_SECRET);
-            logged_user = await User.findOne({ _id: user_data.user_id });
-        }
 
         let cart_products = {};
 
@@ -55,6 +45,8 @@ router.get('/getCart', async (req, res) => {
                 points: product_detail.points,
                 size: product_detail.size,
                 color: product_detail.color,
+                product_id: product_id,
+                brand: product.brand,
             };
 
             cart_products[key] = product_obj;
@@ -99,13 +91,14 @@ router.post('/addToCart', async (req, res) => {
             user_id: user_id,
             name: product.name,
             default_image: product.default_image,
-            quantity: cartObj[key],
+            quantity: cartCookie[key],
             price: product_detail.price,
             points: product_detail.points,
             size: product_detail.size,
             color: product_detail.color,
+            product_id: product_id,
+            brand: product.brand,
         };
-
         cart_products[key] = product_obj;
 
         res.json({ data: cart_products });
@@ -161,7 +154,7 @@ router.post('/addItem', async (req, res) => {
 router.post("/clear-cart", async (req, res) => {
     const cartCookie = req.cookies['cart'];
 
-    const { user_id } = req.body;
+    const { user_id, cart_products } = req.body;
 
     if (cartCookie) {
         const cartObj = cartCookie;
@@ -170,13 +163,15 @@ router.post("/clear-cart", async (req, res) => {
             const key_user_id = keys[2];
             if (key_user_id === user_id) {
                 delete cartObj[key];
+                delete cart_products[key];
             }
         }
 
         const expiryDate = new Date(Number(new Date()) + 315360000000);
         res.cookie("cart", cartObj, { httpOnly: true, maxAge: expiryDate });
-        res.json({ success: true, data: cartObj });
-    } else {
+        res.json({ success: true, data: cart_products });
+    }
+    else {
         res.json({ success: true, data: null });
     }
 });

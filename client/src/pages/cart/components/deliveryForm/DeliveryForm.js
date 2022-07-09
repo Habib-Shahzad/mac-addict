@@ -150,6 +150,7 @@ function DeliveryForm(props) {
                         {
                             addAddress ? (
                                 <AddAddressForm
+                                    setAddAddress={setAddAddress}
                                     addAddress={addAddress}
                                     setAddressList={setAddressList}
                                     handleEditChange={handleEditChange}

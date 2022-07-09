@@ -12,6 +12,7 @@ function OrderConfirmedModal(props) {
 
     const confirmOrder = async () => {
         setLoading(true);
+
         const response = await fetch(`${api}/order/add-order`, {
             method: 'POST',
             headers: {
@@ -40,6 +41,7 @@ function OrderConfirmedModal(props) {
                 withCredentials: true,
                 body: JSON.stringify({
                     user_id: props.user_id,
+                    cart_products: props.cartObj,
                 })
             });
             const contentCart = await response.json();
