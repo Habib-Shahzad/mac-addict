@@ -142,7 +142,6 @@ export default function EnhancedTable(props) {
   let tableFetch = {};
 
 
-
   if (model === 'country') tableFetch = countryObj;
   else if (model === 'province') tableFetch = provinceObj;
   else if (model === 'city') tableFetch = cityObj;
@@ -207,6 +206,8 @@ export default function EnhancedTable(props) {
         const response = await fetch(apiURL, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          withCredentials: true
         });
         const content = await response.json();
 
@@ -289,6 +290,7 @@ export default function EnhancedTable(props) {
   const handleCloseModal = () => setOpenModal(false);
 
   const [deleteLoading, setDeleteLoading] = React.useState(false);
+
 
 
   if (Object.keys(tableFetch).length === 0) {

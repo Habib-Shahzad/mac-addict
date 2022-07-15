@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles'
 import { Container, Col, Row } from 'react-bootstrap';
-import { countryObj, provinceObj, cityObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj } from '../../db';
+import { countryObj, provinceObj, cityObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj, userObj } from '../../db';
 import { useParams } from 'react-router';
 import './AdminForm.scss';
 
@@ -62,6 +62,7 @@ function AdminForm(props) {
     else if (model === 'product') formFetch = productObj;
     else if (model === 'color') formFetch = colorObj;
     else if (model === 'size') formFetch = sizeObj;
+    else if (model === 'user') formFetch = userObj;
     else formFetch = {};
 
 

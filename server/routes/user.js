@@ -147,6 +147,50 @@ router.post('/signup', async (req, res) => {
 });
 
 
+
+
+
+
+router.post('/add', async (req, res) => {
+  try {
+
+    const { firstName, lastName, email, contactNumber, password, active, admin } = req.body;
+
+    // check if user already exist
+    const oldUser = await User.findOne({ email });
+
+    if (oldUser) {
+      return res.json({ success: false, error: "User Already Exist. ", data: null });
+    }
+
+    // Encrypt user password
+    encryptedPassword = await bcrypt.hash(password, 10);
+
+    // Create user in our database
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: encryptedPassword,
+      contactNumber: contactNumber,
+      admin: admin,
+      active: active
+    });
+
+
+    res.json({
+      success: true, data: newUser,
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    res.json({ success: false, error: "" });
+  }
+});
+
+
+
 router.post("/login", async (req, res) => {
   try {
     // Get user input
