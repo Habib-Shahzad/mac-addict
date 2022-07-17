@@ -174,7 +174,11 @@ const productObj = {
             }
         ]);
 
+        const [defaultNewArrival, setDefaultNewArrival] = useState(true);
+        const [defaultHotSeller, setDefaultHotSeller] = useState(false);
+
         const [hasColorChecked, setHasColorChecked] = useState(defaultHasColor);
+
 
         useEffect(() => {
             (
@@ -351,6 +355,15 @@ const productObj = {
                     list.push(element);
                 });
                 setDefaultProductDetails(list);
+
+                if (editObj?.hotSeller) {
+                    setDefaultHotSeller(editObj?.hotSeller);
+                }
+                if (editObj?.newArrival) {
+                    setDefaultNewArrival(editObj?.newArrival);
+                }
+
+
             } else {
 
             }
@@ -432,6 +445,8 @@ const productObj = {
                         productDetails: data.productDetailsList,
                         hasColor: data.hasColor,
                         brand: data.brand,
+                        hotSeller: data.hotSeller,
+                        newArrival: data.newArrival,
                     }),
                 });
                 const content = await response.json();
@@ -825,6 +840,47 @@ const productObj = {
                                 />
                             }
                             label={"Has Color"}
+                        />
+                    </Form.Group>
+
+
+
+                    <Form.Group as={Col} md={3} controlId="active">
+                        <FormControlLabel
+                            control={
+                                <Controller
+                                    name={"hotSeller"}
+                                    control={control}
+                                    defaultValue={defaultHotSeller}
+                                    render={(props) => (
+                                        <Checkbox
+                                            checked={props.field.value}
+                                            onChange={(e) => { props.field.onChange(e.target.checked); }}
+                                        />
+                                    )}
+                                />
+                            }
+                            label={"Hot Seller"}
+                        />
+                    </Form.Group>
+
+
+                    <Form.Group as={Col} md={3} controlId="active">
+                        <FormControlLabel
+                            control={
+                                <Controller
+                                    name={"newArrival"}
+                                    control={control}
+                                    defaultValue={defaultNewArrival}
+                                    render={(props) => (
+                                        <Checkbox
+                                            checked={props.field.value}
+                                            onChange={(e) => { props.field.onChange(e.target.checked); }}
+                                        />
+                                    )}
+                                />
+                            }
+                            label={"New Arrival"}
                         />
                     </Form.Group>
                 </Row>

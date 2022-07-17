@@ -26,3 +26,4 @@ export { default as Heading2 } from './heading2/Heading2';
 export { default as Heading3 } from './heading3/Heading3';
 export { default as ParaText } from './paraText/ParaText';
 export { default as AddAddressForm } from './addAddressForm/AddAddressForm';
+export { default as ProductDescription } from './productDescription/ProductDescription';

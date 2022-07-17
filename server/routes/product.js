@@ -90,6 +90,8 @@ router.post('/add', admin_auth, async (req, res) => {
             brand: data.brand,
             keywords: data.keywords,
             description: data.description,
+            hotSeller: data.hotSeller,
+            newArrival: data.newArrival,
         });
 
         await newProduct.save();
@@ -118,6 +120,8 @@ router.post('/update', admin_auth, async (req, res) => {
     product.brand = data.brand;
     product.keywords = data.keywords;
     product.description = data.description;
+    product.hotSeller = data.hotSeller;
+    product.newArrival = data.newArrival;
 
     await product.save();
     res.json({ data: product });

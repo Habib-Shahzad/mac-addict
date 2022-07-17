@@ -1,10 +1,7 @@
-/* eslint-disable no-unused-vars */
-
 
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-// import api from '../../../../api';
-import { FourthHeading, MainHeading, DescriptionText, SubHeading, ThirdHeading, LinkButton, ShopButton, Heading3 } from '../../../../components';
+import { FourthHeading, MainHeading, SubHeading, ThirdHeading, LinkButton, ShopButton, Heading3, ProductDescription } from '../../../../components';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Checkbox from '@mui/material/Checkbox';
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
@@ -162,6 +159,8 @@ function ProductCard(props) {
     }
 
 
+
+
     if (loading) return <div></div>
 
     return (
@@ -229,16 +228,17 @@ function ProductCard(props) {
                         {
                             product.hasColor ? (
                                 <div>
-                                    {
+                                    {/* {
                                         data[activeSize][activeColor].points !== 0 ? (
                                             <div className="product-points">
                                                 <ThirdHeading
-                                                    text={`Points: ${data[activeSize][activeColor].points}`}
+                                                    // text={`Points: ${data[activeSize][activeColor].points}`}
+                                                    // text={`Points: Coming Soon`}
                                                     classes="margin-bottom-0"
                                                 />
                                             </div>
                                         ) : null
-                                    }
+                                    } */}
                                 </div>
                             ) : (
                                 <div className="product-points">
@@ -258,9 +258,8 @@ function ProductCard(props) {
                         </div>
                         <div className="product-description">
                             <div >
-                                <DescriptionText
-                                    to=""
-                                    text={product.product_description}
+                                <ProductDescription
+                                    htmlText={product.product_description}
                                     classes="margin-bottom-0"
                                 />
                             </div>

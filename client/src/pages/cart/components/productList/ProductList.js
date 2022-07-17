@@ -128,6 +128,9 @@ function ProductList(props) {
                                                 classes="margin-bottom-0"
                                                 href='/'
                                             />
+
+
+
                                         </Col>
 
                                         <Col lg={1}>

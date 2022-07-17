@@ -30,8 +30,10 @@ function Home(props) {
 
     useEffect(() => {
         if (productsList?.length > 0) {
-            setArrivals(productsList);
-            setHotsellers(productsList);
+            const newArrivalProducts = productsList.filter(product => product.newArrival);
+            const hotProducts = productsList.filter(product => product.hotSeller);
+            setArrivals(newArrivalProducts);
+            setHotsellers(hotProducts);
         }
     }, [productsList])
 
@@ -69,12 +71,12 @@ function Home(props) {
             <div className="margin-global-top-5" />
             <SlickSlider type="price" data={hotsellers} />
             <div className="margin-global-top-5" />
-            <MainHeading
+            {/* <MainHeading
                 text="MAC Club Points"
                 classes="text-uppercase text-center"
             />
             <div className="margin-global-top-5" />
-            <SlickSlider type="points" data={arrivals} />
+            <SlickSlider type="points" data={arrivals} /> */}
         </Container>
     );
 }

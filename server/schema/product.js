@@ -31,6 +31,9 @@ const ProductSchema = new mongoose.Schema({
         required: true,
     },
 
+    hotSeller: { type: Boolean, required: true, default: false },
+    newArrival: { type: Boolean, required: true, default: false },
+
     productDetails: [{
         imageList: [{
             image: { type: String },
