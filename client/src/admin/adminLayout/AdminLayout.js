@@ -352,7 +352,7 @@ function AdminLayout(props) {
                         <Link to="/admin/order" style={{ textDecoration: 'none' }}>
                             <StyledTreeItem nodeId="11" labelText="Order" labelIcon={MonetizationOnIcon} />
                         </Link>
-                        <Link to="/admin" style={{ textDecoration: 'none' }}>
+                        <Link to="/admin/coupon" style={{ textDecoration: 'none' }}>
                             <StyledTreeItem nodeId="12" labelText="Discount" labelIcon={MoneyOffIcon} />
                         </Link>
                         <StyledTreeItem nodeId="13" labelText="Location" labelIcon={PublicIcon}>

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { FourthHeading, MainHeading, SubHeading, ThirdHeading, LinkButton, ShopButton, Heading3, ProductDescription } from '../../../../components';
+import { FourthHeading, MainHeading, SubHeading, LinkButton, ShopButton, Heading3, ProductDescription } from '../../../../components';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Checkbox from '@mui/material/Checkbox';
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
@@ -75,6 +75,8 @@ function ProductCard(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const [productImages, setProductImages] = useState([]);
+
     useEffect(() => {
 
         const data = {};
@@ -99,16 +101,48 @@ function ProductCard(props) {
             const sizeList = Object.keys(data);
             setSizeList(sizeList);
             setActiveSize(sizeList[0]);
+
+            let lstOfImages = [];
+
             if (productGet.hasColor) {
                 const colorList = Object.keys(data[sizeList[0]]);
                 setColorList(colorList);
                 setActiveColor(colorList[0]);
+                lstOfImages = (data[sizeList[0]][colorList[0]].images);
             }
+            else {
+                lstOfImages = (data[sizeList[0]].images);
+            }
+
+            if (lstOfImages?.length < 4) {
+                lstOfImages = Array.from({ length: 4 }, (_, i) => lstOfImages[i] ?? null)
+            }
+
+            setProductImages(lstOfImages);
+
             setData(data);
             setProduct(productGet);
             setLoading(false);
         }
     }, [productGet, productSlug]);
+
+
+    useEffect(() => {
+        let lstOfImages = [];
+        if (product?.hasColor) {
+            lstOfImages = (data?.[activeSize]?.[activeColor]?.images);
+        }
+        else {
+            lstOfImages = (data?.[activeSize]?.images);
+        }
+
+        if (lstOfImages?.length < 4) {
+            lstOfImages = Array.from({ length: 4 }, (_, i) => lstOfImages[i] ?? null)
+        }
+
+        setProductImages(lstOfImages);
+
+    }, [data, activeSize, activeColor, product?.hasColor]);
 
     const changeActiveSize = (event, size) => {
         event.preventDefault();
@@ -124,13 +158,11 @@ function ProductCard(props) {
         setCurrentImage(0);
         setActiveColor(color);
     }
+
     const changeImage = num => {
-        if (product.hasColor) {
-            if (data[activeSize][activeColor].images[currentImage + num]) setCurrentImage(currentImage + num);
-        } else {
-            if (data[activeSize].images[currentImage + num]) setCurrentImage(currentImage + num);
-        }
+        setCurrentImage(num);
     }
+
     const addToCart = async event => {
         event.preventDefault();
         const activeProduct = data[activeSize][activeColor];
@@ -159,6 +191,50 @@ function ProductCard(props) {
     }
 
 
+    const [productInWish, setProductInWish] = useState(false);
+
+
+    const handleWishListChange = async (event) => {
+        const checked = (event.target.checked);
+        let fetch_api = checked ? `add-to-wishlist` : `remove-from-wishlist`;
+
+        const response = await fetch(`${api}/user/${fetch_api}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                user_id: user.userState._id,
+                product_id: product._id,
+                slug: productSlug
+            })
+        });
+
+        const content = await response.json();
+
+        if (content.success) {
+            user.setUserState(content.user);
+        }
+        else {
+            console.log(content.error);
+        }
+
+        setProductInWish(checked);
+    }
+
+
+    useEffect(() => {
+        if (user.userState) {
+            user.userState.wishList.forEach(element => {
+                if (element.slug === productSlug) {
+                    setProductInWish(true);
+                }
+            })
+        }
+
+    }, [productSlug, user])
 
 
     if (loading) return <div></div>
@@ -172,26 +248,39 @@ function ProductCard(props) {
                 <Col lg={5}>
                     <div className="img-cont">
                         <Row>
-                            {
-                                product?.hasColor ? (
-                                    <img src={data[activeSize][activeColor].images[currentImage].image} alt={product?.name} />
-                                ) : (
-                                    <img src={data[activeSize].images[currentImage].image} alt={product.name} />
-                                )
-                            }
-                            <div onClick={e => changeImage(-1)} className="arrow-left"></div>
-                            <div onClick={e => changeImage(1)} className="arrow-right"></div>
+                            <img src={productImages[currentImage].image} alt={product?.name} />
                         </Row>
+
                         <Row >
-                            {/* <Col>
-                                <img src={product.img1} alt={product.name} />
-                            </Col>
-                            <Col>
-                                <img src={product.img2} alt={product.name} />
-                            </Col>
-                            <Col>
-                                <img src={product.img3} alt={product.name} />
-                            </Col> */}
+                            {
+                                productImages?.map((imageObj, index) => {
+
+
+                                    if (imageObj) {
+                                        if (index === currentImage) {
+                                            return (
+                                                <Col key={index} >
+                                                    <img className="active-image" src={imageObj.image} alt={product.name} />
+                                                </Col>
+                                            )
+                                        }
+                                        else {
+                                            return (
+                                                <Col key={index} onClick={() => { changeImage(index) }}>
+                                                    <img className="inactive-image" src={imageObj.image} alt={product.name} />
+                                                </Col>
+                                            )
+                                        }
+                                    }
+                                    else {
+                                        return (
+                                            <Col key={index}>
+                                                <div></div>
+                                            </Col>
+                                        )
+                                    }
+                                })
+                            }
                         </Row>
                     </div>
                 </Col>
@@ -225,30 +314,14 @@ function ProductCard(props) {
                                 )
                             }
                         </div>
-                        {
-                            product.hasColor ? (
-                                <div>
-                                    {/* {
-                                        data[activeSize][activeColor].points !== 0 ? (
-                                            <div className="product-points">
-                                                <ThirdHeading
-                                                    // text={`Points: ${data[activeSize][activeColor].points}`}
-                                                    // text={`Points: Coming Soon`}
-                                                    classes="margin-bottom-0"
-                                                />
-                                            </div>
-                                        ) : null
-                                    } */}
-                                </div>
-                            ) : (
-                                <div className="product-points">
-                                    <ThirdHeading
-                                        text={`Points: ${data[activeSize].points}`}
-                                        classes="margin-bottom-0"
-                                    />
-                                </div>
-                            )
-                        }
+
+                        {/* <div className="product-points">
+                            <ThirdHeading
+                                text={`Points: ${data[activeSize].points}`}
+                                classes="margin-bottom-0"
+                            />
+                        </div> */}
+
                         <div className="margin-global-top-2" />
                         <div className="product-description">
                             <FourthHeading
@@ -344,7 +417,21 @@ function ProductCard(props) {
                             <div className="inline-block">
                                 <ThemeProvider theme={lightTheme}>
                                     <FormControlLabel
-                                        control={<Checkbox disableRipple={true} icon={<IoMdHeartEmpty className="heart-icon" />} checkedIcon={<IoMdHeart className="heart-icon" />} name="checkedH" />}
+                                        control={
+                                            <Checkbox
+                                                onChange={handleWishListChange}
+                                                checked={productInWish}
+                                                icon={
+                                                    <IoMdHeartEmpty
+                                                        className="heart-icon"
+                                                    />}
+                                                checkedIcon={
+                                                    <IoMdHeart
+                                                        style={{ color: "#f5347f" }}
+                                                        className="heart-icon"
+                                                    />}
+                                                name="checkedH"
+                                            />}
                                     />
                                 </ThemeProvider>
                             </div>

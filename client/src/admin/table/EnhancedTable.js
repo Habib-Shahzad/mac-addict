@@ -9,7 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import { countryObj, provinceObj, cityObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj, userObj, orderObj } from '../../db';
+import { countryObj, provinceObj, cityObj, categoryObj, subCategoryObj, furtherSubCategoryObj, brandObj, productObj, colorObj, sizeObj, userObj, orderObj, couponObj } from '../../db';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
@@ -154,6 +154,7 @@ export default function EnhancedTable(props) {
   else if (model === 'size') tableFetch = sizeObj;
   else if (model === 'user') tableFetch = userObj;
   else if (model === 'order') tableFetch = orderObj;
+  else if (model === 'coupon') tableFetch = couponObj;
   else tableFetch = {};
 
   const classes = useStyles();

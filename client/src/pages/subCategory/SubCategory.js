@@ -3,21 +3,21 @@ import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import api from '../../api';
 import { LinkButton, MainHeading, ProductRow } from '../../components';
-import './Category.scss';
+import './SubCategory.scss';
 
-function Category(props) {
+function SubCategory(props) {
     const [keys, setKeys] = useState([]);
     const [products, setProducts] = useState({});
 
     const [otherProducts, setOtherProducts] = useState([]);
 
-    const { category } = useParams();
+    const { category, subCategory } = useParams();
 
 
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${api}/product/client-category-products?category=${category}`, {
+                const response = await fetch(`${api}/product/client-subCategory-products?subCategory=${subCategory}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ function Category(props) {
                 setProducts(products);
                 setKeys(Object.keys(products));
             })();
-    }, [category]);
+    }, [subCategory]);
 
     const [showMore, setShowMore] = useState(false);
 
@@ -99,11 +99,9 @@ function Category(props) {
         <Container fluid>
             <div className="margin-global-top-5" />
             <MainHeading
-                text={`${category.split('-')[0]}`}
+                text={`${subCategory.split('-')[0]}`}
                 classes="text-uppercase text-center"
             />
-
-
             <div className="margin-global-top-5" />
             {
                 keys.map((value, index) => {
@@ -115,7 +113,7 @@ function Category(props) {
                                 button={
                                     products[value].data.length > 3 ?
                                         <LinkButton
-                                            to={`/categories/${category}/${products[value].slug}`}
+                                            to={`/categories/${category}/${subCategory}/${products[value].slug}`}
                                             classes="text-uppercase"
                                             text="Show more"
                                             button={false}
@@ -151,7 +149,7 @@ function Category(props) {
                                 mainHeading={null}
                                 data={productList}
                                 button={
-                                    !showMore && otherProducts.length > 3 ?
+                                    !showMore ?
                                         <LinkButton
                                             onClick={(e) => { e.preventDefault(); setShowMore(true); }}
                                             classes="text-uppercase"
@@ -200,4 +198,4 @@ function Category(props) {
     );
 }
 
-export default Category;
+export default SubCategory;

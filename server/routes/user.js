@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const User = require("../schema").user;
 const Address = require("../schema").address;
-
+const Product = require("../schema").product;
 
 const admin_auth = require("./middleware/admin_auth");
 const user_auth = require("./middleware/user_auth");
@@ -148,7 +148,58 @@ router.post('/signup', async (req, res) => {
 
 
 
+router.post(('/add-to-wishlist'), async (req, res) => {
+  try {
+    const { user_id, product_id } = req.body;
+    const user = await User.findOne({ _id: user_id });
+    const product = await Product.findOne({ _id: product_id })
+      .populate('brand')
+      .populate('category');
 
+    const prices = product.productDetails.map(item => parseFloat(item.price));
+
+    user.wishList.push(
+      {
+        product_id: product._id,
+        slug: product.slug,
+        image: product.default_image,
+        name: product.name,
+        brand: product.brand.name,
+        category: product.category.name,
+        min_price: Math.min(...prices),
+        max_price: Math.max(...prices),
+      });
+
+    await user.save();
+    res.json({ success: true, user: user });
+  }
+  catch (error) {
+    res.json({ success: false, error: error });
+  }
+});
+
+
+router.post(('/remove-from-wishlist'), async (req, res) => {
+
+  try {
+    const { user_id, slug } = req.body;
+    const user = await User.findOne({ _id: user_id });
+
+
+    for (var i = 0; i < user.wishList.length; i++) {
+      if (user.wishList[i].slug === slug) {
+        user.wishList.splice(i, 1);
+      }
+    }
+    await user.save();
+    res.json({ success: true, user: user });
+  }
+  catch (error) {
+    console.log("REMOVED", error);
+
+    res.json({ success: false, error: error, user: null });
+  }
+});
 
 
 router.post('/add', async (req, res) => {

@@ -13,7 +13,6 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 
 import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import DOMPurify from 'dompurify';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
@@ -77,7 +76,8 @@ const NestedArray = ({ nestIndex, control, register }) => {
 const createTableData = (data) => {
     const { _id, name, brand, active } = data;
     const brandName = brand.name;
-    return { _id, name, brandName, active };
+    const categoryName = data.category.name;
+    return { _id, name, brandName, categoryName, active };
 }
 
 // const editObjCheck = (data, value, editObj) => {
@@ -115,6 +115,7 @@ const productObj = {
     headCells: [
         { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
         { id: 'brand', numeric: false, disablePadding: false, label: 'Brand' },
+        { id: 'category', numeric: false, disablePadding: false, label: 'Category' },
         { id: 'active', numeric: false, disablePadding: false, label: 'Active' },
     ],
     ManyChild: '',
@@ -163,8 +164,6 @@ const productObj = {
         const [defaultSubCategory, setDefaultSubCategory] = useState(null);
         const [defaultFurtherSubCategory, setDefaultFurtherSubCategory] = useState(null);
         const [defaultBrand, setDefaultBrand] = useState('');
-        const [defaultKeywords, setDefaultKeywords] = useState('');
-        const [defaultDescription, setDefaultDescription] = useState('');
         const [defaultProductDescription, setDefaultProductDescription] = useState('');
         const [defaultActive, setDefaultActive] = useState(true);
         const [defaultHasColor, setDefaultHasColor] = useState(true);
@@ -347,9 +346,6 @@ const productObj = {
 
                 setDefaultProductDetails(editObj.productDetails);
 
-                setDefaultKeywords(editObj.keywords);
-                setDefaultDescription(editObj.description);
-
                 const list = [];
                 editObj.productDetails.forEach(element => {
                     list.push(element);
@@ -406,7 +402,6 @@ const productObj = {
 
 
         const onSubmit = async (data) => {
-
             let list_products = [];
 
             data?.productDetailsList.forEach((element) => {
@@ -438,9 +433,9 @@ const productObj = {
                         product_description: data.product_description,
                         subCategory: data.subCategory ?? null,
                         furtherSubCategory: data.furtherSubCategory ?? null,
-                        keywords: data.keywords,
+                        keywords: "",
                         default_image: data.default_image,
-                        description: data.description,
+                        description: "",
                         active: data.active,
                         productDetails: data.productDetailsList,
                         hasColor: data.hasColor,
@@ -468,12 +463,14 @@ const productObj = {
                         default_image: data.default_image,
                         subCategory: data.subCategory ?? null,
                         furtherSubCategory: data.furtherSubCategory ?? null,
-                        keywords: data.keywords,
-                        description: data.description,
+                        keywords: "",
+                        description: "",
                         active: data.active,
                         productDetails: data.productDetailsList,
                         hasColor: data.hasColor,
                         brand: data.brand,
+                        hotSeller: data.hotSeller,
+                        newArrival: data.newArrival,
                     }),
                 });
                 const content = await response.json();
@@ -520,8 +517,6 @@ const productObj = {
             setEditorState(htmlToDraftBlocks(defaultProductDescription));
         }, [defaultProductDescription])
 
-        const [convertedContent, setConvertedContent] = useState(null);
-        const [viewPreview, setViewPreview] = useState(false);
 
         const handleEditorChange = (state) => {
             setEditorState(state);
@@ -533,15 +528,6 @@ const productObj = {
             return currentContentAsHTML
         }
 
-        const updatePreview = () => {
-            setConvertedContent(draft_html_content(editorState));
-        }
-
-        const createMarkup = (html) => {
-            return {
-                __html: DOMPurify.sanitize(html)
-            }
-        }
 
 
         if (loading) return <div></div>
@@ -771,36 +757,7 @@ const productObj = {
                 </Row>
 
 
-                {!viewPreview ? (
-                    <Button
-                        onClick={() => { setViewPreview(true); }}
-                        variant="contained" color="primary">
-                        Show description preview
-                    </Button>) : (
-                    <>
-                        <Button
-                            onClick={() => { setViewPreview(false); }}
-                            style={{ marginLeft: '1rem' }} variant="contained" color="primary">
-                            Hide Preview
-                        </Button>
 
-                        <Button onClick={() => { updatePreview(); }} style={{ marginLeft: '1rem' }} variant="contained" color="primary">
-                            Update Preview
-                        </Button>
-                    </>
-                )}
-
-                <br />
-
-                {viewPreview &&
-                    <>
-                        <legend style={{ width: 'fit-content', marginTop: '1rem' }}>Product Description Preview</legend>
-
-                        <Row>
-                            <div className="preview" dangerouslySetInnerHTML={createMarkup(convertedContent)}></div>
-                        </Row>
-                    </>
-                }
 
 
                 <Row style={{ marginTop: '1.2rem' }} className={classes.rowGap}>
@@ -1054,7 +1011,7 @@ const productObj = {
                 })}
 
             </fieldset>
-
+            {/* 
             <Row style={{ marginTop: '1rem' }} className={classes.rowGap}>
                 <Form.Group as={Col} md={6} controlId="keywords">
                     <FormControl className={classes.formControl}>
@@ -1088,7 +1045,7 @@ const productObj = {
                         <FormHelperText id="description-helper">Type a description for SEO Ex. This product is...</FormHelperText>
                     </FormControl>
                 </Form.Group>
-            </Row>
+            </Row> */}
 
 
             <Button className={classes.button} onClick={_ => setPressedBtn(1)} type="submit" variant="contained" color="primary">

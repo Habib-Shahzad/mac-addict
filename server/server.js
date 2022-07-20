@@ -55,7 +55,7 @@ const createServer = async () => {
     const provinceRoutes = require('./routes/province');
     const cityRoutes = require('./routes/city');
     const orderRoutes = require('./routes/order');
-    const discountRoutes = require('./routes/discount');
+    const couponRoutes = require('./routes/coupon');
 
     app.use('/api/user', userRoutes);
     app.use('/api/cart', cartRoutes);
@@ -70,7 +70,7 @@ const createServer = async () => {
     app.use('/api/province', provinceRoutes);
     app.use('/api/city', cityRoutes);
     app.use('/api/order', orderRoutes);
-    app.use('/api/discount', discountRoutes);
+    app.use('/api/coupon', couponRoutes);
 
     // app.get('*', function (req, res) {
     //     res.sendFile(path.join(__dirname, '../client/build/index.html'));

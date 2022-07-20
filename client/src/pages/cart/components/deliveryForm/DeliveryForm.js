@@ -85,11 +85,7 @@ function DeliveryForm(props) {
             {cartProducts.length > 0 ?
                 (<div>
                     <AddressModal address_id={deleteableAddress} show={showModal} handleClose={handleClose} handleShow={handleShow} setAddressList={setAddressList} />
-                    <Heading1
-                        first="Delivery"
-                        bold="Address"
-                        classes="text-uppercase"
-                    />
+
                     <div className="margin-global-top-2" />
                     <Container className="my-addresses box-info">
                         {

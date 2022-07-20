@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
-import { DashNav, AccountInfo, Orders, Addresses } from './components';
+import { DashNav, AccountInfo, Orders, Addresses, Wishes } from './components';
 import {
     Switch as RouterSwitch,
     Route,
@@ -31,6 +31,7 @@ function Dashboard(props) {
             <RouterSwitch>
                 <Route path="/dashboard/my-addresses" children={<Addresses />} />
                 <Route path="/dashboard/my-orders" children={<Orders />} />
+                <Route path="/dashboard/my-wishlist" children={<Wishes />} />
                 <Route path="/dashboard" children={<AccountInfo />} />
             </RouterSwitch>
         </Container>

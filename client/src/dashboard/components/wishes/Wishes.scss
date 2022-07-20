@@ -12,16 +12,13 @@
       padding-top: 1.25rem;
       margin-bottom: 3.125rem;
     }
-    .add-remove-icons {
-      width: fit-content;
-      margin-top: 1rem;
-      .cart-icon {
-        cursor: pointer;
-        border: 1px solid black;
-      }
+
+    a {
+      color: black !important;
     }
+
     img {
-      width: 100%;
+      width: 12rem !important;
       padding: 0 0 1.875rem 1.25rem;
     }
     input[type="text"] {
@@ -103,12 +100,8 @@
   .product-list-back {
     .product-list {
       img {
-        width: 17rem;
+        width: 8rem;
       }
     }
   }
 }
-
-// * {
-//   outline: 1px solid red;
-// }

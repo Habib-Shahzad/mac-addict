@@ -5,7 +5,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { SmallBanner, SearchNavbar, MainNavbar, IconBanner, Footer } from './components';
-import { Home, Brands, Product, Category, AllProducts, Signin, Signup, Cart } from './pages';
+import { Home, Brands, Product, Category, SubCategory, FurtherSubCategory, Signin, Signup, Cart } from './pages';
 // import { ComingSoon } from './pages';
 import { Dashboard } from './dashboard';
 import CartContext from './contexts/cart';
@@ -66,15 +66,15 @@ function Routes(props) {
             };
             const mainNewCat = {
               name: category.name,
-              to: `/${category.slug}`
+              to: `/categories/${category.slug}`
             }
             if (category.subCategories.length === 0) {
-              newCat.content[0]['to'] = `/${category.slug}`;
+              newCat.content[0]['to'] = `/categories/${category.slug}`;
             } else {
               newCat.content[0]['children'] = [
                 {
                   content: [
-                    { id: category._id, name: `All ${category.name}`, to: `/${category.slug}` }
+                    { id: category._id, name: `All ${category.name}`, to: `/categories/${category.slug}` }
                   ]
                 }
               ];
@@ -86,22 +86,22 @@ function Routes(props) {
                 }
                 const mainNewSubCat = {
                   name: subCategory.name,
-                  to: `/${category.slug}/${subCategory.slug}`
+                  to: `/categories/${category.slug}/${subCategory.slug}`
                 }
                 if (subCategory.furtherSubCategories.length === 0) {
-                  newSubCat['to'] = `/${category.slug}/${subCategory.slug}`;
+                  newSubCat['to'] = `/categories/${category.slug}/${subCategory.slug}`;
                 } else {
                   newSubCat['children'] = [
                     {
                       content: [
-                        { id: subCategory._id, name: `All ${subCategory.name}`, to: `/${category.slug}/${subCategory.slug}` }
+                        { id: subCategory._id, name: `All ${subCategory.name}`, to: `/categories/${category.slug}/${subCategory.slug}` }
                       ]
                     }
                   ];
                   mainNewSubCat['children'] = [];
                   subCategory.furtherSubCategories.forEach(furtherSubCategory => {
-                    const newFurtherSubCat = { id: furtherSubCategory._id, name: furtherSubCategory.name, to: `/${category.slug}/${subCategory.slug}/${furtherSubCategory.slug}` };
-                    const mainNewFurtherSubCat = { name: furtherSubCategory.name, to: `/${category.slug}/${subCategory.slug}/${furtherSubCategory.slug}` };
+                    const newFurtherSubCat = { id: furtherSubCategory._id, name: furtherSubCategory.name, to: `/categories/${category.slug}/${subCategory.slug}/${furtherSubCategory.slug}` };
+                    const mainNewFurtherSubCat = { name: furtherSubCategory.name, to: `/categories/${category.slug}/${subCategory.slug}/${furtherSubCategory.slug}` };
                     newSubCat['children'][0].content.push(newFurtherSubCat);
                     mainNewSubCat['children'].push(mainNewFurtherSubCat);
                   });
@@ -250,14 +250,8 @@ function Routes(props) {
                     <MainNavbar options={mainNavOptions} />
                     <Product />
                   </Route>
-                  <Route path="categories/:category/:subcategory/:furthersubcategory">
-                    <MainNavbar options={mainNavOptions} />
-                    <AllProducts />
-                  </Route>
-                  <Route path="categories/:category/:subcategory">
-                    <MainNavbar options={mainNavOptions} />
-                    <AllProducts />
-                  </Route>
+
+
                   <Route path="/brands">
                     <MainNavbar options={mainNavOptions} />
                     <Brands />
@@ -274,10 +268,25 @@ function Routes(props) {
                     <MainNavbar options={mainNavOptions} />
                     <Signup />
                   </Route>
-                  <Route path="categories/:category">
+
+
+                  <Route path="/categories/:category/:subCategory/:furtherSubCategory">
+                    <MainNavbar options={mainNavOptions} />
+                    <FurtherSubCategory />
+                  </Route>
+
+                  <Route path="/categories/:category/:subCategory">
+                    <MainNavbar options={mainNavOptions} />
+                    <SubCategory />
+                  </Route>
+
+
+                  <Route path="/categories/:category">
                     <MainNavbar options={mainNavOptions} />
                     <Category />
                   </Route>
+
+
                   {/* <Route path="/" children={<ComingSoon />} /> */}
                   <Route path="/">
                     <MainNavbar options={mainNavOptions} />

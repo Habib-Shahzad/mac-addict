@@ -114,7 +114,7 @@ export default function AddAddressForm(props) {
                             </Form.Group>
                         </Row>
 
-                        <Row className="justify-content-center">
+                        <Row >
                             <Form.Group as={Col} md={6} controlId="contactNumber">
                                 <Form.Label>Contact Number</Form.Label>
                                 <Form.Control
@@ -212,7 +212,7 @@ export default function AddAddressForm(props) {
                             </Form.Group>
                         </Row>
                         <div className="margin-global-top-2" />
-                        <Row className="justify-content-center">
+                        <Row >
                             <Form.Group className="input-form-group" as={Col} md={6} controlId="city">
                                 <Form.Label>City</Form.Label>
                                 <Controller
@@ -278,7 +278,7 @@ export default function AddAddressForm(props) {
                             </Form.Group>
                         </Row>
 
-                        <Row className="justify-content-center">
+                        <Row >
                             <Form.Group className="input-form-group" as={Col} md={6} controlId="landmark">
                                 <Form.Label>Landmark (Optional)</Form.Label>
                                 <Form.Control

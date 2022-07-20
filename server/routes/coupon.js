@@ -1,28 +1,29 @@
 const router = require('express').Router();
-const Discount = require('../schema').discount;
+const Coupon = require('../schema').coupon;
+
 
 const admin_auth = require('./middleware/admin_auth');
 
 
 router.get('/table-data', async (req, res) => {
-    const discounts = await Discount.find({});
-    if (!discounts) res.json({ data: [] });
-    else res.json({ data: discounts });
+    const coupons = await Coupon.find({});
+    if (!coupons) res.json({ data: [] });
+    else res.json({ data: coupons });
 });
 
 router.get('/get-data', async (req, res) => {
-    const discounts = [];
-    res.json({ data: discounts });
+    const coupons = [];
+    res.json({ data: coupons });
 });
 
 router.get('/table-data-auto', async (req, res) => {
-    const discounts = await Discount.find({});
-    if (!discounts) res.json({ data: [] });
-    else res.json({ data: discounts });
+    const coupons = await Coupon.find({});
+    if (!coupons) res.json({ data: [] });
+    else res.json({ data: coupons });
 });
 
-router.get('/get-discount', async (req, res) => {
-    const discounts = await Discount.findOne({}, { '_id': 0 })
+router.get('/get-coupon', async (req, res) => {
+    const coupons = await Coupon.findOne({}, { '_id': 0 })
         .populate({
             path: 'products',
             select: { '_id': 0 },
@@ -33,37 +34,37 @@ router.get('/get-discount', async (req, res) => {
         })
         .where('startDate').lte(new Date())
         .where('endDate').gte(new Date());
-    res.json({ data: discounts });
+    res.json({ data: coupons });
 });
 
 router.post('/add', admin_auth, async (req, res) => {
     const data = req.body;
     // console.log(data);
-    const newDiscount = new Discount({
+    const newcoupon = new Coupon({
         name: data.name,
         type: data.type,
         startDate: new Date(data.startDate),
         endDate: new Date(data.endDate),
         minAmount: data.minAmount,
         maxAmount: data.maxAmount,
-        discountPercentage: data.discountPercentage,
+        couponPercentage: data.couponPercentage,
         productDetails: data.productDetails,
     });
-    newDiscount.save();
-    res.json({ data: newDiscount });
+    newCoupon.save();
+    res.json({ data: newcoupon });
 });
 
 router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
-    const discount = await Discount.findOne({ _id: data._id });
-    discount.name = data.name;
-    discount.save();
-    res.json({ data: discount });
+    const coupon = await Coupon.findOne({ _id: data._id });
+    Coupon.name = data.name;
+    Coupon.save();
+    res.json({ data: coupon });
 });
 
 
 router.post('/delete', admin_auth, async (req, res) => {
-    await Discount.deleteMany({ _id: req.body.ids });
+    await Coupon.deleteMany({ _id: req.body.ids });
     res.json({ data: 'success' });
 });
 

@@ -128,7 +128,7 @@ function Signin(props) {
 
                     <Row className="justify-content-center">
                         <Button type="submit">
-                            Signin
+                            Sign in
                         </Button>
 
 

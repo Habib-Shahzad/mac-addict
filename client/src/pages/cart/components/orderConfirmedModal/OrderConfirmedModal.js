@@ -72,11 +72,11 @@ function OrderConfirmedModal(props) {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button disabled={loading} className="my-button" variant="custom" onClick={() => { confirmOrder(); }} >
+                        <Button disabled={loading} className="yesno-button" variant="custom" onClick={() => { confirmOrder(); }} >
                             Yes
                         </Button>
 
-                        <Button disabled={loading} className="my-button" variant="custom" onClick={() => { props.handleClose(); }} >
+                        <Button disabled={loading} className="yesno-button" variant="custom" onClick={() => { props.handleClose(); }} >
                             <div>No</div>
                         </Button>
 

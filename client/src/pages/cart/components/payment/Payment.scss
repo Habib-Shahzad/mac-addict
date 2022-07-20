@@ -1,0 +1,52 @@
+.payment-back {
+  position: relative;
+  z-index: 0;
+  .payment {
+    font-family: "Montserrat", sans-serif !important;
+    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    padding: 3.125rem 3.75rem !important;
+    min-height: 20rem;
+    overflow-y: scroll;
+  }
+}
+.display-992 {
+  display: none;
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+  .payment-back {
+    .payment {
+      padding: 3.125rem 2.4rem !important;
+    }
+  }
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+  .payment-back {
+    .payment {
+      padding: 3.125rem 1.75rem !important;
+      img {
+        padding: 0 0 1.875rem 0.25rem;
+      }
+    }
+  }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+  .payment-back {
+    .payment {
+      padding: 3.125rem 3.75rem !important;
+    }
+  }
+  .display-992 {
+    display: block;
+  }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+}

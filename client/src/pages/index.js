@@ -7,3 +7,5 @@ export { default as AllProducts } from './allProducts/AllProducts';
 export { default as Signup } from './signup/Signup';
 export { default as Signin } from './signin/Signin';
 export { default as Cart } from './cart/Cart';
+export { default as SubCategory } from './subCategory/SubCategory';
+export { default as FurtherSubCategory } from './furtherSubCategory/FurtherSubCategory';

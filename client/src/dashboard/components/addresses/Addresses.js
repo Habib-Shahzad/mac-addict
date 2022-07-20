@@ -146,7 +146,7 @@ function Addresses(props) {
                                                 classes=""
                                             />
                                         </Col>
-                                        <Col>
+                                        <Col >
                                             <ImBin2 onClick={() => { handleShow(); setDeleteableAddress(address._id); }} className="delete-icon" />
                                         </Col>
                                     </Row>
@@ -207,7 +207,7 @@ function Addresses(props) {
                                         </Form.Group>
                                     </Row>
 
-                                    <Row className="justify-content-center">
+                                    <Row >
                                         <Form.Group as={Col} md={6} controlId="contactNumber">
                                             <Form.Label>Contact Number</Form.Label>
                                             <Form.Control
@@ -305,7 +305,7 @@ function Addresses(props) {
                                         </Form.Group>
                                     </Row>
                                     <div className="margin-global-top-2" />
-                                    <Row className="justify-content-center">
+                                    <Row >
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="city">
                                             <Form.Label>City</Form.Label>
                                             <Controller
@@ -371,7 +371,7 @@ function Addresses(props) {
                                         </Form.Group>
                                     </Row>
 
-                                    <Row className="justify-content-center">
+                                    <Row >
                                         <Form.Group className="input-form-group" as={Col} md={6} controlId="landmark">
                                             <Form.Label>Landmark (Optional)</Form.Label>
                                             <Form.Control

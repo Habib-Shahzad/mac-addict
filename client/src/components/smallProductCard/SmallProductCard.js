@@ -14,7 +14,7 @@ function SmallProductCard(props) {
                 <div className="product-name">{props.name}</div>
                 <div className="product-price-points">{props.pricePoints}</div>
             </div>
-                {props.button}
+            {props.button}
         </div>
     );
 }

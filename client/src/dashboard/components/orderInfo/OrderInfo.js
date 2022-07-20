@@ -71,11 +71,7 @@ function OrderInfo(props) {
 
             <div className="order-info">
 
-                <SubHeading
-                    text={`Delivery Address`}
-                    classes=""
-                    to=""
-                />
+
 
                 <div>{props.order.deliveryAddress.addressLine1}</div>
                 <div>{props.order.deliveryAddress.addressLine2}</div>

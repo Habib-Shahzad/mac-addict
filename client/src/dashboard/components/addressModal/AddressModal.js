@@ -44,15 +44,15 @@ function AddressModal(props) {
                     </Modal.Header>
 
                     <Modal.Body className="lightText" style={{ textAlign: 'center' }}>
-                        <div>Are you sure you want to delete this address?</div>
+                        <div>Are you sure you want to delete this Address?</div>
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button className="my-button" variant="custom" onClick={() => { deleteAddress(); }} >
+                        <Button className="yesno-button" variant="custom" onClick={() => { deleteAddress(); }} >
                             Yes
                         </Button>
 
-                        <Button className="my-button" variant="custom" onClick={() => { props.handleClose(); }} >
+                        <Button className="yesno-button" variant="custom" onClick={() => { props.handleClose(); }} >
                             <div>No</div>
                         </Button>
 

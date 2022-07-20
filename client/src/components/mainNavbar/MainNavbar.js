@@ -35,21 +35,13 @@ function MainNavbar(props) {
                                                                                             )
                                                                                         })
                                                                                     }
+
                                                                                 </div>
                                                                             ) : null
                                                                         }
-                                                                        {/* <div className="dropdown-list">
-                                                                            <li><Link className="subsubmain-font" to="/make-up/face/foundation">Foundation</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">BB & CC Creams</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">Tinted Moisturizer</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">Concealer</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">Face Primer</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">Setting Spray & Powder</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">Highlighter</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">Contour</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">Color Correct</Link></li>
-                                                                            <li><Link className="subsubmain-font" to="/">Face Sets</Link></li>
-                                                                        </div> */}
+                                                                        <div className="dropdown-list">
+
+                                                                        </div>
                                                                     </div>
                                                                 )
                                                             })

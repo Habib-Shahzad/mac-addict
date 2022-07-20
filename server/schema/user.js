@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   contactNumber: { type: String, required: true },
+  emailVerified: { type: Boolean, default: false },
   addresses: [
     {
       type: Schema.Types.ObjectId,
@@ -25,6 +26,19 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   totalPoints: { type: Number, required: true, default: 0 },
+
+  wishList: [
+    {
+      image: { type: String, required: true },
+      name: { type: String, required: true },
+      brand: { type: String, required: true },
+      category: { type: String, required: true },
+      min_price: { type: Number, required: true },
+      max_price: { type: Number, required: true },
+      slug: { type: String, required: true },
+    }
+  ],
+
 });
 const User = mongoose.model("users", userSchema);
 module.exports = User;

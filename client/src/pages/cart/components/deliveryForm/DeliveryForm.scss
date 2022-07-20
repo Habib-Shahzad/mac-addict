@@ -57,35 +57,105 @@
   width: fit-content;
 }
 
-input[type="radio"]:after {
-  width: 16px;
-  height: 16px;
-  border-radius: 15px;
-  top: -2px;
-  left: -1.4px;
-  position: relative;
-  background-color: white;
-  content: "";
-  display: inline-block;
-  visibility: visible;
-  border: 1px solid black;
-}
-
-input[type="radio"]:checked:after {
-  width: 16px;
-  height: 16px;
-  border-radius: 15px;
-  top: -2px;
-  left: -1px;
-  position: relative;
-  background-color: #cf993d;
-  border: 1px solid black !important;
-  content: "";
-  display: inline-block;
-  visibility: visible;
-  border: 0;
-}
-
 .delete-icon {
   font-size: 1.75rem !important;
+}
+
+input[type="radio"] {
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 50%;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+}
+
+input[type="radio"]::before {
+  content: "";
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+  background-color: #cf993d !important;
+}
+
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="radio"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+// X-Large devices (large desktops, less than 1400px)
+@media (max-width: 87.49875em) {
+}
+
+// Large devices (desktops, less than 1200px)
+@media (max-width: 74.99875em) {
+  input[type="radio"] {
+    width: 1em;
+    height: 1em;
+  }
+
+  input[type="radio"]::before {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+}
+
+// Medium devices (tablets, less than 992px)
+@media (max-width: 61.99875em) {
+  input[type="radio"] {
+    width: 0.9em;
+    height: 0.9em;
+  }
+
+  input[type="radio"]::before {
+    width: 0.65rem;
+    height: 0.65rem;
+  }
+}
+
+// Small devices (landscape phones, less than 768px)
+@media (max-width: 47.99875em) {
+  input[type="radio"] {
+    width: 0.8em;
+    height: 0.8em;
+  }
+
+  input[type="radio"]::before {
+    width: 0.55rem;
+    height: 0.55rem;
+  }
+
+  .my-addresses {
+    width: 100% !important;
+  }
+}
+
+// X-Small devices (portrait phones, less than 576px)
+@media (max-width: 35.99875em) {
+  input[type="radio"] {
+    width: 0.75em;
+    height: 0.75em;
+  }
+
+  input[type="radio"]::before {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  .my-addresses {
+    width: 100% !important;
+  }
 }

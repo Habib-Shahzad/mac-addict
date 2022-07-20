@@ -5,3 +5,4 @@ export { default as Orders } from './orders/Orders';
 export { default as Addresses } from './addresses/Addresses';
 export { default as AddressModal } from './addressModal/AddressModal';
 export { default as OrderInfo } from './orderInfo/OrderInfo';
+export { default as Wishes } from './wishes/Wishes';

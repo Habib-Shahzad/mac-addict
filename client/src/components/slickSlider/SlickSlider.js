@@ -36,47 +36,53 @@ function SlickSlider(props) {
         <Container fluid className="slick-slider-style">
             <Slider {...settings}>
                 {
-                    props.data.map((value, index) => (
-                        <div key={index}>
-                            {
-                                props.type === 'price' ? (
-                                    <SmallProductCard
-                                        src={value.default_image}
-                                        name={value.name}
-                                        brand={value.brand.name}
-                                        pricePoints={value.price}
-                                        classes="center-relative-horizontal"
-                                        quicklook={
-                                            <div className="btn-cont center-relative-horizontal">
-                                                <QuickLook to={`/product/${value.slug}`} />
-                                            </div>
-                                        }
-                                        button=""
-                                    />
-                                ) : (
-                                    <SmallProductCard
-                                        src={value.default_image}
-                                        name={value.name}
-                                        brand={value.brand.name}
-                                        pricePoints={value.points}
-                                        classes="center-relative-horizontal"
-                                        quicklook=""
-                                        button={
-                                            <div className="product-btn margin-global-top-1">
-                                                <LinkButton
-                                                    text="Access Now"
-                                                    button={false}
-                                                    classes="text-uppercase center-relative-horizontal"
-                                                    to="/"
-                                                />
-                                                <div className="margin-global-top-1" />
-                                            </div>
-                                        }
-                                    />
-                                )
-                            }
-                        </div>
-                    ))
+                    props.data.map((value, index) => {
+                        let prices = value.productDetails.map(({ price }) => price);
+                        const lowestPrice = Math.min(...prices);
+                        const highestPrice = Math.max(...prices);
+
+                        return (
+                            <div key={index}>
+                                {
+                                    props.type === 'price' ? (
+                                        <SmallProductCard
+                                            src={value.default_image}
+                                            name={value.name}
+                                            brand={value.brand.name}
+                                            pricePoints={`PKR.${lowestPrice} - ${highestPrice}`}
+                                            classes="center-relative-horizontal"
+                                            quicklook={
+                                                <div className="btn-cont center-relative-horizontal">
+                                                    <QuickLook to={`/product/${value.slug}`} />
+                                                </div>
+                                            }
+                                            button=""
+                                        />
+                                    ) : (
+                                        <SmallProductCard
+                                            src={value.default_image}
+                                            name={value.name}
+                                            brand={value.brand.name}
+                                            pricePoints={value.points}
+                                            classes="center-relative-horizontal"
+                                            quicklook=""
+                                            button={
+                                                <div className="product-btn margin-global-top-1">
+                                                    <LinkButton
+                                                        text="Access Now"
+                                                        button={false}
+                                                        classes="text-uppercase center-relative-horizontal"
+                                                        to="/"
+                                                    />
+                                                    <div className="margin-global-top-1" />
+                                                </div>
+                                            }
+                                        />
+                                    )
+                                }
+                            </div>
+                        );
+                    })
                 }
             </Slider>
         </Container>

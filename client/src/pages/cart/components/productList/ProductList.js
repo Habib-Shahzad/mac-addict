@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { MainHeading, Heading2, Heading1, LinkButton, ParaText } from '../../../../components';
+import { MainHeading, Heading2, Heading1, LinkButton, Heading3 } from '../../../../components';
 import CartContext from '../../../../contexts/cart';
 import UserContext from '../../../../contexts/user';
 import api from '../../../../api';
@@ -102,57 +102,57 @@ function ProductList(props) {
                 (<div>
                     <Container className="product-list">
                         {
-                            cartProducts?.map((element, key) => {
+                            cartProducts?.map((element, index) => {
+
                                 return (
-                                    <Row key={key} className="product-row">
-                                        <div className="global-mt-2 display-992" />
-                                        <Col lg={3}>
-                                            <img src={element?.default_image} alt={element?.name} />
-                                        </Col>
-                                        <div className="global-mt-3 display-992" />
-                                        <Col lg={5}>
-                                            <Heading2
-                                                bold={element?.name}
-                                                link="/"
-                                                classes="text-uppercase"
-                                            />
-                                            <ParaText
-                                                text={`Color: ${element?.color?.name}`}
-                                                classes="margin-bottom-0"
-                                                href='/'
-                                            />
+                                    <div className="cart-list-item" key={`${element?.key}-${index}`}>
+                                        <Row className="product-row">
+                                            <Col md={3}>
+                                                <img src={element?.default_image} alt={element?.name} />
+                                            </Col>
+                                            <Col md={5}>
+                                                <div className="vertical-top-relative">
+                                                    <div style={{ textIndent: '0' }}>
+
+                                                        <Heading2
+                                                            link=""
+                                                            first={element?.name}
+                                                            classes="text-uppercase font-bold"
+                                                        />
 
 
-                                            <ParaText
-                                                text={`Size: ${element?.size?.name}`}
-                                                classes="margin-bottom-0"
-                                                href='/'
-                                            />
+                                                        <Heading3
+                                                            first={`Color: ${element?.color?.name}`}
+                                                            classes="margin-bottom-0"
+                                                        />
 
+                                                        <Heading3
+                                                            first={`Size: ${element?.size?.name}`}
+                                                            classes="margin-bottom-0"
+                                                        />
 
+                                                        <div style={{ fontSize: '1.3rem' }} className="add-remove-icons">
+                                                            <RemoveIcon onClick={() => { removeCartItem(element?.key) }} className="cart-icon" />
+                                                            <div style={{ display: 'inline', marginLeft: '0.5rem', marginRight: '0.4rem' }}>{element?.quantity}</div>
+                                                            <AddIcon onClick={() => { addCartItem(element?.key) }} className="cart-icon" />
+                                                        </div>
 
-                                        </Col>
-
-                                        <Col lg={1}>
-                                            <div className="center-relative">
-                                                <input value={element?.quantity} type="text" readOnly={true} />
-                                                <div className="add-remove-icons horizontal-center-relative">
-                                                    <RemoveIcon onClick={() => { removeCartItem(element?.key) }} className="cart-icon" />
-                                                    <AddIcon onClick={() => { addCartItem(element?.key) }} className="cart-icon" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </Col>
-                                        <div className="global-mt-3 display-992" />
-                                        <Col className="align-middle">
-                                            <div className="center-relative">
-                                                <Heading1
-                                                    bold={`PKR.${parseInt(element?.price) * element?.quantity}`}
-                                                    classes={`text-uppercase text-center`}
-                                                />
-                                            </div>
-                                        </Col>
-                                        <div className="global-mt-2 display-992" />
-                                    </Row>
+                                            </Col>
+
+                                            <Col >
+                                                <div className="vertical-top-relative" style={{ marginLeft: '4rem' }}>
+                                                    <Heading2
+                                                        bold={`PKR.${parseInt(element?.price) * element?.quantity}`}
+                                                        classes={`text-uppercase text-center`}
+                                                        link=""
+                                                    />
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                        <hr />
+                                    </div>
                                 );
                             })
                         }

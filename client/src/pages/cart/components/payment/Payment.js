@@ -26,7 +26,7 @@ function Payment(props) {
             },
         },
         typography: {
-            fontFamily: 'Raleway',
+            fontFamily: 'Montserrat',
         },
     });
     const [display, setDisplay] = useState('none');
@@ -124,10 +124,9 @@ function Payment(props) {
     }
 
 
-
     return (
-        <div>
-            <Container className="payment-cart">
+        <div className='payment-back'>
+            <Container className="payment">
                 <OrderConfirmedModal
                     paymentMethod={radioBoxes.method}
                     deliveryAddress={address.selectedAddress}
@@ -143,7 +142,7 @@ function Payment(props) {
 
                 <Form className="form-style">
                     <Row>
-                        <Col>
+                        <Col >
                             <ThemeProvider theme={theme}>
                                 <RadioGroup aria-label="paymentMethod" name="paymentMethod1" value={radioBoxes.method} onChange={handleChange}>
                                     <FormControlLabel
@@ -235,7 +234,7 @@ function Payment(props) {
                 </Form>
             </Container>
             <div className="global-mt-2"></div>
-            <Row>
+            <Row style={{ marginTop: '1rem' }}>
                 <div className="horizontal-center-margin">
                     <LinkButton
                         classes="text-uppercase product-card-size"
