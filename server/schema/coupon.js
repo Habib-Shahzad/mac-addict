@@ -8,16 +8,18 @@ const couponSchema = new mongoose.Schema({
     percentOff: { type: Number, required: true },
     redeemBy: { type: Date, required: true },
     maxRedemptions: { type: Number, required: true },
+    timesRedeeemed: { type: Number, default: 0 },
+
     appliedToProducts: { type: Boolean, required: true },
-    hasPromotionCodes: { type: Boolean, required: true },
-    timesRedeeemed: { type: Number, required: true },
 
     products: [
         {
-            product_id: { type: Schema.Types.ObjectId, ref: 'products', required: true },
-            product_detail_id: { type: String, required: true },
+            product: { type: Schema.Types.ObjectId, ref: 'products', required: true },
+            product_detail: { type: String, required: true },
         }
     ],
+
+    hasPromotionCodes: { type: Boolean, required: true },
 
     promotionCodes: [
         {
@@ -26,13 +28,11 @@ const couponSchema = new mongoose.Schema({
             maxRedemptions: { type: Number, required: true },
             firstTimeTransaction: { type: Boolean, required: true },
             minAmount: { type: Number, required: true },
-            timesRedeeemed: { type: Number, required: true },
+            timesRedeeemed: { type: Number, default: 0 },
             active: { type: Boolean, required: true },
         }
     ],
 
-    // list of product details
-    // list of promotion codes
 });
 
 const Coupon = mongoose.model('coupons', couponSchema);

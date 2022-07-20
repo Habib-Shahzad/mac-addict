@@ -1,12 +1,35 @@
 const router = require('express').Router();
-const Coupon = require('../schema').coupon;
+const Coupon = require('../schema/coupon');
 
 
 const admin_auth = require('./middleware/admin_auth');
 
 
 router.get('/table-data', async (req, res) => {
-    const coupons = await Coupon.find({});
+    const coupons = await Coupon.find({})
+        .populate({
+            path: 'products.product',
+            populate: [
+                { path: 'productDetails.size' },
+                { path: 'productDetails.color' }
+            ]
+        });
+    ;
+
+    // coupons.forEach((coupon) => {
+
+    //     let couponProducts = coupon.products.map((productObj) => {
+
+    //         const productDetailID = productObj.product_detail;
+    //         const productDetail = productObj.product.productDetails.find((detail) => {
+    //             return detail._id.toString() === productDetailID;
+    //         });
+    //         return { product: productObj.product, product_detail: productDetail };
+    //     })
+
+    //     coupon.products = couponProducts;
+    // });
+
     if (!coupons) res.json({ data: [] });
     else res.json({ data: coupons });
 });
@@ -39,27 +62,41 @@ router.get('/get-coupon', async (req, res) => {
 
 router.post('/add', admin_auth, async (req, res) => {
     const data = req.body;
-    // console.log(data);
-    const newcoupon = new Coupon({
+    const newCoupon = new Coupon({
         name: data.name,
         type: data.type,
-        startDate: new Date(data.startDate),
-        endDate: new Date(data.endDate),
-        minAmount: data.minAmount,
-        maxAmount: data.maxAmount,
-        couponPercentage: data.couponPercentage,
-        productDetails: data.productDetails,
+        amountOff: data.amountOff,
+        percentOff: data.percentOff,
+        redeemBy: data.redeemBy,
+        maxRedemptions: data.maxRedemptions,
+        timesRedeeemed: data.timesRedeeemed,
+        appliedToProducts: data.appliedToProducts,
+        products: data.products,
+        hasPromotionCodes: data.hasPromotionCodes,
+        promotionCodes: data.promotionCodes,
     });
     newCoupon.save();
-    res.json({ data: newcoupon });
+    res.json({ data: newCoupon });
 });
 
 router.post('/update', admin_auth, async (req, res) => {
     const data = req.body;
     const coupon = await Coupon.findOne({ _id: data._id });
-    Coupon.name = data.name;
-    Coupon.save();
+
+    coupon.name = data.name;
+    coupon.type = data.type;
+    coupon.amountOff = data.amountOff;
+    coupon.percentOff = data.percentOff;
+    coupon.redeemBy = data.redeemBy;
+    coupon.maxRedemptions = data.maxRedemptions;
+    coupon.timesRedeeemed = data.timesRedeeemed;
+    coupon.appliedToProducts = data.appliedToProducts;
+    coupon.products = data.products;
+    coupon.hasPromotionCodes = data.hasPromotionCodes;
+    coupon.promotionCodes = data.promotionCodes;
+    coupon.save();
     res.json({ data: coupon });
+
 });
 
 
