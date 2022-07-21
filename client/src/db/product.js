@@ -29,10 +29,7 @@ const NestedArray = ({ nestIndex, control, register }) => {
     return (
         <div>
             <label>Images:</label>
-            <IconButton onClick={() => append(
-                {
-                    image: ""
-                })}
+            <IconButton onClick={() => append()}
                 variant="contained" color="primary" aria-label="Add">
                 <AddCircleIcon fontSize="medium" />
             </IconButton>
@@ -49,9 +46,9 @@ const NestedArray = ({ nestIndex, control, register }) => {
 
                             <Form.Group as={Col} md={3} controlId={`image-${k}`}>
                                 <FormControl >
-                                    <InputLabel color="secondary" htmlFor="imagePath">Image URL</InputLabel>
+                                    <InputLabel shrink color="secondary" htmlFor="imagePath">Image URL</InputLabel>
                                     <Input
-                                        {...register(`productDetailsList[${nestIndex}].imageList[${k}].image`, {})}
+                                        {...register(`productDetailsList[${nestIndex}].imageList[${k}]`, {})}
                                         color="secondary"
                                         autoComplete="none"
                                         type="text"
@@ -343,7 +340,7 @@ const productObj = {
                 setDefaultProductDescription(editObj.product_description);
                 setDefaultActive(editObj.active);
                 setDefaultHasColor(editObj.hasColor);
-
+                setHasColorChecked(editObj.hasColor);
                 setDefaultProductDetails(editObj.productDetails);
 
                 const list = [];
@@ -352,12 +349,9 @@ const productObj = {
                 });
                 setDefaultProductDetails(list);
 
-                if (editObj?.hotSeller) {
-                    setDefaultHotSeller(editObj?.hotSeller);
-                }
-                if (editObj?.newArrival) {
-                    setDefaultNewArrival(editObj?.newArrival);
-                }
+                setDefaultHotSeller(editObj?.hotSeller);
+                setDefaultNewArrival(editObj?.newArrival);
+
 
 
             } else {
@@ -402,11 +396,12 @@ const productObj = {
 
 
         const onSubmit = async (data) => {
+
+
             let list_products = [];
 
             data?.productDetailsList.forEach((element) => {
                 let product = element;
-                delete product?.["imagesList"];
                 product["quantity"] = parseInt(product?.["quantity"]);
                 product["price"] = parseInt(product?.["price"]);
                 product["points"] = parseInt(product?.["points"]);
@@ -857,6 +852,7 @@ const productObj = {
 
 
                 {fields.map((item, index) => {
+
                     return (
                         <div key={index}>
                             <Row style={{ marginTop: '1rem' }}>

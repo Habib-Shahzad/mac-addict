@@ -12,7 +12,19 @@ function SmallProductCard(props) {
             <div className="product-details">
                 <div className="brand-name">{props.brand}</div>
                 <div className="product-name">{props.name}</div>
-                <div className="product-price-points">{props.pricePoints}</div>
+                {
+                    props?.discountAvailable ?
+                        (
+                            <>
+                                <div className="striked product-price-points">{props.pricePoints}</div>
+                                <div className="product-price-points">{props.discountPricePoints}</div>
+                            </>
+                        )
+                        :
+                        (
+                            <div className="product-price-points">{props.pricePoints}</div>
+                        )
+                }
             </div>
             {props.button}
         </div>

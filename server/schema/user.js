@@ -29,12 +29,6 @@ const userSchema = new mongoose.Schema({
 
   wishList: [
     {
-      image: { type: String, required: true },
-      name: { type: String, required: true },
-      brand: { type: String, required: true },
-      category: { type: String, required: true },
-      min_price: { type: Number, required: true },
-      max_price: { type: Number, required: true },
       slug: { type: String, required: true },
     }
   ],

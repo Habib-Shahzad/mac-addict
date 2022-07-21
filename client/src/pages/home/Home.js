@@ -29,6 +29,8 @@ function Home(props) {
     }, [])
 
     useEffect(() => {
+
+
         if (productsList?.length > 0) {
             const newArrivalProducts = productsList.filter(product => product.newArrival);
             const hotProducts = productsList.filter(product => product.hotSeller);

@@ -3,6 +3,8 @@ const Product = require('../schema').product;
 const Category = require('../schema').category;
 const SubCategory = require('../schema').subCategory;
 const FurtherSubCategory = require('../schema').furtherSubCategory;
+const Coupon = require('../schema').coupon;
+const Brand = require('../schema').brand;
 const slugify = require('slugify');
 
 
@@ -31,6 +33,42 @@ router.get('/table-data-list', async (req, res) => {
         .populate('subCategory')
         .populate('furtherSubCategory')
         .populate('brand');
+
+    const coupons = await Coupon.find({});
+
+    coupons.forEach((coupon) => {
+
+        if (coupon.redeemBy < new Date() && coupon.timesRedeeemed >= coupon.maxRedemptions) {
+            console.log("Coupon invalid");
+        }
+
+        else {
+            if (coupon.appliedToProducts && !coupon.hasPromotionCodes) {
+
+                coupon.products.forEach((productObj) => {
+                    products.forEach((product) => {
+
+                        product.productDetails.forEach((detail) => {
+
+                            if (product._id.toString() === productObj.product.toString()
+                                &&
+                                detail._id.toString() === productObj.product_detail.toString()
+                            ) {
+                                if (coupon.type === "Percentage") {
+                                    detail.discountedPrice = detail.price - (detail.price * (coupon.percentOff / 100));
+                                }
+                                else if (coupon.type === "Fixed Amount") {
+                                    detail.discountedPrice = detail.price - coupon.amountOff;
+                                }
+                            }
+                        })
+                    })
+                })
+            }
+        }
+    });
+
+
     if (!products) res.json({ success: false, data: [] });
     else res.json({ success: true, data: products });
 });
@@ -89,6 +127,8 @@ router.post('/add', admin_auth, async (req, res) => {
             brand: data.brand,
             keywords: data.keywords,
             description: data.description,
+            hotSeller: data.hotSeller,
+            newArrival: data.newArrival,
         });
 
         await newProduct.save();
@@ -117,6 +157,8 @@ router.post('/update', admin_auth, async (req, res) => {
     product.brand = data.brand;
     product.keywords = data.keywords;
     product.description = data.description;
+    product.hotSeller = data.hotSeller;
+    product.newArrival = data.newArrival;
 
     await product.save();
     res.json({ data: product });
@@ -132,7 +174,42 @@ router.get('/get-by-slug/:slug', async (req, res) => {
             { path: 'color' }
         ]
     });
-    ;
+
+
+
+    const coupons = await Coupon.find({});
+
+    coupons.forEach((coupon) => {
+
+        if (coupon.redeemBy < new Date() && coupon.timesRedeeemed >= coupon.maxRedemptions) {
+            console.log("Coupon invalid");
+        }
+
+        else {
+            if (coupon.appliedToProducts && !coupon.hasPromotionCodes) {
+
+                coupon.products.forEach((productObj) => {
+
+                    product.productDetails.forEach((detail) => {
+
+                        if (product._id.toString() === productObj.product.toString()
+                            &&
+                            detail._id.toString() === productObj.product_detail.toString()
+                        ) {
+                            if (coupon.type === "Percentage") {
+                                detail.discountedPrice = detail.price - (detail.price * (coupon.percentOff / 100));
+                            }
+                            else if (coupon.type === "Fixed Amount") {
+                                detail.discountedPrice = detail.price - coupon.amountOff;
+                            }
+                        }
+                    })
+                })
+            }
+        }
+    });
+
+
     if (!product) res.json({ success: false, data: null });
     else res.json({ success: true, data: product });
 });
@@ -205,6 +282,21 @@ router.get('/total-pages', async (req, res) => {
     res.json({ data: Math.ceil(count / size) });
 });
 
+
+router.get('/client-brand-products', async (req, res) => {
+    const brand = await Brand.findOne({ slug: req.query.brand });
+
+    const productsList = await Product.find({ brand: brand })
+        .populate('brand')
+        .populate(
+            {
+                path: 'productDetails'
+            }
+        );
+
+    res.json({ data: [], productsList: productsList });
+
+});
 
 router.get('/client-category-products', async (req, res) => {
     const category = await Category.find({ slug: req.query.category });

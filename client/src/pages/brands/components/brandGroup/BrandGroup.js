@@ -18,7 +18,7 @@ function BrandGroup(props) {
                             <Col md={11} className="list">
                                 <div>
                                     {value.children.map((childValue, childIndex) => (
-                                        <Link key={childIndex} to="/">{childValue.name}</Link>
+                                        <Link key={childIndex} to={`/brands/${childValue.slug}`}>{childValue.name}</Link>
                                     ))
                                     }
                                 </div>

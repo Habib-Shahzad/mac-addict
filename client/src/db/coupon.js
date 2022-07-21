@@ -326,6 +326,45 @@ const provinceObj = {
                     </Form.Group>
 
 
+
+                    <Form.Group as={Col} md={6} controlId="type">
+                        <FormControl className={classes.formControl}>
+                            <Controller
+                                render={(props) => (
+                                    <Autocomplete
+                                        defaultValue={editObj ? defaultType : undefined}
+                                        isOptionEqualToValue={(option, value) => option === value}
+                                        id="combo-box-demo"
+                                        color="secondary"
+                                        options={["Percentage", "Fixed Amount"]}
+                                        getOptionLabel={(option) => option}
+                                        onChange={(e, data) => props.field.onChange(data)}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                error={errors?.type ? true : false}
+                                                color="secondary"
+                                                {...params}
+                                                label="Type"
+                                            />
+                                        }
+                                    />
+                                )}
+                                rules={{ required: "Type is required!" }}
+                                onChange={([, data]) => data}
+                                defaultValue={defaultType}
+                                name={"type"}
+                                control={control}
+                            />
+                            {!errors?.type &&
+                                <FormHelperText id="name-helper">Select Type</FormHelperText>
+                            }
+                            <FormHelperText error={errors?.type ? true : false} id="name-helper">{errors?.type && <>{errors?.type.message}</>}</FormHelperText>
+
+                        </FormControl>
+                    </Form.Group>
+
+                    {/* 
+
                     <Form.Group as={Col} md={6} controlId="type">
                         <FormControl className={classes.formControl}>
                             <InputLabel error={errors.type ? true : false} color="secondary" htmlFor="name">Type</InputLabel>
@@ -346,7 +385,7 @@ const provinceObj = {
                             <FormHelperText error={errors.type ? true : false} id="type-helper">{errors.type && <>{errors.type.message}</>}</FormHelperText>
 
                         </FormControl>
-                    </Form.Group>
+                    </Form.Group> */}
 
                 </Row>
 

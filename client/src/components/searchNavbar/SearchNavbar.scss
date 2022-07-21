@@ -131,6 +131,7 @@
     }
 
     .cart-box {
+      overflow-y: scroll;
       width: 40rem;
       &:hover {
         padding: 0.625rem 0;

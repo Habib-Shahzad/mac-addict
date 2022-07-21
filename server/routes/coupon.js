@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Coupon = require('../schema/coupon');
+const Coupon = require('../schema').coupon;
 
 
 const admin_auth = require('./middleware/admin_auth');
@@ -15,20 +15,6 @@ router.get('/table-data', async (req, res) => {
             ]
         });
     ;
-
-    // coupons.forEach((coupon) => {
-
-    //     let couponProducts = coupon.products.map((productObj) => {
-
-    //         const productDetailID = productObj.product_detail;
-    //         const productDetail = productObj.product.productDetails.find((detail) => {
-    //             return detail._id.toString() === productDetailID;
-    //         });
-    //         return { product: productObj.product, product_detail: productDetail };
-    //     })
-
-    //     coupon.products = couponProducts;
-    // });
 
     if (!coupons) res.json({ data: [] });
     else res.json({ data: coupons });
@@ -101,8 +87,16 @@ router.post('/update', admin_auth, async (req, res) => {
 
 
 router.post('/delete', admin_auth, async (req, res) => {
-    await Coupon.deleteMany({ _id: req.body.ids });
-    res.json({ data: 'success' });
+    await Coupon.deleteMany({ _id: { $in: req.body.data } });
+    const coupons = await Coupon.find({})
+        .populate({
+            path: 'products.product',
+            populate: [
+                { path: 'productDetails.size' },
+                { path: 'productDetails.color' }
+            ]
+        });
+    res.json({ success: true, data: coupons });
 });
 
 module.exports = router;

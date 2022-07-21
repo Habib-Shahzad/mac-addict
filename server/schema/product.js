@@ -36,9 +36,10 @@ const ProductSchema = new mongoose.Schema({
 
     productDetails: [{
         imageList: [{
-            image: { type: String },
+            type: String
         }],
 
+        discountedPrice: { type: Number, default: null },
         price: { type: Number, required: true },
         quantity: { type: Number, required: true },
         points: { type: Number, required: true },
@@ -53,8 +54,6 @@ const ProductSchema = new mongoose.Schema({
             ref: 'colors'
         },
     }],
-
-
 
 });
 

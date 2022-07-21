@@ -5,12 +5,14 @@ import {
   useLocation,
 } from "react-router-dom";
 import { SmallBanner, SearchNavbar, MainNavbar, IconBanner, Footer } from './components';
-import { Home, Brands, Product, Category, SubCategory, FurtherSubCategory, Signin, Signup, Cart } from './pages';
+import { Home, Brands, Brand, Product, Category, SubCategory, FurtherSubCategory, Signin, Signup, Cart } from './pages';
 // import { ComingSoon } from './pages';
 import { Dashboard } from './dashboard';
 import CartContext from './contexts/cart';
 import DiscountContext from './contexts/discount';
 import CountriesContext from './contexts/country';
+import WishListContext from './contexts/wishList';
+
 import api from './api';
 import {
   TransitionGroup,
@@ -22,6 +24,7 @@ import './global.scss';
 
 function Routes(props) {
   const [cart, setCart] = useState({});
+  const [wishList, setWishList] = useState([]);
   // const [cart, setCart] = useState({ data: {}, count: 0 });
   const [discountState, setDiscountState] = useState(null);
   const [navOptions, setNavOptions] = useState([]);
@@ -154,6 +157,23 @@ function Routes(props) {
   }, []);
 
 
+  useEffect(() => {
+    (
+      async () => {
+        const response = await fetch(`${api}/user/get-wishlist`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          withCredentials: true,
+        });
+        const content = await response.json();
+        setWishList(content.data);
+      })();
+  }, []);
+
+
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -228,80 +248,88 @@ function Routes(props) {
   }, []);
 
   return (
-    <CountriesContext.Provider value={{ data: data }}>
-      <CartContext.Provider value={{ cartObj: cart, setCart: setCart }}>
-        <DiscountContext.Provider value={discountState}>
-          <SmallBanner />
-          <div className="margin-global-top-1" />
-          <SearchNavbar options={navOptions} />
-          <TransitionGroup>
-            <CSSTransition
-              key={location.key}
-              classNames="page"
-              timeout={300}
-            >
-              <div className="page">
-                <Switch location={location}>
-                  <Route path="/dashboard">
-                    <MainNavbar options={mainNavOptions} />
-                    <Dashboard />
-                  </Route>
-                  <Route path="/product/:productSlug">
-                    <MainNavbar options={mainNavOptions} />
-                    <Product />
-                  </Route>
+    <WishListContext.Provider value={{ wishList: wishList, setWishList: setWishList }}>
+      <CountriesContext.Provider value={{ data: data }}>
+        <CartContext.Provider value={{ cartObj: cart, setCart: setCart }}>
+          <DiscountContext.Provider value={discountState}>
+            <SmallBanner />
+            <div className="margin-global-top-1" />
+            <SearchNavbar options={navOptions} />
+            <TransitionGroup>
+              <CSSTransition
+                key={location.key}
+                classNames="page"
+                timeout={300}
+              >
+                <div className="page">
+                  <Switch location={location}>
+                    <Route path="/dashboard">
+                      <MainNavbar options={mainNavOptions} />
+                      <Dashboard />
+                    </Route>
+                    <Route path="/product/:productSlug">
+                      <MainNavbar options={mainNavOptions} />
+                      <Product />
+                    </Route>
 
 
-                  <Route path="/brands">
-                    <MainNavbar options={mainNavOptions} />
-                    <Brands />
-                  </Route>
-                  <Route path="/cart">
-                    <MainNavbar options={mainNavOptions} />
-                    <Cart />
-                  </Route>
-                  <Route path="/signin">
-                    <MainNavbar options={mainNavOptions} />
-                    <Signin />
-                  </Route>
-                  <Route path="/signup">
-                    <MainNavbar options={mainNavOptions} />
-                    <Signup />
-                  </Route>
+                    <Route path="/brands/:brand">
+                      <MainNavbar options={mainNavOptions} />
+                      <Brand />
+                    </Route>
+
+                    <Route path="/brands">
+                      <MainNavbar options={mainNavOptions} />
+                      <Brands />
+                    </Route>
+                    <Route path="/cart">
+                      <MainNavbar options={mainNavOptions} />
+                      <Cart />
+                    </Route>
+                    <Route path="/signin">
+                      <MainNavbar options={mainNavOptions} />
+                      <Signin />
+                    </Route>
+                    <Route path="/signup">
+                      <MainNavbar options={mainNavOptions} />
+                      <Signup />
+                    </Route>
 
 
-                  <Route path="/categories/:category/:subCategory/:furtherSubCategory">
-                    <MainNavbar options={mainNavOptions} />
-                    <FurtherSubCategory />
-                  </Route>
+                    <Route path="/categories/:category/:subCategory/:furtherSubCategory">
+                      <MainNavbar options={mainNavOptions} />
+                      <FurtherSubCategory />
+                    </Route>
 
-                  <Route path="/categories/:category/:subCategory">
-                    <MainNavbar options={mainNavOptions} />
-                    <SubCategory />
-                  </Route>
-
-
-                  <Route path="/categories/:category">
-                    <MainNavbar options={mainNavOptions} />
-                    <Category />
-                  </Route>
+                    <Route path="/categories/:category/:subCategory">
+                      <MainNavbar options={mainNavOptions} />
+                      <SubCategory />
+                    </Route>
 
 
-                  {/* <Route path="/" children={<ComingSoon />} /> */}
-                  <Route path="/">
-                    <MainNavbar options={mainNavOptions} />
-                    <Home />
-                  </Route>
-                </Switch>
-                <div className="margin-global-top-8" />
-                <IconBanner />
-                <Footer />
-              </div>
-            </CSSTransition>
-          </TransitionGroup>
-        </DiscountContext.Provider>
-      </CartContext.Provider>
-    </CountriesContext.Provider>
+                    <Route path="/categories/:category">
+                      <MainNavbar options={mainNavOptions} />
+                      <Category />
+                    </Route>
+
+
+                    {/* <Route path="/" children={<ComingSoon />} /> */}
+                    <Route path="/">
+                      <MainNavbar options={mainNavOptions} />
+                      <Home />
+                    </Route>
+                  </Switch>
+                  <div className="margin-global-top-8" />
+                  <IconBanner />
+                  <Footer />
+                </div>
+              </CSSTransition>
+            </TransitionGroup>
+          </DiscountContext.Provider>
+        </CartContext.Provider>
+      </CountriesContext.Provider>
+    </WishListContext.Provider>
+
   );
 }
 

@@ -149,7 +149,7 @@ function SubCategory(props) {
                                 mainHeading={null}
                                 data={productList}
                                 button={
-                                    !showMore ?
+                                    (!showMore && otherProducts.length > 1) ?
                                         <LinkButton
                                             onClick={(e) => { e.preventDefault(); setShowMore(true); }}
                                             classes="text-uppercase"
@@ -177,7 +177,7 @@ function SubCategory(props) {
                                 mainHeading={null}
                                 data={productList}
                                 button={
-                                    index === otherProducts.length - 1 ?
+                                    index === otherProducts.length - 1 && otherProducts.length > 1 ?
                                         <LinkButton
                                             onClick={(e) => { e.preventDefault(); setShowMore(false); }}
                                             classes="text-uppercase"

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
+
+
 const orderSchema = new mongoose.Schema({
 
   deliveryAddress: {
@@ -22,6 +24,8 @@ const orderSchema = new mongoose.Schema({
   totalPrice: { type: Number, required: true },
 
   orderItems: [{
+
+    // add product detail attributes rather than refereenig
     default_image: { type: String, required: true },
     key: { type: String, required: true },
     product_id: { type: Schema.Types.ObjectId, ref: "products", required: true },
@@ -50,7 +54,7 @@ const orderSchema = new mongoose.Schema({
     points: { type: Number, required: true },
   }],
 
-  discount: { type: Schema.Types.ObjectId, ref: 'discounts', default: null },
+  coupon: { type: Schema.Types.ObjectId, ref: 'coupons', default: null },
   user: { type: Schema.Types.ObjectId, ref: 'users', required: true }
 });
 

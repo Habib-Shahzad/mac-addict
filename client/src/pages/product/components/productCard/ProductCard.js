@@ -8,6 +8,7 @@ import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FormControlLabel } from '@mui/material';
 import CartContext from '../../../../contexts/cart';
 import UserContext from '../../../../contexts/user';
+import WishListContext from '../../../../contexts/wishList';
 import './ProductCard.scss';
 import { useParams } from 'react-router-dom';
 import api from '../../../../api';
@@ -16,6 +17,7 @@ function ProductCard(props) {
 
     const cart = useContext(CartContext);
     const user = useContext(UserContext);
+    const wish = useContext(WishListContext);
 
     const { productSlug } = useParams();
 
@@ -67,6 +69,7 @@ function ProductCard(props) {
 
             const content = await response.json();
             if (content.success) {
+                // console.log(content.data);
                 setProductGet(content.data);
             }
 
@@ -86,8 +89,8 @@ function ProductCard(props) {
                 productGet.productDetails.forEach(obj => {
                     const sizeName = obj.size.name;
                     const priceObj = obj.price;
-                    if (!data[sizeName]) data[sizeName] = { _id: obj._id, size: obj.size, images: obj.imageList, price: priceObj, points: obj.points, preOrder: obj.preOrder };
-                    else data[sizeName].images.push(obj.image);
+                    if (!data[sizeName]) data[sizeName] = { _id: obj._id, size: obj.size, images: obj.imageList, price: priceObj, points: obj.points, preOrder: obj.preOrder, discountedPrice: obj?.discountedPrice };
+                    else data[sizeName].images.push(obj);
                 });
             } else {
                 productGet.productDetails.forEach(obj => {
@@ -95,7 +98,7 @@ function ProductCard(props) {
                     const priceObj = obj.price;
                     const colorName = obj.color.name;
                     if (!data[sizeName]) data[sizeName] = {};
-                    data[sizeName][colorName] = { _id: obj._id, size: obj.size, color: obj.color, images: obj.imageList, price: priceObj, points: obj.points, preOrder: obj.preOrder };
+                    data[sizeName][colorName] = { _id: obj._id, size: obj.size, color: obj.color, images: obj.imageList, price: priceObj, points: obj.points, preOrder: obj.preOrder, discountedPrice: obj?.discountedPrice };
                 });
             }
             const sizeList = Object.keys(data);
@@ -216,7 +219,23 @@ function ProductCard(props) {
 
         if (content.success) {
             user.setUserState(content.user);
+
+            if (checked) {
+                const lst = wish.wishList;
+                lst.push(content.product);
+                wish.setWishList(lst);
+            }
+            else {
+                const lst = wish.wishList;
+                for (var i = 0; i < lst.length; i++) {
+                    if (lst[i].slug === productSlug) {
+                        lst.splice(i, 1);
+                    }
+                }
+                wish.setWishList(lst);
+            }
         }
+
         else {
             console.log(content.error);
         }
@@ -241,14 +260,19 @@ function ProductCard(props) {
 
     return (
         <Container className="product-card">
-            {data[activeSize][activeColor].preOrder &&
+            {product.hasColor && data[activeSize][activeColor].preOrder &&
                 <div className="ribbon"><span>Pre Order</span></div>
             }
+
+            {!product.hasColor && data[activeSize].preOrder &&
+                <div className="ribbon"><span>Pre Order</span></div>
+            }
+
             <Row>
                 <Col lg={5}>
                     <div className="img-cont">
                         <Row>
-                            <img src={productImages[currentImage].image} alt={product?.name} />
+                            <img src={productImages[currentImage]} alt={product?.name} />
                         </Row>
 
                         <Row >
@@ -260,14 +284,14 @@ function ProductCard(props) {
                                         if (index === currentImage) {
                                             return (
                                                 <Col key={index} >
-                                                    <img className="active-image" src={imageObj.image} alt={product.name} />
+                                                    <img className="active-image" src={imageObj} alt={product.name} />
                                                 </Col>
                                             )
                                         }
                                         else {
                                             return (
                                                 <Col key={index} onClick={() => { changeImage(index) }}>
-                                                    <img className="inactive-image" src={imageObj.image} alt={product.name} />
+                                                    <img className="inactive-image" src={imageObj} alt={product.name} />
                                                 </Col>
                                             )
                                         }
@@ -302,10 +326,27 @@ function ProductCard(props) {
                         <div className="product-price">
                             {
                                 product.hasColor ? (
-                                    <MainHeading
-                                        text={`PKR.${data[activeSize][activeColor].price}`}
-                                        classes="margin-bottom-0 bold"
-                                    />
+                                    <>
+                                        {
+                                            data[activeSize][activeColor].discountedPrice ?
+                                                (
+                                                    <>
+                                                        <MainHeading
+                                                            text={`PKR.${data[activeSize][activeColor].price}`}
+                                                            classes="margin-bottom-0 bold striked"
+                                                        />
+                                                        <MainHeading
+                                                            text={`PKR.${data[activeSize][activeColor].discountedPrice}`}
+                                                            classes="margin-bottom-0 bold"
+                                                        />
+                                                    </>
+                                                ) : (
+                                                    <MainHeading
+                                                        text={`PKR.${data[activeSize][activeColor].price}`}
+                                                        classes="margin-bottom-0 bold"
+                                                    />)
+                                        }
+                                    </>
                                 ) : (
                                     <MainHeading
                                         text={`PKR.${data[activeSize].price}`}

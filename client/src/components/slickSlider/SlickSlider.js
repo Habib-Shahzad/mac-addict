@@ -37,15 +37,36 @@ function SlickSlider(props) {
             <Slider {...settings}>
                 {
                     props.data.map((value, index) => {
-                        let prices = value.productDetails.map(({ price }) => price);
+
+                        let prices = [];
+                        let discountedPrices = [];
+
+                        value.productDetails.forEach((detail) => {
+                            prices.push(detail.price);
+                            if (detail?.discountedPrice) {
+                                discountedPrices.push(detail.discountedPrice);
+                            }
+                        });
+
                         const lowestPrice = Math.min(...prices);
                         const highestPrice = Math.max(...prices);
+
+                        let discountAvailable = discountedPrices?.length > 0;
+
+                        const lowestDiscountedPrice = Math.min(...(discountedPrices.concat(prices)));
+                        const highestDiscountedPrice = Math.max(...(discountedPrices.concat(prices)));
+
+                        if (lowestPrice === lowestDiscountedPrice) {
+                            discountAvailable = false;
+                        }
 
                         return (
                             <div key={index}>
                                 {
                                     props.type === 'price' ? (
                                         <SmallProductCard
+                                            discountAvailable={discountAvailable}
+                                            discountPricePoints={`PKR.${lowestDiscountedPrice} - ${highestDiscountedPrice}`}
                                             src={value.default_image}
                                             name={value.name}
                                             brand={value.brand.name}

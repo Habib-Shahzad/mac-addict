@@ -9,3 +9,4 @@ export { default as Signin } from './signin/Signin';
 export { default as Cart } from './cart/Cart';
 export { default as SubCategory } from './subCategory/SubCategory';
 export { default as FurtherSubCategory } from './furtherSubCategory/FurtherSubCategory';
+export { default as Brand } from './brand/Brand';

@@ -1,27 +1,20 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
 import { Heading3, ParaText, Heading1 } from '../../../components';
 import { Link } from 'react-router-dom';
 import UserContext from '../../../contexts/user';
+import WishListContext from '../../../contexts/wishList';
 import { ImBin2 } from 'react-icons/im';
 import api from '../../../api';
 import './Wishes.scss';
 
 
 function Wishes(props) {
+    const wish = useContext(WishListContext);
     const user = useContext(UserContext);
+    const [ok, setOk] = useState(false);
 
-    const [wishProducts, setWishProducts] = useState([]);
-
-    useEffect(() => {
-        if (user?.userState) {
-            setWishProducts(user.userState.wishList);
-        }
-    }, [user.userState]);
-
-
-
-    const deleteWish = async (slug) => {
+    const deleteWish = async (slug, index) => {
 
         const response = await fetch(`${api}/user/remove-from-wishlist`, {
             method: 'POST',
@@ -40,30 +33,24 @@ function Wishes(props) {
 
         if (content.success) {
             user.setUserState(content.user);
+            const lst = wish.wishList;
+            lst.splice(index, 1);
+            wish.setWishList(lst);
+            setOk(!ok);
         }
         else {
             console.log(content.error);
         }
-
-        let lst = wishProducts;
-        for (var i = 0; i < lst.length; i++) {
-            if (lst[i].slug === slug) {
-                lst.splice(i, 1);
-            }
-        }
-
-        setWishProducts(lst);
     }
 
 
     return (
         <Container fluid className="product-list-back">
-            {wishProducts.length > 0 ?
+            {wish.wishList.length > 0 ?
                 (<div>
                     <Container className="product-list">
                         {
-                            wishProducts.map((element, index) => {
-
+                            wish.wishList.map((element, index) => {
                                 return (
                                     <div className="cart-list-item" key={`${element?.key}-${index}`}>
                                         <Link to={`product/${element?.slug}`}>
@@ -110,7 +97,7 @@ function Wishes(props) {
 
 
                                                 <Col>
-                                                    <ImBin2 style={{ marginTop: '1rem' }} onClick={(e) => { e.preventDefault(); deleteWish(element?.slug) }} className="delete-icon" />
+                                                    <ImBin2 style={{ marginTop: '1rem' }} onClick={(e) => { e.preventDefault(); deleteWish(element?.slug, index) }} className="delete-icon" />
                                                 </Col>
                                             </Row>
                                         </Link>

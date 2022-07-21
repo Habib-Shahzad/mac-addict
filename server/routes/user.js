@@ -148,18 +148,31 @@ router.post('/signup', async (req, res) => {
 
 
 
-router.post(('/add-to-wishlist'), async (req, res) => {
-  try {
-    const { user_id, product_id } = req.body;
-    const user = await User.findOne({ _id: user_id });
-    const product = await Product.findOne({ _id: product_id })
-      .populate('brand')
-      .populate('category');
+router.get(('/get-wishlist'), async (req, res) => {
 
-    const prices = product.productDetails.map(item => parseFloat(item.price));
+  const user_token = (req.cookies?.['access_token']);
+  let user = null;
 
-    user.wishList.push(
-      {
+  if (user_token) {
+    const user_data = jwt.verify(user_token, process.env.TOKEN_SECRET);
+    user = await User.findOne({ _id: user_data.user_id });
+
+    const wishList = user.wishList;
+
+    const products = wishList.map(async (item) => {
+      const product = await Product.findOne({ slug: item.slug })
+        .populate('category')
+        .populate('brand');
+
+      return product
+    });
+
+    const products_ = await Promise.all(products);
+
+    const wishListProducts = products_.map((product) => {
+      const prices = product.productDetails.map(item => parseFloat(item.price));
+
+      return {
         product_id: product._id,
         slug: product.slug,
         image: product.default_image,
@@ -168,10 +181,42 @@ router.post(('/add-to-wishlist'), async (req, res) => {
         category: product.category.name,
         min_price: Math.min(...prices),
         max_price: Math.max(...prices),
-      });
+      }
+    });
 
+    res.json({ success: true, data: wishListProducts });
+  }
+  else {
+    return res.json({ data: [] });
+  }
+
+});
+
+router.post(('/add-to-wishlist'), async (req, res) => {
+  try {
+    const { user_id, product_id } = req.body;
+    const user = await User.findOne({ _id: user_id });
+    const product = await Product.findOne({ _id: product_id })
+      .populate('brand')
+      .populate('category');
+
+    user.wishList.push({ slug: product.slug });
     await user.save();
-    res.json({ success: true, user: user });
+
+    const prices = product.productDetails.map(item => parseFloat(item.price));
+    const wishListProduct = {
+      product_id: product._id,
+      slug: product.slug,
+      image: product.default_image,
+      name: product.name,
+      brand: product.brand.name,
+      category: product.category.name,
+      min_price: Math.min(...prices),
+      max_price: Math.max(...prices),
+    }
+
+    res.json({ success: true, user: user, product: wishListProduct });
+
   }
   catch (error) {
     res.json({ success: false, error: error });
@@ -184,7 +229,6 @@ router.post(('/remove-from-wishlist'), async (req, res) => {
   try {
     const { user_id, slug } = req.body;
     const user = await User.findOne({ _id: user_id });
-
 
     for (var i = 0; i < user.wishList.length; i++) {
       if (user.wishList[i].slug === slug) {

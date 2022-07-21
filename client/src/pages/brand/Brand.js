@@ -3,21 +3,18 @@ import { Container } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import api from '../../api';
 import { LinkButton, MainHeading, ProductRow } from '../../components';
-import './Category.scss';
 
-function Category(props) {
-    const [keys, setKeys] = useState([]);
-    const [products, setProducts] = useState({});
+function Brand(props) {
 
     const [otherProducts, setOtherProducts] = useState([]);
 
-    const { category } = useParams();
+    const { brand } = useParams();
 
 
     useEffect(() => {
         (
             async () => {
-                const response = await fetch(`${api}/product/client-category-products?category=${category}`, {
+                const response = await fetch(`${api}/product/client-brand-products?brand=${brand}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -55,43 +52,11 @@ function Category(props) {
                     otherProductsList.push(chunk);
                 }
 
+
                 setOtherProducts(otherProductsList);
 
-                const keys = Object.keys(content.data);
-
-                const obj = content.data;
-                const products = {};
-                keys.forEach(key => {
-                    const element = obj[key];
-                    // console.log(element);
-                    if (element.products.length !== 0) {
-                        const addProduct = {};
-                        addProduct['name'] = element.name;
-                        addProduct['slug'] = element.slug;
-                        addProduct['data'] = [];
-                        element.products.forEach(product => {
-                            let prices = product.productDetails.map(({ price }) => price);
-                            const lowestPrice = Math.min(...prices);
-                            const highestPrice = Math.max(...prices);
-                            let price = '';
-                            if (lowestPrice === highestPrice) price = `PKR.${lowestPrice}`;
-                            else price = `PKR.${lowestPrice} - PKR.${highestPrice}`;
-                            const newProduct = {
-                                imagePath: product.default_image,
-                                name: product.name,
-                                brand: product.brand.name,
-                                price: price,
-                                slug: product.slug
-                            };
-                            addProduct['data'].push(newProduct);
-                        });
-                        products[element.name] = addProduct;
-                    }
-                });
-                setProducts(products);
-                setKeys(Object.keys(products));
             })();
-    }, [category]);
+    }, [brand]);
 
     const [showMore, setShowMore] = useState(false);
 
@@ -99,49 +64,10 @@ function Category(props) {
         <Container fluid>
             <div className="margin-global-top-5" />
             <MainHeading
-                text={`${category.split('-')[0]}`}
-                classes="text-uppercase text-center"
+                text={`${brand.split('-')[0]}`}
+                classes="text-uppercase text-center font-gold "
             />
 
-
-            <div className="margin-global-top-5" />
-            {
-                keys.map((value, index) => {
-                    return (
-                        <div key={index}>
-                            <ProductRow
-                                mainHeading={value}
-                                data={products[value].data}
-                                button={
-                                    products[value].data.length > 3 ?
-                                        <LinkButton
-                                            to={`/categories/${category}/${products[value].slug}`}
-                                            classes="text-uppercase"
-                                            text="Show more"
-                                            button={false}
-                                        /> : null
-                                }
-                                shouldHide={true}
-                                lg=""
-                            />
-                            <div className="margin-global-top-5" />
-                        </div>
-                    );
-                })
-            }
-
-
-
-            {
-                otherProducts?.length > 0 && keys.length !== 0 &&
-                <div style={{ marginBottom: '2rem' }}>
-                    <MainHeading
-                        text={'Other Products'}
-                        classes="text-uppercase text-center"
-                    />
-                </div>
-
-            }
 
             {otherProducts.length > 0 &&
                 otherProducts.slice(0, 1).map((productList, index) => {
@@ -200,4 +126,4 @@ function Category(props) {
     );
 }
 
-export default Category;
+export default Brand;

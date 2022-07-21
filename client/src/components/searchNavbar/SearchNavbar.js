@@ -11,6 +11,7 @@ import { ParaText1, ParaText2, ParaText, Heading2, Heading3 } from '../../compon
 import Sidebar from '../sidebar/Sidebar';
 import UserContext from '../../contexts/user';
 import CartContext from '../../contexts/cart';
+import WishListContext from '../../contexts/wishList';
 import api from '../../api';
 
 import { Badge } from '@mui/material';
@@ -27,6 +28,7 @@ function SearchNavbar(props) {
 
     const user = useContext(UserContext);
     const cart = useContext(CartContext);
+    const wish = useContext(WishListContext);
 
     const handleSidebarToggle = isOpen => {
         setOpen(isOpen)
@@ -47,10 +49,11 @@ function SearchNavbar(props) {
             })
         });
         const content = await response.json();
-        cart.setCart(content.cartProducts);
+        cart.setCart(content.data);
     }
 
     const addCartItem = async (key) => {
+
         const response = await fetch(`${api}/cart/addItem?key=${key}`, {
             method: 'POST',
             headers: {
@@ -64,7 +67,7 @@ function SearchNavbar(props) {
             })
         });
         const content = await response.json();
-        cart.setCart(content.cartProducts);
+        cart.setCart(content.data);
     }
 
     const handleLogout = async event => {
@@ -114,23 +117,18 @@ function SearchNavbar(props) {
         let totalPrice = 0;
         for (var i = 0; i < cartProducts.length; i++) {
             let element = cartProducts[i];
-            totalPrice += element?.price * element?.quantity;
+            if (element?.discountedPrice) {
+                totalPrice += element?.discountedPrice * element?.quantity;
+            }
+            else {
+                totalPrice += element?.price * element?.quantity;
+            }
+
         }
         setCost(totalPrice);
     }, [cartProducts])
 
 
-
-    const [wishProducts, setWishProducts] = useState([]);
-
-
-
-
-    useEffect(() => {
-        if (user?.userState) {
-            setWishProducts(user.userState.wishList);
-        }
-    }, [user?.userState])
 
     return (
         <Container className="custom-navbar" fluid>
@@ -190,8 +188,6 @@ function SearchNavbar(props) {
 
 
 
-
-
                         <div className="hover-box position-relative">
 
                             <Link className="middle account-icon justify-content-end" to="/dashboard/my-wishlist">
@@ -201,7 +197,7 @@ function SearchNavbar(props) {
                             <div className="box-list cart-box">
                                 {
                                     user.userState ? (
-                                        wishProducts.length === 0 ? (
+                                        wish.wishList.length === 0 ? (
                                             <div className="center-relative-fit-content">
                                                 <Heading2
                                                     first="Wishlist is"
@@ -214,10 +210,9 @@ function SearchNavbar(props) {
                                             <div>
                                                 <div className="">
                                                     {
-                                                        wishProducts.map((element, index) => {
+                                                        wish.wishList.map((element, index) => {
                                                             return (
                                                                 <li className="cart-list-item" key={`${element?.key}-${index}`}>
-
 
                                                                     <Link to={`/product/${element?.slug}`}>
                                                                         <Row>
@@ -387,10 +382,24 @@ function SearchNavbar(props) {
                                                                         </Col>
                                                                         <Col >
                                                                             <div className="vertical-top-relative">
-                                                                                <Heading3
-                                                                                    bold={`PKR.${parseInt(element?.price) * element?.quantity}`}
-                                                                                    classes={`text-uppercase text-center`}
-                                                                                />
+                                                                                {
+                                                                                    element?.discountedPrice ?
+                                                                                        <>
+                                                                                            <Heading3
+                                                                                                bold={`PKR.${parseInt(element?.price) * element?.quantity}`}
+                                                                                                classes={`text-uppercase text-center striked`}
+                                                                                            />
+                                                                                            <Heading3
+                                                                                                bold={`PKR.${parseInt(element?.discountedPrice) * element?.quantity}`}
+                                                                                                classes={`text-uppercase text-center`}
+                                                                                            />
+                                                                                        </>
+                                                                                        :
+                                                                                        <Heading3
+                                                                                            bold={`PKR.${parseInt(element?.price) * element?.quantity}`}
+                                                                                            classes={`text-uppercase text-center`}
+                                                                                        />
+                                                                                }
                                                                             </div>
                                                                         </Col>
                                                                     </Row>
