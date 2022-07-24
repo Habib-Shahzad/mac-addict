@@ -27,12 +27,8 @@ router.get('/table-data', async (req, res) => {
     else res.json({ data: products });
 });
 
-router.get('/table-data-list', async (req, res) => {
-    const products = await Product.find({})
-        .populate('category')
-        .populate('subCategory')
-        .populate('furtherSubCategory')
-        .populate('brand');
+
+const getProductsList = async (products) => {
 
     const coupons = await Coupon.find({});
 
@@ -69,9 +65,19 @@ router.get('/table-data-list', async (req, res) => {
         }
     });
 
+    return products
+}
 
+router.get('/table-data-list', async (req, res) => {
+    let products = await Product.find({})
+        .populate('category')
+        .populate('subCategory')
+        .populate('furtherSubCategory')
+        .populate('brand');
+
+    const productsList = await getProductsList(products);
     if (!products) res.json({ success: false, data: [] });
-    else res.json({ success: true, data: products });
+    else res.json({ success: true, data: productsList });
 });
 
 router.get('/table-data-auto', async (req, res) => {
@@ -175,8 +181,6 @@ router.get('/get-by-slug/:slug', async (req, res) => {
             { path: 'color' }
         ]
     });
-
-
 
     const coupons = await Coupon.find({});
 
@@ -287,13 +291,15 @@ router.get('/total-pages', async (req, res) => {
 router.get('/client-brand-products', async (req, res) => {
     const brand = await Brand.findOne({ slug: req.query.brand });
 
-    const productsList = await Product.find({ brand: brand })
+    let products = await Product.find({ brand: brand })
         .populate('brand')
         .populate(
             {
                 path: 'productDetails'
             }
         );
+
+    const productsList = await getProductsList(products);
 
     res.json({ data: [], productsList: productsList });
 
@@ -303,13 +309,15 @@ router.get('/client-category-products', async (req, res) => {
     const category = await Category.find({ slug: req.query.category });
     const subCategories = await SubCategory.find({ category: category });
 
-    const productsList = await Product.find({ category: category, subCategory: null })
+    let otherProducts = await Product.find({ category: category, subCategory: null })
         .populate('brand')
         .populate(
             {
                 path: 'productDetails'
             }
         );
+
+    const otherProductsList = await getProductsList(otherProducts);
 
     const products = {};
     for (let i = 0; i < subCategories.length; i++) {
@@ -319,9 +327,10 @@ router.get('/client-category-products', async (req, res) => {
                 path: 'productDetails'
             }
         ).limit(4);
-        products[subCategory.name] = { name: subCategory.name, slug: subCategory.slug, products: catProducts };
+        const catProductsList = await getProductsList(catProducts);
+        products[subCategory.name] = { name: subCategory.name, slug: subCategory.slug, products: catProductsList };
     }
-    res.json({ data: products, productsList: productsList });
+    res.json({ data: products, productsList: otherProductsList });
 });
 
 
@@ -331,13 +340,15 @@ router.get('/client-subCategory-products', async (req, res) => {
     const subCategory = await SubCategory.find({ slug: req.query.subCategory });
     const furtherSubCategories = await FurtherSubCategory.find({ subCategory: subCategory });
 
-    const productsList = await Product.find({ subCategory: subCategory, furtherSubCategory: null })
+    let otherProducts = await Product.find({ subCategory: subCategory, furtherSubCategory: null })
         .populate('brand')
         .populate(
             {
                 path: 'productDetails'
             }
         );
+
+    const otherProductsList = await getProductsList(otherProducts);
 
     const products = {};
     for (let i = 0; i < furtherSubCategories.length; i++) {
@@ -349,9 +360,12 @@ router.get('/client-subCategory-products', async (req, res) => {
                     path: 'productDetails'
                 }
             ).limit(4);
-        products[futherSubCategory.name] = { name: futherSubCategory.name, slug: futherSubCategory.slug, products: catProducts };
+
+        const catProductsList = await getProductsList(catProducts);
+
+        products[futherSubCategory.name] = { name: futherSubCategory.name, slug: futherSubCategory.slug, products: catProductsList };
     }
-    res.json({ data: products, productsList: productsList });
+    res.json({ data: products, productsList: otherProductsList });
 });
 
 
@@ -361,7 +375,7 @@ router.get('/client-furtherSubCategory-products', async (req, res) => {
 
     const furtherSubCategory = await FurtherSubCategory.find({ slug: req.query.furtherSubCategory });
 
-    const productsList = await Product.find({ furtherSubCategory: furtherSubCategory })
+    let products = await Product.find({ furtherSubCategory: furtherSubCategory })
         .populate('brand')
         .populate(
             {
@@ -369,10 +383,9 @@ router.get('/client-furtherSubCategory-products', async (req, res) => {
             }
         );
 
+    const productsList = await getProductsList(products);
     res.json({ productsList: productsList });
 });
-
-
 
 
 

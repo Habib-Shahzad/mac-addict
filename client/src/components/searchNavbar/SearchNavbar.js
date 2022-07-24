@@ -226,65 +226,70 @@ function SearchNavbar(props) {
                                                         return (
                                                             <li className="cart-list-item" key={`${element?.key}-${index}`}>
 
-                                                                <Link to={`/product/${element?.slug}`}>
-                                                                    <Row>
+                                                                {/* <Link to={}> */}
+                                                                <Row>
 
-                                                                        <Col md={3}>
+                                                                    <Col md={3}>
+                                                                        <Link to={`/product/${element?.slug}`}>
                                                                             <img src={element?.image} alt={element?.name} />
-                                                                        </Col>
+                                                                        </Link>
+                                                                    </Col>
 
-                                                                        <Col md={5}>
-                                                                            <div >
-                                                                                <div style={{ textIndent: '0' }}>
+                                                                    <Col md={5}>
+                                                                        <div >
+                                                                            <div style={{ textIndent: '0' }}>
 
-                                                                                    <ParaText
-                                                                                        text={element?.brand}
-                                                                                        classes="text-uppercase font-bold font-gold margin-bottom-0"
-                                                                                    />
+                                                                                <ParaText
+                                                                                    text={element?.brand}
+                                                                                    classes="text-uppercase font-bold font-gold margin-bottom-0"
+                                                                                />
+
+                                                                                <Link to={`/product/${element?.slug}`}>
 
                                                                                     <ParaText
                                                                                         text={element?.name}
                                                                                         classes="text-uppercase font-bold margin-bottom-0"
                                                                                     />
+                                                                                </Link>
 
-                                                                                    <ParaText
-                                                                                        text={`${element?.category}`}
-                                                                                        classes="margin-bottom-0"
-                                                                                        href='/'
-                                                                                    />
+                                                                                <ParaText
+                                                                                    text={`${element?.category}`}
+                                                                                    classes="margin-bottom-0"
+                                                                                    href='/'
+                                                                                />
 
-                                                                                </div>
                                                                             </div>
-                                                                        </Col>
+                                                                        </div>
+                                                                    </Col>
 
-                                                                        <Col>
-                                                                            <Row>
-                                                                                <div style={{ textIndent: '0' }} className="">
-                                                                                    {
-                                                                                        element?.discountAvailable ? (
-                                                                                            <>
-                                                                                                <ParaText
-                                                                                                    text={`PKR.${parseInt(element?.min_price)} - ${parseInt(element?.max_price)}`}
-                                                                                                    classes={`text-uppercase text-center font-bold striked margin-bottom-0`}
-                                                                                                />
-                                                                                                <ParaText
-                                                                                                    text={`PKR.${parseInt(element?.lowestDiscountedPrice)} - ${parseInt(element?.highestDiscountedPrice)}`}
-                                                                                                    classes={`text-uppercase text-center font-bold discount-text`}
-                                                                                                />
-                                                                                            </>
-                                                                                        )
-                                                                                            :
+                                                                    <Col>
+                                                                        <Row>
+                                                                            <div style={{ textIndent: '0' }} className="">
+                                                                                {
+                                                                                    element?.discountAvailable ? (
+                                                                                        <>
                                                                                             <ParaText
                                                                                                 text={`PKR.${parseInt(element?.min_price)} - ${parseInt(element?.max_price)}`}
-                                                                                                classes={`text-uppercase text-center font-bold`}
+                                                                                                classes={`text-uppercase text-center font-bold striked margin-bottom-0`}
                                                                                             />
-                                                                                    }
-                                                                                </div>
-                                                                            </Row>
-                                                                        </Col>
+                                                                                            <ParaText
+                                                                                                text={`PKR.${parseInt(element?.lowestDiscountedPrice)} - ${parseInt(element?.highestDiscountedPrice)}`}
+                                                                                                classes={`text-uppercase text-center font-bold discount-text`}
+                                                                                            />
+                                                                                        </>
+                                                                                    )
+                                                                                        :
+                                                                                        <ParaText
+                                                                                            text={`PKR.${parseInt(element?.min_price)} - ${parseInt(element?.max_price)}`}
+                                                                                            classes={`text-uppercase text-center font-bold`}
+                                                                                        />
+                                                                                }
+                                                                            </div>
+                                                                        </Row>
+                                                                    </Col>
 
-                                                                    </Row>
-                                                                </Link>
+                                                                </Row>
+                                                                {/* </Link> */}
                                                                 <hr />
                                                             </li>
                                                         )

@@ -132,9 +132,8 @@ function ProductList(props) {
 
     const [wrongPromo, setWrongPromo] = useState(false);
     const [correctPromo, setCorrectPromo] = useState(false);
-    const [promoCode, setPromoCode] = useState('');
 
-
+    // 
 
     const onSubmit = async (data) => {
 
@@ -158,7 +157,6 @@ function ProductList(props) {
         const content = await response.json();
 
         if (content.success) {
-            setPromoCode(data.promoCode);
             setCorrectPromo(true);
             setWrongPromo(false);
             setAppliedCoupon(content.coupon);
@@ -190,13 +188,12 @@ function ProductList(props) {
                                 return (
                                     <div className="cart-list-item" key={`${element?.key}-${index}`}>
                                         <Row className="product-row">
-                                            <Col md={3}>
+                                            <Col xs={9} md={3}>
                                                 <img src={element?.default_image} alt={element?.name} />
                                             </Col>
-                                            <Col md={5}>
+                                            <Col xs={18} md={5}>
                                                 <div className="vertical-top-relative">
                                                     <div style={{ textIndent: '0' }}>
-
                                                         <Heading2
                                                             link=""
                                                             first={element?.name}
@@ -222,8 +219,8 @@ function ProductList(props) {
                                                 </div>
                                             </Col>
 
-                                            <Col >
-                                                <div className="vertical-top-relative" style={{ marginLeft: '4rem' }}>
+                                            <Col md={3} >
+                                                <div className="vertical-top-relative priceDiv">
                                                     {
                                                         element?.discountedPrice ?
                                                             <>
@@ -258,8 +255,14 @@ function ProductList(props) {
 
                     <div>
                         <Form onSubmit={handleSubmit(onSubmit)} className="form-style margin-global-top-2">
-                            <Row className="justify-content-center">
-                                <Form.Group as={Col} md={4} controlId="promoCode">
+                            <Row style={{ marginTop: '3.5rem', marginBottom: '2rem' }} className='center-container'>
+                                <Form.Group
+                                    style={{ padding: '0' }}
+                                    className='center-child'
+                                    as={Col}
+                                    md={4}
+                                    xs={8}
+                                    controlId="promoCode">
                                     <Form.Control
                                         placeholder='Enter Promotion Code'
                                         disabled={appliedCoupon != null}
@@ -267,30 +270,26 @@ function ProductList(props) {
                                             required: true,
                                         })}
                                         type="text" />
-                                    <div className="error-text">{errors.promoCode && errors.promoCode.type === "required" && <span>Promo Code is required</span>}</div>
+
+
+                                    <div className="success-text">{correctPromo && <span>Successfully applied promotion code</span>}</div>
+                                    <div className="error-text">{errors.promoCode && errors.promoCode.type === "required" && !wrongPromo && <span>Promo Code is required</span>}</div>
                                     <div className="error-text">{wrongPromo && <p>Invalid Promotion Code</p>}</div>
-                                </Form.Group>
 
-                            </Row>
+                                    {cost > 0 && user?.userState._id &&
 
-                            <Row className="justify-content-center">
-                                {cost > 0 && user?.userState._id &&
-                                    <div style={{ marginTop: '1.5rem' }} className="center-container">
-                                        <Button disabled={loading || appliedCoupon != null} className="yesno-button center-child" variant="custom" type="submit" >
+                                        <Button
+                                            style={{ margin: '0', marginTop: '4rem' }}
+                                            disabled={loading || appliedCoupon != null}
+                                            className="yesno-button center-child"
+                                            variant="custom"
+                                            type="submit" >
                                             Apply
                                         </Button>
-                                    </div>
-                                }
-                            </Row>
+                                    }
 
-                            <Row className="justify-content-center">
-                                {correctPromo &&
-                                    <div style={{ textAlign: 'center', marginTop: '3rem' }} >
-                                        <Heading3
-                                            first={`Applied promo code: ${promoCode}`}
-                                        />
-                                    </div>
-                                }
+                                </Form.Group>
+
                             </Row>
 
                         </Form>

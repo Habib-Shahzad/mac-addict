@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
-import { Heading3, ParaText, Heading1 } from '../../../components';
-import { Link } from 'react-router-dom';
+import { Heading3, Heading1, Heading2 } from '../../../components';
 import UserContext from '../../../contexts/user';
 import WishListContext from '../../../contexts/wishList';
 import { ImBin2 } from 'react-icons/im';
@@ -46,86 +45,97 @@ function Wishes(props) {
 
     return (
         <Container fluid className="product-list-back">
-            {wish.wishList.length > 0 ?
-                (<div>
-                    <Container className="product-list">
-                        {
-                            wish.wishList.map((element, index) => {
-                                return (
-                                    <div className="cart-list-item" key={`${element?.key}-${index}`}>
-                                        <Link to={`product/${element?.slug}`}>
-                                            <Row>
+
+            {
+                wish?.wishList.length > 0 ?
+                    (<div>
+                        <Container className="product-list">
+                            {
+                                wish?.wishList?.map((element, index) => {
+
+                                    return (
+                                        <div className="cart-list-item" key={`${element?.key}-${index}`}>
+                                            <Row className="product-row">
+                                                <Col xs={1} md={1} style={{ justifyContent: 'center' }}>
+                                                    <ImBin2
+                                                        style={{ cursor: 'pointer' }}
+                                                        onClick={(e) => { e.preventDefault(); deleteWish(element?.slug, index) }}
+                                                        className="delete-icon vertical-center"
+                                                    />
+                                                </Col>
                                                 <Col md={3}>
                                                     <img src={element?.image} alt={element?.name} />
                                                 </Col>
-
-                                                <Col md={5}>
+                                                <Col md={3}>
                                                     <div className="vertical-top-relative">
                                                         <div style={{ textIndent: '0' }}>
 
-                                                            <Heading3
-                                                                link={false}
+                                                            <Heading2
+                                                                link=""
                                                                 first={element?.brand}
                                                                 classes="text-uppercase font-bold font-gold"
                                                             />
 
-                                                            <Heading3
-                                                                link={false}
-                                                                first={element?.name}
-                                                                classes="text-uppercase font-bold"
+                                                            <Heading2
+                                                                link={`/product/${element?.slug}`}
+                                                                linkTag={`${element?.name}`}
+                                                                classes="margin-bottom-0 text-uppercase"
                                                             />
 
-                                                            <ParaText
-                                                                link={false}
-                                                                text={`Category: ${element?.category}`}
+                                                            <Heading3
+                                                                first={`Category: ${element?.category}`}
                                                                 classes="margin-bottom-0"
-                                                                href='/'
                                                             />
 
                                                         </div>
                                                     </div>
                                                 </Col>
-                                                <Col >
-                                                    <div style={{ textIndent: '0', marginTop: '1rem' }} className="vertical-top-relative">
-                                                        <Heading3
-                                                            link={false}
-                                                            bold={`PKR.${parseInt(element?.min_price)} - ${parseInt(element?.max_price)}`}
-                                                            classes={`text-uppercase text-center`}
-                                                        />
+
+                                                <Col md={4} className='priceDiv-container'>
+                                                    <div className="vertical-top-relative priceDiv ">
+                                                        {
+                                                            element?.discountAvailable ?
+                                                                <>
+                                                                    <Heading2
+                                                                        bold={`PKR.${parseInt(element?.min_price)} - PKR.${parseInt(element?.max_price)}`}
+                                                                        classes={`text-uppercase text-center striked`}
+                                                                        link=""
+                                                                    />
+                                                                    <Heading2
+                                                                        bold={`PKR.${parseInt(element?.lowestDiscountedPrice)} - PKR.${parseInt(element?.highestDiscountedPrice)}`}
+                                                                        classes={`text-uppercase text-center discount-text`}
+                                                                        link=""
+                                                                    />
+                                                                </> :
+                                                                <Heading2
+                                                                    bold={`PKR.${parseInt(element?.min_price)} - PKR.${parseInt(element?.max_price)}`}
+                                                                    classes={`text-uppercase text-center`}
+                                                                    link=""
+                                                                />
+                                                        }
                                                     </div>
                                                 </Col>
-
-
-                                                <Col>
-                                                    <ImBin2 style={{ marginTop: '1rem' }} onClick={(e) => { e.preventDefault(); deleteWish(element?.slug, index) }} className="delete-icon" />
-                                                </Col>
                                             </Row>
-                                        </Link>
-                                        <hr />
-
-                                    </div>
-                                );
-                            })
-                        }
-                    </Container>
-
-
-
-                    <div className="margin-global-top-3" />
-
-                    <div className="margin-global-top-3" />
-
-
-                </div>) : (
-                    <div style={{ textAlign: 'center' }}>
-                        <Heading1
-                            link={false}
-                            first="Wishlist"
-                            bold="is empty"
-                            classes="text-uppercase"
-                        />
-                    </div>)
+                                            <hr />
+                                        </div>
+                                    );
+                                })
+                            }
+                        </Container>
+                    </div>
+                    )
+                    :
+                    (
+                        <div style={{ textAlign: 'center' }}>
+                            <Heading1
+                                first="Cart"
+                                bold="is empty"
+                                classes="text-uppercase"
+                            />
+                        </div>
+                    )
             }
+
         </Container>
     );
 }

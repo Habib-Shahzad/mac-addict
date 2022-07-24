@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Container, Table } from 'react-bootstrap';
+import { Container, Table, Row } from 'react-bootstrap';
 import { MainHeading } from '../../../components';
 import { Link } from 'react-router-dom';
 import UserContext from '../../../contexts/user';
@@ -60,48 +60,57 @@ function Orders(props) {
                             />
 
                             <div className="margin-global-top-2" />
-                            <Container className="my-orders box-info">
-                                <Table >
-                                    <thead>
-                                        <tr>
-                                            <th>Order No</th>
-                                            <th>Date</th>
-                                            <th>Customer Name</th>
-                                            <th>Order Total</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            orders.map((order, index) => {
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{order.orderNumber}</td>
-                                                        <td>{new Date(order.orderDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
-                                                        <td>{`${order.user.firstName} ${order.user.lastName}`}</td>
-                                                        <td>{order.totalPrice}</td>
-                                                        <td>{order.orderStatus ? <CheckIcon style={{ fill: "green" }} /> : <CloseIcon style={{ fill: "red" }} />}</td>
-                                                        <td>
-                                                            <Link
-                                                                to={""}
-                                                                onClick={(e) => {
-                                                                    e.preventDefault();
-                                                                    setOrderToShow(order);
-                                                                    handleShow();
-                                                                }}>
-                                                                View Order
-                                                            </Link>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            }
-                                            )
-                                        }
-                                    </tbody>
-                                </Table>
+
+                            <Container fluid>
+                                <Row>
+
+                                    <div id="no-more-tables">
+                                        <Table className="col-md-12 cf">
+                                            <thead className='cf'>
+                                                <tr>
+                                                    <th>Order No</th>
+                                                    <th>Date</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Order Total</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    orders.map((order, index) => {
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td data-title="Order Number">{order.orderNumber}</td>
+                                                                <td data-title="Order Date">{new Date(order.orderDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                                                                <td data-title="Customer Name">{`${order.user.firstName} ${order.user.lastName}`}</td>
+                                                                <td data-title="Order Total">{order.totalPrice}</td>
+                                                                <td data-title="Order Status">{order.orderStatus ? <CheckIcon style={{ fill: "green" }} /> : <CloseIcon style={{ fill: "red" }} />}</td>
+                                                                <td data-title="Order Action">
+                                                                    <Link
+                                                                        to={""}
+                                                                        onClick={(e) => {
+                                                                            e.preventDefault();
+                                                                            setOrderToShow(order);
+                                                                            handleShow();
+                                                                        }}>
+                                                                        View Order
+                                                                    </Link>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                    )
+                                                }
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                </Row>
+
                             </Container>
+
                         </>
                     )
             }

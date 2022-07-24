@@ -14,6 +14,41 @@ function SubCategory(props) {
     const { category, subCategory } = useParams();
 
 
+
+    const getProduct = (product) => {
+        let prices = [];
+        let discountedPrices = [];
+
+        product.productDetails.forEach((detail) => {
+            prices.push(detail.price);
+            if (detail?.discountedPrice) {
+                discountedPrices.push(detail.discountedPrice);
+            }
+        });
+
+        const lowestPrice = Math.min(...prices);
+        const highestPrice = Math.max(...prices);
+
+        let discountAvailable = discountedPrices?.length > 0;
+
+        const lowestDiscountedPrice = Math.min(...(discountedPrices.concat(prices)));
+        const highestDiscountedPrice = Math.max(...(discountedPrices));
+
+        if (lowestPrice === lowestDiscountedPrice && highestDiscountedPrice === highestPrice) {
+            discountAvailable = false;
+        }
+
+        return {
+            imagePath: product.default_image,
+            name: product.name,
+            brand: product.brand.name,
+            price: `PKR.${lowestPrice} - PKR.${highestPrice}`,
+            discountAvailable: discountAvailable,
+            discountedPrice: `PKR.${lowestDiscountedPrice} - PKR.${highestDiscountedPrice}`,
+            slug: product.slug
+        };
+    }
+
     useEffect(() => {
         (
             async () => {
@@ -31,20 +66,7 @@ function SubCategory(props) {
                 const productsList = [];
 
                 content.productsList.forEach(product => {
-                    let prices = product.productDetails.map(({ price }) => price);
-                    const lowestPrice = Math.min(...prices);
-                    const highestPrice = Math.max(...prices);
-                    let price = '';
-                    if (lowestPrice === highestPrice) price = `PKR.${lowestPrice}`;
-                    else price = `PKR.${lowestPrice} - PKR.${highestPrice}`;
-                    const newProduct = {
-                        imagePath: product.default_image,
-                        name: product.name,
-                        brand: product.brand.name,
-                        price: price,
-                        slug: product.slug
-                    };
-                    productsList.push(newProduct);
+                    productsList.push(getProduct(product));
                 });
 
                 const otherProductsList = [];
@@ -70,20 +92,7 @@ function SubCategory(props) {
                         addProduct['slug'] = element.slug;
                         addProduct['data'] = [];
                         element.products.forEach(product => {
-                            let prices = product.productDetails.map(({ price }) => price);
-                            const lowestPrice = Math.min(...prices);
-                            const highestPrice = Math.max(...prices);
-                            let price = '';
-                            if (lowestPrice === highestPrice) price = `PKR.${lowestPrice}`;
-                            else price = `PKR.${lowestPrice} - PKR.${highestPrice}`;
-                            const newProduct = {
-                                imagePath: product.default_image,
-                                name: product.name,
-                                brand: product.brand.name,
-                                price: price,
-                                slug: product.slug
-                            };
-                            addProduct['data'].push(newProduct);
+                            addProduct['data'].push(getProduct(product));
                         });
                         products[element.name] = addProduct;
                     }

@@ -26,12 +26,15 @@ function ProductRow(props) {
             <Row className="justify-content-center">
                 {
                     props.data.map((value, index) => {
+
                         let newClass = '';
                         if (props.shouldHide === true && index === 2) newClass = 'hide-1200';
                         else if (props.shouldHide === true && index === 3) newClass = 'hide-768';
                         return (
                             <Col lg={props.lg} key={index} className={newClass}>
                                 <SmallProductCard
+                                    discountAvailable={value?.discountAvailable}
+                                    discountPricePoints={value?.discountedPrice}
                                     src={value.imagePath}
                                     name={value.name}
                                     brand={value.brand}

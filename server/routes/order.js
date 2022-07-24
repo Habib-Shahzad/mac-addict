@@ -73,7 +73,11 @@ router.get('/get-orders/:userID', async (req, res) => {
             }
         }
         )
+        .sort({ 'orderDate': -1 })
         ;
+
+
+
     if (!orders) res.json({ data: [] });
     else res.json({ data: orders });
 });

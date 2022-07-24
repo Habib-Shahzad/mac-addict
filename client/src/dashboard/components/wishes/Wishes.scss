@@ -13,6 +13,10 @@
       margin-bottom: 3.125rem;
     }
 
+    .delete-icon {
+      font-size: 1.5rem !important;
+    }
+
     a {
       color: black !important;
     }
@@ -98,6 +102,20 @@
 // X-Small devices (portrait phones, less than 576px)
 @media (max-width: 35.99875em) {
   .product-list-back {
+    .priceDiv {
+      width: 20rem !important;
+      margin-top: 2rem !important;
+
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+    .priceDiv-container {
+      position: relative;
+    }
     .product-list {
       img {
         width: 8rem;
