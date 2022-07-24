@@ -9,13 +9,14 @@ const couponSchema = new mongoose.Schema({
     redeemBy: { type: Date, required: true },
     maxRedemptions: { type: Number, required: true },
     timesRedeeemed: { type: Number, default: 0 },
+    active: { type: Boolean, default: true },
 
     appliedToProducts: { type: Boolean, required: true },
 
     products: [
         {
-            product: { type: Schema.Types.ObjectId, ref: 'products', required: true },
-            product_detail: { type: String, required: true },
+            product: { type: Schema.Types.ObjectId, ref: 'products' },
+            product_detail: { type: String },
         }
     ],
 

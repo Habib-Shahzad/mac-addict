@@ -542,7 +542,6 @@ const provinceObj = {
 
                                     <Form.Group as={Col} md={6} controlId="product">
                                         <FormControl className={classes.formControl}>
-
                                             <Controller
                                                 render={(props) => (
                                                     <Autocomplete

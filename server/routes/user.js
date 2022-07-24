@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../schema").user;
 const Address = require("../schema").address;
 const Product = require("../schema").product;
+const Coupon = require("../schema").coupon;
 
 const admin_auth = require("./middleware/admin_auth");
 const user_auth = require("./middleware/user_auth");
@@ -169,8 +170,66 @@ router.get(('/get-wishlist'), async (req, res) => {
 
     const products_ = await Promise.all(products);
 
+    const coupons = await Coupon.find({});
+
+    let couponFound = false;
+
+    coupons.forEach((coupon) => {
+
+      if (coupon.redeemBy < new Date() && coupon.timesRedeeemed >= coupon.maxRedemptions) {
+        console.log("Coupon invalid");
+      }
+
+      else {
+        if (coupon.appliedToProducts && !coupon.hasPromotionCodes && !couponFound) {
+
+          coupon.products.forEach((productObj) => {
+            products_.forEach((product) => {
+              product.productDetails.forEach((detail) => {
+                if (product._id.toString() === productObj.product.toString()
+                  &&
+                  detail._id.toString() === productObj.product_detail.toString()
+                ) {
+                  couponFound = true;
+                  if (coupon.type === "Percentage") {
+                    detail.discountedPrice = detail.price - (detail.price * (coupon.percentOff / 100));
+                  }
+                  else if (coupon.type === "Fixed Amount") {
+                    detail.discountedPrice = detail.price - coupon.amountOff;
+                  }
+                }
+              })
+            })
+          })
+        }
+      }
+    });
+
+
     const wishListProducts = products_.map((product) => {
-      const prices = product.productDetails.map(item => parseFloat(item.price));
+
+      let prices = [];
+      let discountedPrices = [];
+
+      product.productDetails.forEach((detail) => {
+        prices.push(detail.price);
+        if (detail?.discountedPrice) {
+          discountedPrices.push(detail.discountedPrice);
+        }
+      });
+
+
+      const lowestPrice = Math.min(...prices);
+      const highestPrice = Math.max(...prices);
+
+      let discountAvailable = discountedPrices?.length > 0;
+
+      const lowestDiscountedPrice = Math.min(...(discountedPrices.concat(prices)));
+      const highestDiscountedPrice = Math.max(...(discountedPrices));
+
+      if (lowestPrice === lowestDiscountedPrice && highestDiscountedPrice === highestPrice) {
+        discountAvailable = false;
+      }
 
       return {
         product_id: product._id,
@@ -181,6 +240,9 @@ router.get(('/get-wishlist'), async (req, res) => {
         category: product.category.name,
         min_price: Math.min(...prices),
         max_price: Math.max(...prices),
+        discountAvailable: discountAvailable,
+        lowestDiscountedPrice: lowestDiscountedPrice,
+        highestDiscountedPrice: highestDiscountedPrice
       }
     });
 

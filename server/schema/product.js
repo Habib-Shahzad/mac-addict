@@ -41,6 +41,7 @@ const ProductSchema = new mongoose.Schema({
 
         discountedPrice: { type: Number, default: null },
         price: { type: Number, required: true },
+        preOrderPrice: { type: Number, default: null },
         quantity: { type: Number, required: true },
         points: { type: Number, required: true },
         preOrder: { type: Boolean, required: true },

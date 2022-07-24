@@ -315,6 +315,10 @@ input[type="number"]::-webkit-outer-spin-button {
   text-decoration: line-through;
 }
 
+.discount-text {
+  color: rgb(160, 0, 0);
+}
+
 .center-container {
   position: relative;
 }
@@ -326,4 +330,8 @@ input[type="number"]::-webkit-outer-spin-button {
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+
+.outline {
+  border: 1px solid #cf993d;
 }

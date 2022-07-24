@@ -36,6 +36,8 @@ router.get('/table-data-list', async (req, res) => {
 
     const coupons = await Coupon.find({});
 
+    let couponFound = false;
+
     coupons.forEach((coupon) => {
 
         if (coupon.redeemBy < new Date() && coupon.timesRedeeemed >= coupon.maxRedemptions) {
@@ -43,17 +45,16 @@ router.get('/table-data-list', async (req, res) => {
         }
 
         else {
-            if (coupon.appliedToProducts && !coupon.hasPromotionCodes) {
+            if (coupon.appliedToProducts && !coupon.hasPromotionCodes && !couponFound) {
 
                 coupon.products.forEach((productObj) => {
                     products.forEach((product) => {
-
                         product.productDetails.forEach((detail) => {
-
                             if (product._id.toString() === productObj.product.toString()
                                 &&
                                 detail._id.toString() === productObj.product_detail.toString()
                             ) {
+                                couponFound = true;
                                 if (coupon.type === "Percentage") {
                                     detail.discountedPrice = detail.price - (detail.price * (coupon.percentOff / 100));
                                 }

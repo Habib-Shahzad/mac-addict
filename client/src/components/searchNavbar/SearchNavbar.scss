@@ -53,22 +53,27 @@
       color: black;
     }
     .user-icon {
-      font-size: 2.5rem;
+      font-size: 2.7rem;
     }
     .heart-icon {
-      font-size: 3rem;
-      top: -0.1rem;
+      font-size: 2.7rem;
+      top: 0.1rem;
       position: relative;
     }
     .bag-icon {
-      font-size: 2.5rem;
+      font-size: 2.7rem;
     }
     .middle {
       margin: 0 1rem;
     }
   }
   .hover-box {
-    // position: relative;
+    .cart-buttons {
+      position: relative;
+      padding: 2rem 0;
+      text-align: center;
+    }
+
     .account-icon {
       position: relative;
       cursor: pointer;
@@ -78,25 +83,26 @@
         box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
         border-radius: 20px;
         padding: 0.625rem 0;
-        height: 5rem;
-      }
-
-      &:hover + .cart-box {
-        height: 33rem;
+        height: fit-content;
       }
     }
 
-    .cart-buttons {
-      position: relative;
-      padding: 2rem 0;
-      text-align: center;
+    .box-list-user {
+      right: -10rem !important;
+    }
+
+    .box-list-wish {
+      right: -5rem;
+    }
+
+    .box-list-cart {
+      right: -2rem;
     }
 
     .box-list {
-      width: 12.5rem;
+      width: 30rem;
       position: absolute;
       background-color: white;
-      right: 0;
       border: 0;
       overflow: hidden;
       height: 0;
@@ -109,7 +115,7 @@
         box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
         border-radius: 20px;
         padding: 0.625rem 0;
-        height: 5rem;
+        height: fit-content;
       }
 
       li {
@@ -123,7 +129,6 @@
     }
 
     .cart-list {
-      height: 25rem;
       overflow-y: scroll;
       overflow-x: hidden;
       border-bottom: 1px solid rgb(138, 138, 138);
@@ -132,11 +137,6 @@
 
     .cart-box {
       overflow-y: scroll;
-      width: 40rem;
-      &:hover {
-        padding: 0.625rem 0;
-        height: 33rem;
-      }
       .cart-list-item {
         padding-bottom: 1rem;
       }

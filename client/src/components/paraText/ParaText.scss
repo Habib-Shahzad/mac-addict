@@ -1,21 +1,25 @@
 .para-text {
+  color: black;
+  font-size: 1rem;
+  font-weight: 400;
+  a {
     color: black;
-    font-size: 1rem;
-    font-weight: 400;
-    a {
-        color: black;
-        font-weight: 600;
-    }
+    font-weight: 600;
+  }
 }
 
 .margin-bottom-0 {
-    margin-bottom: 0;
+  margin-bottom: 0;
+}
+
+.margin-top-0 {
+  margin-top: 0 !important;
 }
 
 .text-capatalize {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 .bold {
-    font-weight: bolder;
+  font-weight: bolder;
 }

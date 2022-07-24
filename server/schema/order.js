@@ -17,15 +17,13 @@ const orderSchema = new mongoose.Schema({
     landmark: { type: String },
   },
 
-  orderNumber: { type: String, required: true },
+  orderNumber: { type: String, required: true, unique: true },
   orderDate: { type: Date, required: true, default: new Date() },
   paymentMethod: { type: String, required: true, default: null },
   orderStatus: { type: Boolean, required: true, default: false },
   totalPrice: { type: Number, required: true },
 
   orderItems: [{
-
-    // add product detail attributes rather than refereenig
     default_image: { type: String, required: true },
     key: { type: String, required: true },
     product_id: { type: Schema.Types.ObjectId, ref: "products", required: true },
@@ -44,15 +42,16 @@ const orderSchema = new mongoose.Schema({
       required: true
     },
 
-
     color: {
       type: Schema.Types.ObjectId,
       ref: 'colors'
     },
 
     price: { type: Number, required: true },
+    discountedPrice: { type: Number },
     points: { type: Number, required: true },
   }],
+
 
   coupon: { type: Schema.Types.ObjectId, ref: 'coupons', default: null },
   user: { type: Schema.Types.ObjectId, ref: 'users', required: true }

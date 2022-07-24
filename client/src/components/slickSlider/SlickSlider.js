@@ -54,9 +54,9 @@ function SlickSlider(props) {
                         let discountAvailable = discountedPrices?.length > 0;
 
                         const lowestDiscountedPrice = Math.min(...(discountedPrices.concat(prices)));
-                        const highestDiscountedPrice = Math.max(...(discountedPrices.concat(prices)));
+                        const highestDiscountedPrice = Math.max(...(discountedPrices));
 
-                        if (lowestPrice === lowestDiscountedPrice) {
+                        if (lowestPrice === lowestDiscountedPrice && highestDiscountedPrice === highestPrice) {
                             discountAvailable = false;
                         }
 
@@ -66,11 +66,11 @@ function SlickSlider(props) {
                                     props.type === 'price' ? (
                                         <SmallProductCard
                                             discountAvailable={discountAvailable}
-                                            discountPricePoints={`PKR.${lowestDiscountedPrice} - ${highestDiscountedPrice}`}
+                                            discountPricePoints={`PKR.${lowestDiscountedPrice} - PKR.${highestDiscountedPrice}`}
                                             src={value.default_image}
                                             name={value.name}
                                             brand={value.brand.name}
-                                            pricePoints={`PKR.${lowestPrice} - ${highestPrice}`}
+                                            pricePoints={`PKR.${lowestPrice} - PKR.${highestPrice}`}
                                             classes="center-relative-horizontal"
                                             quicklook={
                                                 <div className="btn-cont center-relative-horizontal">

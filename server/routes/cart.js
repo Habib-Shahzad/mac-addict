@@ -41,13 +41,16 @@ router.get('/getCart', async (req, res) => {
 
             const coupons = await Coupon.find({});
 
+            let couponFound = false;
+
             coupons.forEach((coupon) => {
 
-                if (coupon.redeemBy > new Date() && coupon.timesRedeeemed < coupon.maxRedemptions) {
-                    if (coupon.appliedToProducts && !coupon.hasPromotionCodes) {
-
+                if (coupon.redeemBy > new Date() && coupon.timesRedeeemed < coupon.maxRedemptions && !couponFound) {
+                    if (coupon.appliedToProducts && !coupon.hasPromotionCodes && !couponFound) {
+                        couponFound = true;
                         coupon.products.forEach((productObj) => {
                             if (productObj.product_detail.toString() === product_detail._id.toString()) {
+
                                 if (coupon.type === "Percentage") {
 
                                     product_detail.discountedPrice = product_detail.price - (product_detail.price * (coupon.percentOff / 100));
@@ -210,6 +213,8 @@ router.post('/coupon-check', user_auth, async (req, res) => {
     let coupon_obj = null;
     let found_promo = false;
 
+    const coupons = await Coupon.find({});
+
     for (const key in cartCookie) {
         const keys = key.split('-');
         const product_id = keys[0];
@@ -226,35 +231,32 @@ router.post('/coupon-check', user_auth, async (req, res) => {
             });
 
         const product_detail = product.productDetails.find(product_detail => product_detail._id.toString() === product_detail_id);
-        const coupons = await Coupon.find({});
 
         coupons.forEach((coupon) => {
             if (coupon.redeemBy > new Date() && coupon.timesRedeeemed < coupon.maxRedemptions) {
                 if (coupon.hasPromotionCodes) {
-
                     coupon.promotionCodes.forEach((promotionCode) => {
                         let is_valid = true;
                         if (promotionCode.firstTimeTransaction && orders.length !== 0) {
-
                             is_valid = false;
                         }
 
                         if (
                             promotionCode.expiresAt > new Date()
                             && promotionCode.code === promoCode
-                            && !found_promo
                             && promotionCode.timesRedeeemed < promotionCode.maxRedemptions
                             && promotionCode.active
-                            && order_cost > promotionCode.minAmount
+                            && order_cost >= promotionCode.minAmount
                             && is_valid
+                            && !found_promo
                         ) {
-                            found_promo = true;
-                            coupon_obj = coupon;
-                            promo_obj = promotionCode;
 
                             if (coupon.appliedToProducts) {
+
                                 coupon.products.forEach((productObj) => {
                                     if (productObj.product_detail.toString() === product_detail._id.toString()) {
+                                        found_promo = true;
+                                        coupon_obj = coupon;
                                         if (coupon.type === "Percentage") {
                                             product_detail.discountedPrice = product_detail.price - (product_detail.price * (coupon.percentOff / 100));
                                         }
@@ -265,28 +267,20 @@ router.post('/coupon-check', user_auth, async (req, res) => {
                                 })
                             }
                             else {
-                                return res.json({
-                                    success: true,
-                                    appliedToProducts: false,
-                                    coupon: {
-                                        name: coupon_obj.name,
-                                        amount_off: coupon_obj.amountOff,
-                                        percent_off: coupon_obj.percentOff,
-                                        type: coupon_obj.type,
-                                        appliedToProducts: false
+                                coupon.products.forEach((productObj) => {
+                                    if (productObj.product_detail.toString() === product_detail._id.toString()) {
+                                        product_detail.discountedPrice = null;
                                     }
-                                });
-                            }
+                                })
 
+                                found_promo = true;
+                                coupon_obj = coupon;
+                            }
                         }
                     });
                 }
             }
         });
-
-        if (!found_promo) {
-            return res.json({ success: false, data: null });
-        }
 
         const product_obj = {
             user_id: user_id,
@@ -301,24 +295,45 @@ router.post('/coupon-check', user_auth, async (req, res) => {
             product_id: product_id,
             brand: product.brand,
         };
-
         cart_products[key] = product_obj;
     }
 
-    if (found_promo && coupon_obj.appliedToProducts) {
+
+    if (!found_promo) {
+        res.json({ success: false, data: null });
+    }
+
+    else if (coupon_obj.appliedToProducts) {
         res.json({
             success: true,
             data: cart_products,
             appliedToProducts: true,
             coupon: {
+                _id: coupon_obj._id,
                 name: coupon_obj.name,
                 amount_off: coupon_obj.amountOff,
                 percent_off: coupon_obj.percentOff,
                 type: coupon_obj.type,
                 appliedToProducts: true,
             }
-        })
+        });
     }
+
+    else {
+        res.json({
+            success: true,
+            data: cart_products,
+            appliedToProducts: false,
+            coupon: {
+                name: coupon_obj.name,
+                amount_off: coupon_obj.amountOff,
+                percent_off: coupon_obj.percentOff,
+                type: coupon_obj.type,
+                appliedToProducts: false
+            }
+        });
+    }
+
 
 });
 

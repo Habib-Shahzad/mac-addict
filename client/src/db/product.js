@@ -154,6 +154,7 @@ const productObj = {
         const [sizesArray, setSizesArray] = useState([]);
         const [pressedBtn, setPressedBtn] = useState(null);
         const [loading, setLoading] = useState(true);
+        const [changedProduct, setChangedProduct] = useState(false);
 
         const [defaultName, setDefaultName] = useState('');
         const [defaultImage, setDefaultImage] = useState('');
@@ -174,6 +175,9 @@ const productObj = {
         const [defaultHotSeller, setDefaultHotSeller] = useState(false);
 
         const [hasColorChecked, setHasColorChecked] = useState(defaultHasColor);
+
+        const [preOrderChecked, setPreOrderChecked] = useState([]);
+
 
 
         useEffect(() => {
@@ -209,7 +213,6 @@ const productObj = {
                     });
 
                     const furtherSubCategories = await furtherSubCategoryData.json();
-
 
                     const subCategoryData = await fetch(`${api}/sub-category/table-data`, {
                         method: 'GET',
@@ -348,6 +351,9 @@ const productObj = {
                     list.push(element);
                 });
                 setDefaultProductDetails(list);
+
+                const checked_preorders = list?.map((element) => { return element?.preOrder });
+                setPreOrderChecked(checked_preorders);
 
                 setDefaultHotSeller(editObj?.hotSeller);
                 setDefaultNewArrival(editObj?.newArrival);
@@ -752,9 +758,6 @@ const productObj = {
                 </Row>
 
 
-
-
-
                 <Row style={{ marginTop: '1.2rem' }} className={classes.rowGap}>
                     <Form.Group as={Col} md={3} controlId="active">
                         <FormControlLabel
@@ -982,6 +985,26 @@ const productObj = {
                                         <FormHelperText id="price">Enter quantity</FormHelperText>
                                     </FormControl>
                                 </Form.Group>
+
+
+                                {preOrderChecked[index] &&
+                                    <Form.Group as={Col} md={2} controlId="name">
+                                        <FormControl className={classes.formControl}>
+                                            <InputLabel color="secondary" htmlFor="price">Preorder Price</InputLabel>
+                                            <Input
+                                                {...register(`productDetailsList[${index}].preOrderPrice`, {
+                                                    required: "preorder price is required!",
+                                                })}
+                                                color="secondary"
+                                                autoComplete="none"
+                                                type="text"
+                                                aria-describedby="quantity-helper"
+                                            />
+                                            <FormHelperText id="price">Enter preorder price</FormHelperText>
+                                        </FormControl>
+                                    </Form.Group>
+                                }
+
                                 <Form.Group as={Col} md={2} controlId="preOrder">
                                     <FormControlLabel
                                         control={
@@ -992,7 +1015,14 @@ const productObj = {
                                                 render={(props) => (
                                                     <Checkbox
                                                         checked={props.field.value}
-                                                        onChange={(e) => props.field.onChange(e.target.checked)}
+                                                        onChange={(e) => {
+                                                            props.field.onChange(e.target.checked);
+                                                            let lst = preOrderChecked;
+                                                            lst[index] = e.target.checked;
+                                                            setPreOrderChecked(lst);
+                                                            setChangedProduct(!changedProduct);
+                                                            reset({ ...getValues(), [`productDetailsList[${index}].preOrderPrice`]: "" });
+                                                        }}
                                                     />
                                                 )}
                                             />

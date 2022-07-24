@@ -89,7 +89,7 @@ function ProductCard(props) {
                 productGet.productDetails.forEach(obj => {
                     const sizeName = obj.size.name;
                     const priceObj = obj.price;
-                    if (!data[sizeName]) data[sizeName] = { _id: obj._id, size: obj.size, images: obj.imageList, price: priceObj, points: obj.points, preOrder: obj.preOrder, discountedPrice: obj?.discountedPrice };
+                    if (!data[sizeName]) data[sizeName] = { _id: obj._id, size: obj.size, images: obj.imageList, price: priceObj, points: obj.points, preOrder: obj.preOrder, preOrderPrice: obj?.preOrderPrice, discountedPrice: obj?.discountedPrice };
                     else data[sizeName].images.push(obj);
                 });
             } else {
@@ -98,7 +98,7 @@ function ProductCard(props) {
                     const priceObj = obj.price;
                     const colorName = obj.color.name;
                     if (!data[sizeName]) data[sizeName] = {};
-                    data[sizeName][colorName] = { _id: obj._id, size: obj.size, color: obj.color, images: obj.imageList, price: priceObj, points: obj.points, preOrder: obj.preOrder, discountedPrice: obj?.discountedPrice };
+                    data[sizeName][colorName] = { _id: obj._id, size: obj.size, color: obj.color, images: obj.imageList, price: priceObj, points: obj.points, preOrder: obj.preOrder, preOrderPrice: obj?.preOrderPrice, discountedPrice: obj?.discountedPrice };
                 });
             }
             const sizeList = Object.keys(data);
@@ -256,6 +256,17 @@ function ProductCard(props) {
     }, [productSlug, user])
 
 
+
+    const getAttribute = (attr) => {
+        if (product?.hasColor) {
+            return data[activeSize][activeColor][attr];
+        }
+        else {
+            return data[activeSize][attr];
+        }
+    }
+
+
     if (loading) return <div></div>
 
     return (
@@ -324,44 +335,38 @@ function ProductCard(props) {
                         </div>
                         <div className="margin-global-top-2" />
                         <div className="product-price">
+
                             {
-                                product.hasColor ? (
-                                    <>
-                                        {
-                                            data[activeSize][activeColor].discountedPrice ?
-                                                (
-                                                    <>
-                                                        <MainHeading
-                                                            text={`PKR.${data[activeSize][activeColor].price}`}
-                                                            classes="margin-bottom-0 bold striked"
-                                                        />
-                                                        <MainHeading
-                                                            text={`PKR.${data[activeSize][activeColor].discountedPrice}`}
-                                                            classes="margin-bottom-0 bold"
-                                                        />
-                                                    </>
-                                                ) : (
-                                                    <MainHeading
-                                                        text={`PKR.${data[activeSize][activeColor].price}`}
-                                                        classes="margin-bottom-0 bold"
-                                                    />)
-                                        }
-                                    </>
-                                ) : (
-                                    <MainHeading
-                                        text={`PKR.${data[activeSize].price}`}
-                                        classes="margin-bottom-0 bold"
-                                    />
-                                )
+                                getAttribute('discountedPrice') ?
+                                    (
+                                        <>
+                                            <MainHeading
+                                                text={`PKR.${getAttribute('price')}`}
+                                                classes="margin-bottom-0 bold striked"
+                                            />
+                                            <MainHeading
+                                                text={`PKR.${getAttribute('discountedPrice')}`}
+                                                classes="margin-bottom-0 bold discount-text"
+                                            />
+                                        </>
+                                    ) : (
+                                        <MainHeading
+                                            text={`PKR.${getAttribute('price')}`}
+                                            classes="margin-bottom-0 bold"
+                                        />)
                             }
+
+
                         </div>
 
-                        {/* <div className="product-points">
-                            <ThirdHeading
-                                text={`Points: ${data[activeSize].points}`}
-                                classes="margin-bottom-0"
-                            />
-                        </div> */}
+                        {getAttribute('preOrder') && getAttribute('preOrderPrice') &&
+                            <div className="product-points">
+                                <FourthHeading
+                                    text={`Pre Order Price: ${getAttribute('preOrderPrice')}`}
+                                    classes="margin-bottom-0 font-gold"
+                                />
+                            </div>
+                        }
 
                         <div className="margin-global-top-2" />
                         <div className="product-description">

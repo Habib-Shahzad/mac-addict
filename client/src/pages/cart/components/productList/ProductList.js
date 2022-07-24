@@ -3,6 +3,7 @@ import { Container, Form, Col, Row, Button } from 'react-bootstrap';
 import { MainHeading, Heading2, Heading1, LinkButton, Heading3 } from '../../../../components';
 import CartContext from '../../../../contexts/cart';
 import UserContext from '../../../../contexts/user';
+import DiscountContext from '../../../../contexts/discount';
 import api from '../../../../api';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -14,6 +15,7 @@ function ProductList(props) {
 
     const user = useContext(UserContext);
     const cart = useContext(CartContext);
+    const discount = useContext(DiscountContext);
     const [cost, setCost] = useState(0);
 
     const [cartProducts, setCartProducts] = useState([]);
@@ -91,8 +93,6 @@ function ProductList(props) {
 
     }, [cart, user])
 
-
-
     const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [discountedCost, setDiscountedCost] = useState(0);
 
@@ -107,7 +107,6 @@ function ProductList(props) {
                 totalPrice += element?.price * element?.quantity;
             }
         }
-
 
         let d_cost = 0;
 
@@ -131,10 +130,10 @@ function ProductList(props) {
 
     const { register, handleSubmit, formState: { errors }, } = useForm();
 
-
     const [wrongPromo, setWrongPromo] = useState(false);
     const [correctPromo, setCorrectPromo] = useState(false);
     const [promoCode, setPromoCode] = useState('');
+
 
 
     const onSubmit = async (data) => {
@@ -163,16 +162,19 @@ function ProductList(props) {
             setCorrectPromo(true);
             setWrongPromo(false);
             setAppliedCoupon(content.coupon);
+            discount.setDiscountState(content.coupon);
+            cart.setCart(content.data);
         }
 
         else {
+            discount.setDiscountState(null);
             setWrongPromo(true);
             setCorrectPromo(false);
         }
 
-        if (content.appliedToProducts) {
-            cart.setCart(content.data);
-        }
+        // if (content.appliedToProducts) {
+        //     cart.setCart(content.data);
+        // }
 
         setLoading(false);
     }
@@ -232,7 +234,7 @@ function ProductList(props) {
                                                                 />
                                                                 <Heading2
                                                                     bold={`PKR.${(element?.discountedPrice) * element?.quantity}`}
-                                                                    classes={`text-uppercase text-center`}
+                                                                    classes={`text-uppercase text-center discount-text`}
                                                                     link=""
                                                                 />
                                                             </> :
@@ -258,8 +260,9 @@ function ProductList(props) {
                         <Form onSubmit={handleSubmit(onSubmit)} className="form-style margin-global-top-2">
                             <Row className="justify-content-center">
                                 <Form.Group as={Col} md={4} controlId="promoCode">
-                                    <Form.Label style={{ textAlign: 'center' }} >Enter Promotion Code</Form.Label>
                                     <Form.Control
+                                        placeholder='Enter Promotion Code'
+                                        disabled={appliedCoupon != null}
                                         {...register("promoCode", {
                                             required: true,
                                         })}
@@ -267,23 +270,29 @@ function ProductList(props) {
                                     <div className="error-text">{errors.promoCode && errors.promoCode.type === "required" && <span>Promo Code is required</span>}</div>
                                     <div className="error-text">{wrongPromo && <p>Invalid Promotion Code</p>}</div>
                                 </Form.Group>
+
                             </Row>
 
-                            {cost > 0 && user?.userState._id &&
-                                <div style={{ marginTop: '1.5rem' }} className="center-container">
-                                    <Button disabled={loading || appliedCoupon != null} className="yesno-button center-child" variant="custom" type="submit" >
-                                        Apply
-                                    </Button>
-                                </div>
-                            }
+                            <Row className="justify-content-center">
+                                {cost > 0 && user?.userState._id &&
+                                    <div style={{ marginTop: '1.5rem' }} className="center-container">
+                                        <Button disabled={loading || appliedCoupon != null} className="yesno-button center-child" variant="custom" type="submit" >
+                                            Apply
+                                        </Button>
+                                    </div>
+                                }
+                            </Row>
 
-                            {correctPromo &&
-                                <div style={{ textAlign: 'center', marginTop: '3rem' }} >
-                                    <Heading3
-                                        first={`Applied promo code: ${promoCode}`}
-                                    />
-                                </div>
-                            }
+                            <Row className="justify-content-center">
+                                {correctPromo &&
+                                    <div style={{ textAlign: 'center', marginTop: '3rem' }} >
+                                        <Heading3
+                                            first={`Applied promo code: ${promoCode}`}
+                                        />
+                                    </div>
+                                }
+                            </Row>
+
                         </Form>
 
                     </div>
@@ -299,7 +308,7 @@ function ProductList(props) {
                                     />
                                     <MainHeading
                                         text={`Total Cost: PKR.${discountedCost}`}
-                                        classes="text-uppercase text-center"
+                                        classes="text-uppercase text-center discount-text"
                                     />
                                 </>
                                 :

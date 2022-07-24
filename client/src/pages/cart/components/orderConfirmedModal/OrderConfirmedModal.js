@@ -11,6 +11,7 @@ function OrderConfirmedModal(props) {
     const [loading, setLoading] = React.useState(false);
 
     const confirmOrder = async () => {
+
         setLoading(true);
 
         const response = await fetch(`${api}/order/add-order`, {
@@ -21,6 +22,7 @@ function OrderConfirmedModal(props) {
             credentials: 'include',
             withCredentials: true,
             body: JSON.stringify({
+                coupon: props.appliedCoupon?._id,
                 cost: props.cost,
                 products: props.cartProducts,
                 deliveryAddress: props.deliveryAddress,
@@ -42,6 +44,7 @@ function OrderConfirmedModal(props) {
                 body: JSON.stringify({
                     user_id: props.user_id,
                     cart_products: props.cartObj,
+                    coupon: props.appliedCoupon,
                 })
             });
             const contentCart = await response.json();

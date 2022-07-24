@@ -6,6 +6,7 @@ import { Radio, FormControlLabel, RadioGroup } from '@mui/material';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import { DescriptionText, SubHeading, Heading1, LinkButton } from '../../../../components';
 import { OrderConfirmedModal } from '../../components';
+import DiscountContext from '../../../../contexts/discount';
 
 import './Payment.scss'
 // import api from '../../../../api';
@@ -34,6 +35,7 @@ function Payment(props) {
 
     const cart = useContext(CartContext);
     const user = useContext(UserContext);
+    const discount = useContext(DiscountContext);
     const address = useContext(AddressContext);
 
     const handleChange = (event) => {
@@ -64,7 +66,6 @@ function Payment(props) {
     }, [cart, user])
 
 
-
     const [showModal, setShowModal] = useState(false);
     const handleClose = () => {
         setShowModal(false);
@@ -73,17 +74,43 @@ function Payment(props) {
         setShowModal(true);
     }
 
-
     const [cost, setCost] = useState(0);
 
     useEffect(() => {
         let totalPrice = 0;
+
         for (var i = 0; i < cartProducts.length; i++) {
             let element = cartProducts[i];
-            totalPrice += element.price * element.quantity;
+            if (element?.discountedPrice) {
+                totalPrice += element.discountedPrice * element.quantity;
+            }
+            else {
+                totalPrice += element?.price * element?.quantity;
+            }
         }
-        setCost(totalPrice);
-    }, [cartProducts])
+
+        let d_cost = 0;
+
+        if (discount?.discountState) {
+            if (!discount?.discountState?.appliedToProducts) {
+
+                if (discount?.discountState?.type === 'Percentage') {
+                    d_cost = totalPrice - (totalPrice * discount?.discountState.percent_off / 100);
+                }
+                else if (discount?.discountState?.type === 'Fixed Amount') {
+                    d_cost = totalPrice - discount?.discountState.amount_off;
+                }
+            }
+        }
+
+        if (d_cost > 0) {
+            setCost(d_cost);
+        }
+        else {
+            setCost(totalPrice);
+        }
+
+    }, [cartProducts, discount])
 
 
     if (!user.userState) {
@@ -128,6 +155,7 @@ function Payment(props) {
         <div className='payment-back'>
             <Container className="payment">
                 <OrderConfirmedModal
+                    appliedCoupon={discount.discountState}
                     paymentMethod={radioBoxes.method}
                     deliveryAddress={address.selectedAddress}
                     cartProducts={cartProducts}

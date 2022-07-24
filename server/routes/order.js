@@ -85,21 +85,30 @@ router.post('/delete', async (req, res) => {
 });
 
 
+function generateOrderNumber() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+    const random = Math.floor(Math.random() * 1000);
+    return `${year}${month}${day}${hour}${minute}${second}${random}`;
+}
+
+
 router.post('/add-order', user_auth, async (req, res) => {
     const data = req.body;
 
     let deliveryAddress = data.deliveryAddress;
     delete deliveryAddress["_id"];
 
-
-    let orderNumber = null;
-    while (orderNumber === null) {
-        let tempOrderNumber = crypto.randomBytes(5).toString('hex');
-        const orderExists = await Order.exists({ orderNumber: tempOrderNumber });
-        if (!orderExists) orderNumber = tempOrderNumber;
-    }
+    let orderNumber = generateOrderNumber();
 
     const order = new Order({
+        coupon: data.coupon,
+        coupon: data.coupon,
         totalPrice: data.cost,
         orderItems: data.products,
         deliveryAddress: deliveryAddress,
@@ -110,7 +119,6 @@ router.post('/add-order', user_auth, async (req, res) => {
     });
 
     await order.save();
-
 
     res.json({ success: true, data: order });
 });

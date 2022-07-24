@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
 
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Navbar, Nav, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { BsBag } from "react-icons/bs";
-import { IoMdHeartEmpty } from "react-icons/io";
+
+import { AiOutlineHeart } from "react-icons/ai";
+import { IoBagOutline } from "react-icons/io5";
 import { AiOutlineUser } from "react-icons/ai";
+
 import { GiHamburgerMenu } from "react-icons/gi";
 import './SearchNavbar.scss';
 import { ParaText1, ParaText2, ParaText, Heading2, Heading3 } from '../../components';
@@ -171,119 +174,140 @@ function SearchNavbar(props) {
                             <Link className="account-icon justify-content-end" to={user.userState ? "/dashboard" : "/signin"} >
                                 <AiOutlineUser className="user-icon" />
                             </Link>
+
                             {
                                 user.userState ? (
-                                    <div className="box-list logged-in">
+                                    <div className="box-list box-list-user">
                                         <Link to="/dashboard"><li className="hover-bold">My Account</li></Link>
                                         <Link to="/" onClick={handleLogout}><li className="hover-bold">Log Out</li></Link>
                                     </div>
                                 ) : (
-                                    <div className="box-list">
+                                    <div className="box-list box-list-user">
                                         <Link to="/signin"><li className='hover-bold'>Sign In</li></Link>
                                         <Link to="/signup"><li className="hover-bold">Sign Up</li></Link>
                                     </div>
                                 )
                             }
-                        </div>
 
+                        </div>
 
 
                         <div className="hover-box position-relative">
 
                             <Link className="middle account-icon justify-content-end" to="/dashboard/my-wishlist">
-                                <IoMdHeartEmpty className="heart-icon" />
+                                <AiOutlineHeart className="heart-icon" />
                             </Link>
 
-                            <div className="box-list cart-box">
+                            <div className="box-list box-list-wish">
+
                                 {
                                     user.userState ? (
                                         wish.wishList.length === 0 ? (
-                                            <div className="center-relative-fit-content">
+
+                                            <div
+                                                style={{ height: '20rem' }}
+                                            >
+                                                <div
+                                                    className="center-relative-fit-content">
+                                                    <Heading2
+                                                        first="Wishlist is"
+                                                        link="/"
+                                                        bold="Empty!"
+                                                        classes="text-uppercase"
+                                                    />
+                                                </div>
+                                            </div>
+
+
+                                        ) : (
+                                            <div className="cart-box">
+                                                {
+                                                    wish.wishList.map((element, index) => {
+                                                        return (
+                                                            <li className="cart-list-item" key={`${element?.key}-${index}`}>
+
+                                                                <Link to={`/product/${element?.slug}`}>
+                                                                    <Row>
+
+                                                                        <Col md={3}>
+                                                                            <img src={element?.image} alt={element?.name} />
+                                                                        </Col>
+
+                                                                        <Col md={5}>
+                                                                            <div >
+                                                                                <div style={{ textIndent: '0' }}>
+
+                                                                                    <ParaText
+                                                                                        text={element?.brand}
+                                                                                        classes="text-uppercase font-bold font-gold margin-bottom-0"
+                                                                                    />
+
+                                                                                    <ParaText
+                                                                                        text={element?.name}
+                                                                                        classes="text-uppercase font-bold margin-bottom-0"
+                                                                                    />
+
+                                                                                    <ParaText
+                                                                                        text={`${element?.category}`}
+                                                                                        classes="margin-bottom-0"
+                                                                                        href='/'
+                                                                                    />
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </Col>
+
+                                                                        <Col>
+                                                                            <Row>
+                                                                                <div style={{ textIndent: '0' }} className="">
+                                                                                    {
+                                                                                        element?.discountAvailable ? (
+                                                                                            <>
+                                                                                                <ParaText
+                                                                                                    text={`PKR.${parseInt(element?.min_price)} - ${parseInt(element?.max_price)}`}
+                                                                                                    classes={`text-uppercase text-center font-bold striked margin-bottom-0`}
+                                                                                                />
+                                                                                                <ParaText
+                                                                                                    text={`PKR.${parseInt(element?.lowestDiscountedPrice)} - ${parseInt(element?.highestDiscountedPrice)}`}
+                                                                                                    classes={`text-uppercase text-center font-bold discount-text`}
+                                                                                                />
+                                                                                            </>
+                                                                                        )
+                                                                                            :
+                                                                                            <ParaText
+                                                                                                text={`PKR.${parseInt(element?.min_price)} - ${parseInt(element?.max_price)}`}
+                                                                                                classes={`text-uppercase text-center font-bold`}
+                                                                                            />
+                                                                                    }
+                                                                                </div>
+                                                                            </Row>
+                                                                        </Col>
+
+                                                                    </Row>
+                                                                </Link>
+                                                                <hr />
+                                                            </li>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+
+                                        )
+                                    ) : (
+                                        <div
+                                            style={{ height: '20rem' }}
+                                        >
+                                            <div
+                                                className="center-relative-fit-content">
                                                 <Heading2
-                                                    first="Wishlist is"
-                                                    link="/"
-                                                    bold="Empty!"
+                                                    linkTag="Login to"
+                                                    link="/signin"
+                                                    bold="View Wish List!"
                                                     classes="text-uppercase"
                                                 />
                                             </div>
-                                        ) : (
-                                            <div>
-                                                <div className="">
-                                                    {
-                                                        wish.wishList.map((element, index) => {
-                                                            return (
-                                                                <li className="cart-list-item" key={`${element?.key}-${index}`}>
-
-                                                                    <Link to={`/product/${element?.slug}`}>
-                                                                        <Row>
-
-                                                                            <Col md={3}>
-                                                                                <img src={element?.image} alt={element?.name} />
-                                                                            </Col>
-
-
-                                                                            <Col md={5}>
-                                                                                <div className="vertical-center-relative">
-                                                                                    <div style={{ textIndent: '0' }}>
-
-                                                                                        <Heading3
-                                                                                            link={false}
-                                                                                            first={element?.brand}
-                                                                                            classes="text-uppercase font-bold font-gold"
-                                                                                        />
-
-                                                                                        <Heading3
-                                                                                            link={false}
-                                                                                            first={element?.name}
-                                                                                            classes="text-uppercase font-bold"
-                                                                                        />
-
-                                                                                        <ParaText
-                                                                                            text={`Category: ${element?.category}`}
-                                                                                            classes="margin-bottom-0"
-                                                                                            href='/'
-                                                                                        />
-
-
-
-                                                                                    </div>
-                                                                                </div>
-                                                                            </Col>
-
-                                                                            <Col >
-                                                                                <Row>
-                                                                                    <div style={{ textIndent: '0', marginTop: '1rem' }} className="vertical-top-relative">
-                                                                                        <Heading3
-                                                                                            link={false}
-                                                                                            bold={`PKR.${parseInt(element?.min_price)} - ${parseInt(element?.max_price)}`}
-                                                                                            classes={`text-uppercase text-center`}
-                                                                                        />
-                                                                                    </div>
-                                                                                </Row>
-
-                                                                                {/* <Row>
-                                                                                    
-                                                                                </Row> */}
-                                                                            </Col>
-                                                                        </Row>
-                                                                    </Link>
-                                                                    <hr />
-                                                                </li>
-                                                            )
-                                                        })
-                                                    }
-                                                </div>
-
-                                            </div>
-                                        )
-                                    ) : (<div className="center-relative-fit-content">
-                                        <Heading2
-                                            linkTag="Login to"
-                                            link="/signin"
-                                            bold="View Cart!"
-                                            classes="text-uppercase"
-                                        />
-                                    </div>)}
+                                        </div>
+                                    )}
                             </div>
                         </div>
 
@@ -306,36 +330,38 @@ function SearchNavbar(props) {
                                                     }
                                                 }}
                                                 badgeContent={Object.keys(cartProducts).length}
-
                                             >
-                                                <BsBag className="bag-icon" />
+                                                <IoBagOutline className="bag-icon" />
                                             </Badge>
                                         </ThemeProvider>
                                     </Link>) : (
                                     <Link className="account-icon justify-content-end" to="/" onClick={(e) => { e.preventDefault(); }}>
                                         <ThemeProvider theme={theme}>
                                             <Badge color="secondary" badgeContent={Object.keys(cartProducts).length}>
-                                                <BsBag className="bag-icon" />
+                                                <IoBagOutline className="bag-icon" />
                                             </Badge>
                                         </ThemeProvider>
                                     </Link>)
-
-
                             }
-                            <div className="box-list cart-box">
+                            <div className="box-list box-list-cart">
                                 {
                                     user.userState ? (
                                         cartProducts.length === 0 ? (
-                                            <div className="center-relative-fit-content">
-                                                <Heading2
-                                                    first="Cart is"
-                                                    link="/"
-                                                    bold="Empty!"
-                                                    classes="text-uppercase"
-                                                />
+                                            <div
+                                                style={{ height: '20rem' }}
+                                            >
+                                                <div
+                                                    className="center-relative-fit-content">
+                                                    <Heading2
+                                                        first="Cart is"
+                                                        link="/"
+                                                        bold="Empty!"
+                                                        classes="text-uppercase"
+                                                    />
+                                                </div>
                                             </div>
                                         ) : (
-                                            <div>
+                                            <div className="cart-box">
                                                 <div className="cart-list">
                                                     {
                                                         cartProducts.map((element, index) => {
@@ -391,7 +417,7 @@ function SearchNavbar(props) {
                                                                                             />
                                                                                             <Heading3
                                                                                                 bold={`PKR.${parseInt(element?.discountedPrice) * element?.quantity}`}
-                                                                                                classes={`text-uppercase text-center`}
+                                                                                                classes={`text-uppercase text-center discount-text`}
                                                                                             />
                                                                                         </>
                                                                                         :
@@ -426,13 +452,18 @@ function SearchNavbar(props) {
                                                 </div>
                                             </div>
                                         )
-                                    ) : (<div className="center-relative-fit-content">
-                                        <Heading2
-                                            linkTag="Login to"
-                                            link="/signin"
-                                            bold="View Cart!"
-                                            classes="text-uppercase"
-                                        />
+                                    ) : (<div
+                                        style={{ height: '20rem' }}
+                                    >
+                                        <div
+                                            className="center-relative-fit-content">
+                                            <Heading2
+                                                linkTag="Login to"
+                                                link="/signin"
+                                                bold="View Cart!"
+                                                classes="text-uppercase"
+                                            />
+                                        </div>
                                     </div>)}
                             </div>
                         </div>

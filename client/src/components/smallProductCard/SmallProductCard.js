@@ -17,7 +17,7 @@ function SmallProductCard(props) {
                         (
                             <>
                                 <div className="striked product-price-points">{props.pricePoints}</div>
-                                <div className="product-price-points">{props.discountPricePoints}</div>
+                                <div className="product-price-points discount-text">{props.discountPricePoints}</div>
                             </>
                         )
                         :

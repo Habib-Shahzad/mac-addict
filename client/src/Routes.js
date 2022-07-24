@@ -30,12 +30,13 @@ function Routes(props) {
   const [navOptions, setNavOptions] = useState([]);
   const [mainNavOptions, setMainNavOptions] = useState([]);
 
+
   let location = useLocation();
 
   useEffect(() => {
     (
       async () => {
-        setDiscountState(null);
+        // setDiscountState(null);
         const response = await fetch(`${api}/category/client-categories`, {
           method: 'GET',
           headers: {
@@ -251,7 +252,7 @@ function Routes(props) {
     <WishListContext.Provider value={{ wishList: wishList, setWishList: setWishList }}>
       <CountriesContext.Provider value={{ data: data }}>
         <CartContext.Provider value={{ cartObj: cart, setCart: setCart }}>
-          <DiscountContext.Provider value={discountState}>
+          <DiscountContext.Provider value={{ discountState: discountState, setDiscountState: setDiscountState }}>
             <SmallBanner />
             <div className="margin-global-top-1" />
             <SearchNavbar options={navOptions} />
