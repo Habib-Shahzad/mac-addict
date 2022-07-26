@@ -362,7 +362,7 @@ function ProductCard(props) {
                         {getAttribute('preOrder') && getAttribute('preOrderPrice') &&
                             <div className="product-points">
                                 <FourthHeading
-                                    text={`Pre Order Price: ${getAttribute('preOrderPrice')}`}
+                                    text={`Pre Order Price: PKR.${getAttribute('preOrderPrice')}`}
                                     classes="margin-bottom-0 font-gold"
                                 />
                             </div>

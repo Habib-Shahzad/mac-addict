@@ -7,7 +7,7 @@ function LinkButton(props) {
         <>
             {
                 props.button ? (
-                    <Link to="" onClick={props.onClick} className={`link-button ${props.classes}`}>
+                    <Link disabled={props?.disabled} to="" onClick={props.onClick} className={`link-button ${props.classes}`}>
                         {props.text}
                     </Link>
                 ) : (

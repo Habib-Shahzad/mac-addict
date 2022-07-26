@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Container, Form, Col, Row, Button } from 'react-bootstrap';
+import { Container, Form, Col, Row } from 'react-bootstrap';
 import { MainHeading, Heading2, Heading1, LinkButton, Heading3 } from '../../../../components';
 import CartContext from '../../../../contexts/cart';
 import UserContext from '../../../../contexts/user';
@@ -253,12 +253,18 @@ function ProductList(props) {
 
 
 
-                    <div>
+                    <div >
                         <Form onSubmit={handleSubmit(onSubmit)} className="form-style margin-global-top-2">
-                            <Row style={{ marginTop: '3.5rem', marginBottom: '2rem' }} className='center-container'>
+                            <Row
+                                style={{
+                                    marginTop: '3.5rem',
+                                    marginBottom: '0.1rem',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                }}>
                                 <Form.Group
+
                                     style={{ padding: '0' }}
-                                    className='center-child'
                                     as={Col}
                                     md={4}
                                     xs={8}
@@ -277,15 +283,24 @@ function ProductList(props) {
                                     <div className="error-text">{wrongPromo && <p>Invalid Promotion Code</p>}</div>
 
                                     {cost > 0 && user?.userState._id &&
+                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0.5rem' }}>
+                                            <LinkButton
+                                                onClick={(e) => { e.preventDefault(); handleSubmit(onSubmit)(); }}
+                                                classes={(loading || appliedCoupon != null) ? "text-uppercase disabled-link" : "text-uppercase"}
+                                                text={"Apply"}
+                                                button={true}
+                                                to={null}
+                                            />
+                                        </div>
 
-                                        <Button
-                                            style={{ margin: '0', marginTop: '4rem' }}
-                                            disabled={loading || appliedCoupon != null}
-                                            className="yesno-button center-child"
-                                            variant="custom"
-                                            type="submit" >
-                                            Apply
-                                        </Button>
+                                        // <Button
+                                        //     style={{ margin: '0', marginTop: '4rem' }}
+                                        //     disabled={loading || appliedCoupon != null}
+                                        //     className="yesno-button center-child"
+                                        //     variant="custom"
+                                        //     type="submit" >
+                                        //     Apply
+                                        // </Button>
                                     }
 
                                 </Form.Group>
@@ -324,7 +339,7 @@ function ProductList(props) {
                             {!loading &&
                                 <LinkButton
                                     onClick={() => { }}
-                                    classes="text-uppercase product-card-size"
+                                    classes="text-uppercase"
                                     text={"Proceed"}
                                     button={false}
                                     to={"/cart/delivery-info"}

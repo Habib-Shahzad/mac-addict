@@ -43,78 +43,78 @@ function Orders(props) {
 
 
     return (
-        <div>
-            {
-                showOrderInfo ?
-                    (
-                        <>
-                            <OrderInfo handleShow={handleShow} order={orderToShow} />
-                        </>
-                    )
+        <Container fluid className="order-list-back">
+            <div >
+                {
+                    showOrderInfo ?
+                        (
+                            <>
+                                <OrderInfo handleShow={handleShow} order={orderToShow} />
+                            </>
+                        )
 
-                    : (
-                        <>
-                            <MainHeading
-                                text="Order History"
-                                classes="text-center"
-                            />
+                        : (
+                            <>
+                                <MainHeading
+                                    text="Order History"
+                                    classes="text-center"
+                                />
 
-                            <div className="margin-global-top-2" />
+                                <div className="margin-global-top-2" />
 
 
-                            <Container fluid>
-                                <Row>
+                                <Container className="order-list">
+                                    <Row>
 
-                                    <div id="no-more-tables">
-                                        <Table className="col-md-12 cf">
-                                            <thead className='cf'>
-                                                <tr>
-                                                    <th>Order No</th>
-                                                    <th>Date</th>
-                                                    <th>Customer Name</th>
-                                                    <th>Order Total</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
+                                        <div id="no-more-tables">
+                                            <Table className="col-md-12 cf">
+                                                <thead className='cf'>
+                                                    <tr>
+                                                        <th>Order No</th>
+                                                        <th>Date</th>
+                                                        <th>Order Total</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    orders.map((order, index) => {
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td data-title="Order Number">{order.orderNumber}</td>
-                                                                <td data-title="Order Date">{new Date(order.orderDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
-                                                                <td data-title="Customer Name">{`${order.user.firstName} ${order.user.lastName}`}</td>
-                                                                <td data-title="Order Total">{order.totalPrice}</td>
-                                                                <td data-title="Order Status">{order.orderStatus ? <CheckIcon style={{ fill: "green" }} /> : <CloseIcon style={{ fill: "red" }} />}</td>
-                                                                <td data-title="Order Action">
-                                                                    <Link
-                                                                        to={""}
-                                                                        onClick={(e) => {
-                                                                            e.preventDefault();
-                                                                            setOrderToShow(order);
-                                                                            handleShow();
-                                                                        }}>
-                                                                        View Order
-                                                                    </Link>
-                                                                </td>
-                                                            </tr>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        orders.map((order, index) => {
+                                                            return (
+                                                                <tr key={index}>
+                                                                    <td data-title="Order Number">{order.orderNumber}</td>
+                                                                    <td data-title="Order Date">{new Date(order.orderDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                                                                    <td data-title="Order Total">{order.totalPrice}</td>
+                                                                    <td data-title="Order Status">{order.orderStatus ? <CheckIcon style={{ fill: "green" }} /> : <CloseIcon style={{ fill: "red" }} />}</td>
+                                                                    <td data-title="Order Action">
+                                                                        <Link
+                                                                            to={""}
+                                                                            onClick={(e) => {
+                                                                                e.preventDefault();
+                                                                                setOrderToShow(order);
+                                                                                handleShow();
+                                                                            }}>
+                                                                            View Order
+                                                                        </Link>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        }
                                                         )
                                                     }
-                                                    )
-                                                }
-                                            </tbody>
-                                        </Table>
-                                    </div>
-                                </Row>
+                                                </tbody>
+                                            </Table>
+                                        </div>
+                                    </Row>
 
-                            </Container>
+                                </Container>
 
-                        </>
-                    )
-            }
-        </div>
+                            </>
+                        )
+                }
+            </div>
+        </Container>
     );
 }
 

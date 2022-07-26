@@ -67,6 +67,7 @@
       margin: 0 1rem;
     }
   }
+
   .hover-box {
     .cart-buttons {
       position: relative;
@@ -77,6 +78,7 @@
     .account-icon {
       position: relative;
       cursor: pointer;
+
       &:hover + .box-list {
         -webkit-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
         -moz-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
@@ -100,6 +102,8 @@
     }
 
     .box-list {
+      margin-top: 1rem;
+      background-clip: padding-box;
       width: 30rem;
       position: absolute;
       background-color: white;
@@ -136,6 +140,21 @@
     }
 
     .cart-box {
+      min-height: fit-content !important;
+      max-height: 40rem !important;
+      overflow-y: scroll;
+      .cart-list-item {
+        padding-right: 0.8rem;
+        padding-bottom: 1rem;
+      }
+      img {
+        width: 100%;
+      }
+    }
+
+    .wish-box {
+      min-height: fit-content !important;
+      max-height: 20rem !important;
       overflow-y: scroll;
       .cart-list-item {
         padding-right: 0.8rem;

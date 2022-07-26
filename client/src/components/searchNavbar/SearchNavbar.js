@@ -175,6 +175,7 @@ function SearchNavbar(props) {
                                 <AiOutlineUser className="user-icon" />
                             </Link>
 
+
                             {
                                 user.userState ? (
                                     <div className="box-list box-list-user">
@@ -220,7 +221,7 @@ function SearchNavbar(props) {
 
 
                                         ) : (
-                                            <div className="cart-box">
+                                            <div className="wish-box">
                                                 {
                                                     wish.wishList.map((element, index) => {
                                                         return (
