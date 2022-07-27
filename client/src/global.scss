@@ -139,6 +139,10 @@
   margin-top: 2rem;
 }
 
+.margin-global-bottom-2 {
+  margin-bottom: 2rem;
+}
+
 .margin-global-top-3 {
   margin-top: 3rem;
 }
@@ -173,6 +177,14 @@
 
 .padding-left-0-5 {
   padding-left: 0.5rem;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.text-center {
+  text-align: center;
 }
 
 // Devices (less than 1700px)

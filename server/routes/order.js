@@ -33,7 +33,9 @@ router.get('/table-data', async (req, res) => {
             }
         }
         )
+        .sort({ 'orderDate': -1 })
         ;
+    ;
 
     if (!orders) res.json({ data: [] });
     else res.json({ data: orders });
@@ -128,9 +130,9 @@ router.post('/add-order', user_auth, async (req, res) => {
 });
 
 
-router.post("/set-complete", admin_auth, async (req, res) => {
-    const { completed, selected } = req.body;
-    await Order.updateMany({ _id: { $in: selected } }, { orderStatus: completed });
+router.post("/set-status", admin_auth, async (req, res) => {
+    const { status, selected } = req.body;
+    await Order.updateMany({ _id: { $in: selected } }, { orderStatus: status });
 
     const orders = await Order.find({})
         .populate('user')

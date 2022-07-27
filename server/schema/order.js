@@ -20,7 +20,7 @@ const orderSchema = new mongoose.Schema({
   orderNumber: { type: String, required: true, unique: true },
   orderDate: { type: Date, required: true, default: new Date() },
   paymentMethod: { type: String, required: true, default: null },
-  orderStatus: { type: Boolean, required: true, default: false },
+  orderStatus: { type: String, required: true, default: "Processing" },
   totalPrice: { type: Number, required: true },
 
   orderItems: [{

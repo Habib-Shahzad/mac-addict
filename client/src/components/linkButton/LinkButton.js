@@ -11,7 +11,7 @@ function LinkButton(props) {
                         {props.text}
                     </Link>
                 ) : (
-                    <Link to={props.to} className={`link-button ${props.classes}`}>
+                    <Link to={props.to} onClick={props.onClick} className={`link-button ${props.classes}`}>
                         {props.text}
                     </Link>
                 )

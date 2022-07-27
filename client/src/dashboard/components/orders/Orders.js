@@ -3,8 +3,8 @@ import { Container, Table, Row } from 'react-bootstrap';
 import { MainHeading } from '../../../components';
 import { Link } from 'react-router-dom';
 import UserContext from '../../../contexts/user';
-import CloseIcon from '@mui/icons-material/Close';
-import CheckIcon from '@mui/icons-material/Check';
+// import CloseIcon from '@mui/icons-material/Close';
+// import CheckIcon from '@mui/icons-material/Check';
 import api from '../../../api';
 import OrderInfo from '../orderInfo/OrderInfo';
 import './Orders.scss';
@@ -86,7 +86,7 @@ function Orders(props) {
                                                                     <td data-title="Order Number">{order.orderNumber}</td>
                                                                     <td data-title="Order Date">{new Date(order.orderDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
                                                                     <td data-title="Order Total">{order.totalPrice}</td>
-                                                                    <td data-title="Order Status">{order.orderStatus ? <CheckIcon style={{ fill: "green" }} /> : <CloseIcon style={{ fill: "red" }} />}</td>
+                                                                    <td data-title="Order Status">{order.orderStatus}</td>
                                                                     <td data-title="Order Action">
                                                                         <Link
                                                                             to={""}

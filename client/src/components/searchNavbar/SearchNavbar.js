@@ -10,7 +10,7 @@ import { AiOutlineUser } from "react-icons/ai";
 
 import { GiHamburgerMenu } from "react-icons/gi";
 import './SearchNavbar.scss';
-import { ParaText1, ParaText2, ParaText, Heading2, Heading3 } from '../../components';
+import { ParaText1, ParaText2, ParaText, Heading2, Heading3, LinkButton } from '../../components';
 import Sidebar from '../sidebar/Sidebar';
 import UserContext from '../../contexts/user';
 import CartContext from '../../contexts/cart';
@@ -179,13 +179,70 @@ function SearchNavbar(props) {
                             {
                                 user.userState ? (
                                     <div className="box-list box-list-user">
-                                        <Link to="/dashboard"><li className="hover-bold">My Account</li></Link>
-                                        <Link to="/" onClick={handleLogout}><li className="hover-bold">Log Out</li></Link>
+                                        <Heading2
+                                            first="Welcome to"
+                                            link="/"
+                                            bold="Macaddict!"
+                                            classes="underline text-center"
+                                        />
+                                        <div className="margin-global-top-2" />
+
+                                        <div className='text-center' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <div>
+                                                <LinkButton
+                                                    text="My Account"
+                                                    button={false}
+                                                    classes="text-uppercase center-relative-horizontal"
+                                                    to="/dashboard"
+                                                />
+                                            </div>
+
+                                            <div style={{ paddingLeft: '2rem' }}>
+                                                <LinkButton
+                                                    text="Log Out"
+                                                    button={false}
+                                                    classes="text-uppercase center-relative-horizontal"
+                                                    onClick={handleLogout}
+                                                    to="/"
+
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="margin-global-bottom-2" />
                                     </div>
                                 ) : (
                                     <div className="box-list box-list-user">
-                                        <Link to="/signin"><li className='hover-bold'>Sign In</li></Link>
-                                        <Link to="/signup"><li className="hover-bold">Sign Up</li></Link>
+
+                                        <Heading2
+                                            first="Welcome to"
+                                            link="/"
+                                            bold="Macaddict!"
+                                            classes="underline text-center"
+                                        />
+                                        <div className="margin-global-top-2" />
+
+                                        <div className='text-center' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <div>
+                                                <LinkButton
+                                                    text="Login"
+                                                    button={false}
+                                                    classes="text-uppercase center-relative-horizontal"
+                                                    to="/signin"
+                                                />
+                                            </div>
+
+                                            <div style={{ paddingLeft: '2rem' }}>
+                                                <LinkButton
+                                                    text="Sign Up"
+                                                    button={false}
+                                                    classes="text-uppercase center-relative-horizontal"
+                                                    to="/signup"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="margin-global-bottom-2" />
                                     </div>
                                 )
                             }

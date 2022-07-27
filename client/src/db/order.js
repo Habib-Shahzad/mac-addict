@@ -19,14 +19,12 @@ const createTableData = (data) => {
 const startAction = async (obj, selected, setOriginalTableRows, setTableRows) => {
     if (obj.type === 'status') {
         const rows = [];
-        let completed = true;
-        if (obj.value === 'incomplete') completed = false;
-        const response = await fetch(`${api}/order/set-complete`, {
+        const response = await fetch(`${api}/order/set-status`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             withCredentials: true,
-            body: JSON.stringify({ completed: completed, selected: selected })
+            body: JSON.stringify({ status: obj.value, selected: selected })
         });
         const content = await response.json();
         content.data.forEach(element => {
@@ -72,8 +70,12 @@ const orderObj = {
     startAction: startAction,
     actionOptions: [
         { label: '', value: '', type: '' },
-        { label: 'Set order status as completed', value: 'completed', type: 'status' },
-        { label: 'Set order status as incomplete', value: 'incomplete', type: 'status' }
+        { label: 'Set order status as Failed', value: 'Failed', type: 'status' },
+        { label: 'Set order status as Processing', value: 'Processing', type: 'status' },
+        { label: 'Set order status as Completed', value: 'Completed', type: 'status' },
+        { label: 'Set order status as Cancelled', value: 'Cancelled', type: 'status' },
+        { label: 'Set order status as On Hold', value: 'On Hold', type: 'status' },
+        { label: 'Set order status as Refunded', value: 'Refunded', type: 'status' },
     ],
     Form: function (id, classes) {
         return (<></>);
