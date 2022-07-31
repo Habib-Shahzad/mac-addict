@@ -183,7 +183,7 @@ function SearchNavbar(props) {
                                             first="Welcome to"
                                             link="/"
                                             bold="Macaddict!"
-                                            classes="underline text-center"
+                                            classes=" text-center"
                                         />
                                         <div className="margin-global-top-2" />
 
@@ -218,7 +218,7 @@ function SearchNavbar(props) {
                                             first="Welcome to"
                                             link="/"
                                             bold="Macaddict!"
-                                            classes="underline text-center"
+                                            classes=" text-center"
                                         />
                                         <div className="margin-global-top-2" />
 
