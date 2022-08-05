@@ -338,7 +338,7 @@ router.get('/verify-email/:uniqueToken', async (req, res) => {
     const { uniqueToken } = req.params;
     const user = await User.findOne({ uniqueToken: uniqueToken });
 
-    const redirect_url = process.env.API_URL1;
+    const redirect_url = process.env.API_URL3;
 
     if (user) {
       user.emailVerified = true;
@@ -384,7 +384,7 @@ const sendMail = async (email, uniqueToken) => {
   var mailOptions;
 
 
-  const verify_api = `${process.env.API_URL2}/api/user/verify-email/${uniqueToken}`;
+  const verify_api = `${process.env.API_URL3}/api/user/verify-email/${uniqueToken}`;
 
   mailOptions = {
     from: 'no-reply@macaddictstore.com',
@@ -630,7 +630,7 @@ router.post("/set-admin", admin_auth, async (req, res) => {
 
 router.get("/reset-password/:passwordToken", async (req, res) => {
   const { passwordToken } = req.params;
-  const redirect_url = `${process.env.API_URL1}/reset-password/${passwordToken}`;
+  const redirect_url = `${process.env.API_URL3}/reset-password/${passwordToken}`;
   res.redirect(redirect_url);
 });
 
@@ -661,7 +661,7 @@ const sendPasswordMail = async (email, uniqueToken) => {
   var mailOptions;
 
 
-  const password_api = `${process.env.API_URL2}/api/user/reset-password/${uniqueToken}`;
+  const password_api = `${process.env.API_URL3}/api/user/reset-password/${uniqueToken}`;
 
   mailOptions = {
     from: 'no-reply@macaddictstore.com',

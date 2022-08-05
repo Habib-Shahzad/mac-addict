@@ -36,11 +36,11 @@ const createServer = async () => {
     ));
     app.use(cors({
         credentials: true,
-        origin: [process.env.API_URL1, process.env.API_URL2, process.env.API_URL3, process.env.API_URL4]
+        origin: [process.env.API_URL3]
     }));
 
-    // app.use(express.static('../client/public'));
-    app.use(express.static(path.join(__dirname, '../client/build')));
+    app.use(express.static('./build'));
+    // app.use(express.static(path.join(__dirname, '../client/build')));
 
     const userRoutes = require('./routes/user');
     const cartRoutes = require('./routes/cart');
@@ -72,9 +72,9 @@ const createServer = async () => {
     app.use('/api/order', orderRoutes);
     app.use('/api/coupon', couponRoutes);
 
-    // app.get('*', function (req, res) {
-    //     res.sendFile(path.join(__dirname, '../client/build/index.html'));
-    // });
+    app.get('*', function (req, res) {
+        res.sendFile(path.resolve('./build/index.html'));
+    });
 
     app.listen(port, () => {
         console.log(`Example app listening at http://localhost:${port}`);
