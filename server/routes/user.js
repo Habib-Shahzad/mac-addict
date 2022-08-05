@@ -9,18 +9,10 @@ const user_auth = require("./middleware/user_auth");
 
 require("dotenv").config();
 
+const crypto = require('crypto');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-// const transporter = nodemailer.createTransport({
-//     host: 'smtp.yandex.com',
-//     port: 465,
-//     secure: true,
-//     auth: {
-//       user: 'no-reply@macaddictstore.com',
-//       pass: 'bcramnssrlghwygt'
-//     }
-// });
+const nodemailer = require("nodemailer");
 
 
 router.post("/logout", user_auth, async (req, res) => {
@@ -69,7 +61,6 @@ router.get("/loggedIn", async (req, res, next) => {
 
 
 
-
 router.get("/address-list", async (req, res) => {
   const token = (req.cookies['access_token']);
 
@@ -107,42 +98,34 @@ router.post('/signup', async (req, res) => {
     const oldUser = await User.findOne({ email });
 
     if (oldUser) {
-      return res.status(409).send("User Already Exist. Please Login");
+      return res.json({ data: null, success: false });
     }
 
-    //Encrypt user password
-    encryptedPassword = await bcrypt.hash(password, 10);
+    else {
+      //Encrypt user password
+      encryptedPassword = await bcrypt.hash(password, 10);
+      const uniqueToken = crypto.randomBytes(48).toString('hex');
 
-    // Create user in our database
-    const user = await User.create({
-      firstName,
-      lastName,
-      email,
-      password: encryptedPassword,
-      contactNumber: contactNumber,
-      staff: false,
-      active: true
-    });
+      // Create user in our database
+      await User.create({
+        firstName,
+        lastName,
+        email,
+        password: encryptedPassword,
+        contactNumber: contactNumber,
+        staff: false,
+        active: true,
+        uniqueToken: uniqueToken,
+      });
 
-    // Create token
-    const token = jwt.sign(
-      { user_id: user._id, email },
-      process.env.TOKEN_SECRET,
-      {
-        expiresIn: "7000h",
-      }
-    );
+      const sendMailResponse = await sendMail(email, uniqueToken);
+      console.log(sendMailResponse);
 
-    res.cookie("access_token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 7,
-    });
+      res.json({ data: null, success: true });
 
-    res.json({
-      data: user
-    });
-
+    }
   } catch (error) {
+    console.log(error);
     res.json({ success: false, error: error });
   }
 });
@@ -348,6 +331,75 @@ router.post('/add', async (req, res) => {
 
 
 
+
+router.get('/verify-email/:uniqueToken', async (req, res) => {
+
+  try {
+    const { uniqueToken } = req.params;
+    const user = await User.findOne({ uniqueToken: uniqueToken });
+
+    const redirect_url = process.env.API_URL1;
+
+    if (user) {
+      user.emailVerified = true;
+      user.uniqueToken = null;
+      await user.save();
+
+      // Create token
+      const token = jwt.sign(
+        { user_id: user._id, email: user.email },
+        process.env.TOKEN_SECRET,
+        {
+          expiresIn: "7000h",
+        }
+      );
+
+      res.cookie("access_token", token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 7,
+      });
+
+
+      res.redirect(`${redirect_url}`);
+    }
+    else {
+      res.status(404).send('Request Failed! Please contact us for further assistance.');
+    }
+  }
+  catch (error) {
+    res.status(404).send('Request Failed! Please contact us for further assistance.');
+  }
+});
+
+
+const sendMail = async (email, uniqueToken) => {
+  let transporter = nodemailer.createTransport({
+    service: 'Yandex',
+    auth: {
+      user: 'no-reply@macaddictstore.com',
+      pass: 'macaddict2022'
+    }
+  });
+
+  var mailOptions;
+
+
+  const verify_api = `${process.env.API_URL2}/api/user/verify-email/${uniqueToken}`;
+
+  mailOptions = {
+    from: 'no-reply@macaddictstore.com',
+    to: email,
+    subject: 'Macaddict - Verify your email',
+    html: `Press the link below to verify your email: <a href="${verify_api}">Verify</a>`
+  };
+
+  const response = await transporter.sendMail(mailOptions);
+
+  return response;
+}
+
+
+
 router.post("/login", async (req, res) => {
   try {
     // Get user input
@@ -357,29 +409,33 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      // Create token
-      const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_SECRET,
-        {
-          expiresIn: "7000h",
-        }
-      );
 
-      // save user token
-      user.token = token;
+      if (user.emailVerified) {
+        // Create token
+        const token = jwt.sign(
+          { user_id: user._id, email },
+          process.env.TOKEN_SECRET,
+          {
+            expiresIn: "7000h",
+          }
+        );
 
-      res.cookie("access_token", token, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 7,
-      });
+        // save user token
+        user.token = token;
+
+        res.cookie("access_token", token, {
+          httpOnly: true,
+          secure: false,
+          maxAge: 1000 * 60 * 60 * 7,
+        });
+      }
+      else {
+        await sendMail(user.email, user.uniqueToken);
+      }
 
       res.json({
         data: user
       });
-
-
 
     }
     else {
@@ -586,10 +642,6 @@ router.post("/recover-email", (req, res) => {
   // TODO
 });
 
-router.post("/verify-email", async (req, res) => {
-  res.json({ data: false });
-  // TODO
-});
 
 
 router.post("/change-password", user_auth, async (req, res) => {
