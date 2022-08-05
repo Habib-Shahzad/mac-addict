@@ -5,7 +5,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { SmallBanner, SearchNavbar, MainNavbar, IconBanner, Footer } from './components';
-import { Home, Brands, Brand, Product, Category, SubCategory, FurtherSubCategory, Signin, Signup, Cart } from './pages';
+import { Home, Brands, Brand, Product, Category, SubCategory, FurtherSubCategory, Signin, Signup, Cart, ForgotPassword, ResetPassword } from './pages';
 // import { ComingSoon } from './pages';
 import { Dashboard } from './dashboard';
 import CartContext from './contexts/cart';
@@ -287,6 +287,19 @@ function Routes(props) {
                       <MainNavbar options={mainNavOptions} />
                       <Cart />
                     </Route>
+
+
+                    <Route path="/reset-password/:passwordToken">
+                      <MainNavbar options={mainNavOptions} />
+                      <ResetPassword />
+                    </Route>
+
+
+                    <Route path="/forgot-password">
+                      <MainNavbar options={mainNavOptions} />
+                      <ForgotPassword />
+                    </Route>
+
                     <Route path="/signin">
                       <MainNavbar options={mainNavOptions} />
                       <Signin />

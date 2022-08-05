@@ -627,15 +627,80 @@ router.post("/set-admin", admin_auth, async (req, res) => {
   res.json({ success: true, data: users });
 });
 
-router.post("/reset-password-check", async (req, res) => {
-  res.json({ data: false });
-  // TODO
+
+router.get("/reset-password/:passwordToken", async (req, res) => {
+  const { passwordToken } = req.params;
+  const redirect_url = `${process.env.API_URL1}/reset-password/${passwordToken}`;
+  res.redirect(redirect_url);
 });
 
-router.post("/reset-password", async (req, res) => {
-  res.json({ data: false });
-  // TODO
+router.post("/reset-change-password/:passwordToken", async (req, res) => {
+  const { passwordToken } = req.params;
+  const { password } = req.body;
+  const user = await User.findOne({ passwordToken });
+  if (!user) return res.json({ success: false, message: "User not found!" });
+  else {
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    user.password = encryptedPassword;
+    user.passwordToken = null;
+    await user.save();
+    res.json({ success: true, message: "Password changed successfully!" });
+  }
+
 });
+
+const sendPasswordMail = async (email, uniqueToken) => {
+  let transporter = nodemailer.createTransport({
+    service: 'Yandex',
+    auth: {
+      user: 'no-reply@macaddictstore.com',
+      pass: 'macaddict2022'
+    }
+  });
+
+  var mailOptions;
+
+
+  const password_api = `${process.env.API_URL2}/api/user/reset-password/${uniqueToken}`;
+
+  mailOptions = {
+    from: 'no-reply@macaddictstore.com',
+    to: email,
+    subject: 'Reset Password Link - Macaddict Store',
+    html: `<p>You requested for reset password, kindly use this <a href="${password_api}">link</a> to reset your password</p>`
+  };
+
+  const response = await transporter.sendMail(mailOptions);
+
+  return response;
+}
+
+
+router.post("/reset-password-email", async (req, res) => {
+  try {
+
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      return res.json({ success: false, data: null });
+    }
+
+    else {
+      const uniqueToken = crypto.randomBytes(30).toString('hex');
+      user.passwordToken = uniqueToken;
+      await user.save();
+      await sendPasswordMail(user.email, uniqueToken);
+      return res.json({ success: true });
+    }
+
+  }
+  catch {
+    res.json({ success: false, data: null });
+  }
+});
+
+
+
 
 router.post("/recover-email", (req, res) => {
   res.json({ data: false });

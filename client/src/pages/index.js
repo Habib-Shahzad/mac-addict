@@ -10,3 +10,5 @@ export { default as Cart } from './cart/Cart';
 export { default as SubCategory } from './subCategory/SubCategory';
 export { default as FurtherSubCategory } from './furtherSubCategory/FurtherSubCategory';
 export { default as Brand } from './brand/Brand';
+export { default as ForgotPassword } from './forgotPassword/ForgotPassword';
+export { default as ResetPassword } from './resetPassword/ResetPassword';

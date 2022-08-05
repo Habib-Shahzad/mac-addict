@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   contactNumber: { type: String, required: true },
   emailVerified: { type: Boolean, default: false },
   uniqueToken: { type: String, unique: true },
+  passwordToken: { type: String, unique: true },
   addresses: [
     {
       type: Schema.Types.ObjectId,
