@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Container, Form, Col, Row, InputGroup, Button } from 'react-bootstrap';
+import { Container, Form, Col, Row, InputGroup, Button, Spinner } from 'react-bootstrap';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
 import api from '../../api';
@@ -14,6 +14,7 @@ function Signin(props) {
     const [showPassword, setShowPassword] = useState(false);
     const [loginError, setLoginError] = useState(false);
     const [showVerifyComponent, setShowVerifyComponent] = useState(false);
+    const [loading, setLoading] = useState(false);
 
 
     const { register, handleSubmit, formState: { errors }, } = useForm();
@@ -23,6 +24,7 @@ function Signin(props) {
     const user = useContext(UserContext);
 
     const onSubmit = async (data) => {
+        setLoading(true);
         const response = await fetch(`${api}/user/login`, {
             method: 'POST',
             headers: {
@@ -39,10 +41,12 @@ function Signin(props) {
         const userLoggedin = content.data;
 
         if (!userLoggedin) {
+            setLoading(false);
             setLoginError(true);
         }
 
         if (userLoggedin) {
+            setLoading(false);
             if (!userLoggedin.emailVerified) {
                 setShowVerifyComponent(true);
             }
@@ -144,8 +148,17 @@ function Signin(props) {
                                 }
 
 
+                                {
+                                    loading &&
+                                    <Row className="justify-content-center">
+                                        <Spinner style={{ color: '#cf993d' }} animation="border" />
+                                        <div className="margin-global-top-2" />
+                                    </Row>
+                                }
+
+
                                 <Row className="justify-content-center">
-                                    <Button type="submit">
+                                    <Button disabled={loading} type="submit">
                                         Sign in
                                     </Button>
                                 </Row>

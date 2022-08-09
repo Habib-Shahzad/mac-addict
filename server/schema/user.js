@@ -8,8 +8,10 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   contactNumber: { type: String, required: true },
   emailVerified: { type: Boolean, default: false },
-  uniqueToken: { type: String, unique: true },
-  passwordToken: { type: String, unique: true },
+
+  verifyToken: { type: String },
+  passwordToken: { type: String },
+
   addresses: [
     {
       type: Schema.Types.ObjectId,

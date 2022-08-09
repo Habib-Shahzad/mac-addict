@@ -115,7 +115,7 @@ router.post('/signup', async (req, res) => {
         contactNumber: contactNumber,
         staff: false,
         active: true,
-        uniqueToken: uniqueToken,
+        verifyToken: uniqueToken,
       });
 
       const sendMailResponse = await sendMail(email, uniqueToken);
@@ -336,7 +336,7 @@ router.get('/verify-email/:uniqueToken', async (req, res) => {
 
   try {
     const { uniqueToken } = req.params;
-    const user = await User.findOne({ uniqueToken: uniqueToken });
+    const user = await User.findOne({ verifyToken: uniqueToken });
 
     let redirect_url = process.env.API_URL1;
 
@@ -346,7 +346,7 @@ router.get('/verify-email/:uniqueToken', async (req, res) => {
 
     if (user) {
       user.emailVerified = true;
-      user.uniqueToken = null;
+      user.verifyToken = null;
       await user.save();
 
       // Create token
@@ -372,7 +372,7 @@ router.get('/verify-email/:uniqueToken', async (req, res) => {
   }
   catch (error) {
     console.log(error);
-    res.status(404).send('Request Failed! Please contact us for further assistance.');
+    res.status(404).send(error);
   }
 });
 
@@ -440,7 +440,7 @@ router.post("/login", async (req, res) => {
         });
       }
       else {
-        await sendMail(user.email, user.uniqueToken);
+        await sendMail(user.email, user.verifyToken);
       }
 
       res.json({

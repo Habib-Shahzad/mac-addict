@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Container, Form, Col, Row, InputGroup, Button } from 'react-bootstrap';
+import { Container, Form, Col, Row, InputGroup, Button, Spinner } from 'react-bootstrap';
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
 import { useHistory } from 'react-router-dom';
 import { DescriptionText, MainHeading, VerifyEmail } from '../../components';
@@ -18,12 +18,12 @@ function Signup(props) {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [showVerifyComponent, setShowVerifyComponent] = useState(false);
 
-    const [disable, setDisable] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [emailTaken, setEmailTaken] = useState(false);
 
     const onSubmit = async (data) => {
-        setDisable(true);
+        setLoading(true);
         const response = await fetch(`${api}/user/signup`, {
             method: 'POST',
             headers: {
@@ -45,7 +45,7 @@ function Signup(props) {
             setShowVerifyComponent(true);
         }
         else {
-            setDisable(false);
+            setLoading(false);
             setEmailTaken(true);
             console.log(content?.error);
             setTimeout(() => {
@@ -212,8 +212,18 @@ function Signup(props) {
                                     </Form.Group>
                                 </Row>
                                 <div className="margin-global-top-2" />
+
+
+                                {
+                                    loading &&
+                                    <Row className="justify-content-center">
+                                        <Spinner style={{ color: '#cf993d' }} animation="border" />
+                                        <div className="margin-global-top-2" />
+                                    </Row>
+                                }
+
                                 <Row className="justify-content-center">
-                                    <Button disabled={disable} type="submit">
+                                    <Button disabled={loading} type="submit">
                                         Signup
                                     </Button>
                                 </Row>
