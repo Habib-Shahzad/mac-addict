@@ -53,7 +53,7 @@ function Login(props) {
                             className="login-logo"
                             component="img"
                             image={`logo.png`}
-                            title="Macaddict"
+                            title="MAC Addict"
                         />
                         <CardContent>
                             <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" >

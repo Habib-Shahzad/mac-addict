@@ -34,9 +34,16 @@ const createServer = async () => {
     app.use(cookieParser(
         process.env.COOKIE_SECRET
     ));
+
+    let corsOptions = [process.env.API_URL3];
+    if (process.env.NODE_ENV === 'development') {
+        corsOptions.push(process.env.API_URL2);
+        corsOptions.push(process.env.API_URL1);
+    }
+
     app.use(cors({
         credentials: true,
-        origin: [process.env.API_URL3]
+        origin: corsOptions
     }));
 
     app.use(express.static('./build'));

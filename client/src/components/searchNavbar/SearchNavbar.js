@@ -182,7 +182,7 @@ function SearchNavbar(props) {
                                         <Heading2
                                             first="Welcome to"
                                             link="/"
-                                            bold="Macaddict!"
+                                            bold="MAC Addict!"
                                             classes=" text-center"
                                         />
                                         <div className="margin-global-top-2" />
@@ -217,7 +217,7 @@ function SearchNavbar(props) {
                                         <Heading2
                                             first="Welcome to"
                                             link="/"
-                                            bold="Macaddict!"
+                                            bold="MAC Addict!"
                                             classes=" text-center"
                                         />
                                         <div className="margin-global-top-2" />

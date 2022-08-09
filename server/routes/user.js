@@ -338,7 +338,11 @@ router.get('/verify-email/:uniqueToken', async (req, res) => {
     const { uniqueToken } = req.params;
     const user = await User.findOne({ uniqueToken: uniqueToken });
 
-    const redirect_url = process.env.API_URL3;
+    let redirect_url = process.env.API_URL1;
+
+    if (process.env.NODE_ENV === "production") {
+      redirect_url = process.env.API_URL3;
+    }
 
     if (user) {
       user.emailVerified = true;
@@ -363,10 +367,11 @@ router.get('/verify-email/:uniqueToken', async (req, res) => {
       res.redirect(`${redirect_url}`);
     }
     else {
-      res.status(404).send('Request Failed! Please contact us for further assistance.');
+      res.status(404).send('Request Failed?! Please contact us for further assistance.');
     }
   }
   catch (error) {
+    console.log(error);
     res.status(404).send('Request Failed! Please contact us for further assistance.');
   }
 });
@@ -383,8 +388,13 @@ const sendMail = async (email, uniqueToken) => {
 
   var mailOptions;
 
+  let api_url = process.env.API_URL2;
 
-  const verify_api = `${process.env.API_URL3}/api/user/verify-email/${uniqueToken}`;
+  if (process.env.NODE_ENV === "production") {
+    api_url = process.env.API_URL3;
+  }
+
+  const verify_api = `${api_url}/api/user/verify-email/${uniqueToken}`;
 
   mailOptions = {
     from: 'no-reply@macaddictstore.com',
@@ -630,7 +640,11 @@ router.post("/set-admin", admin_auth, async (req, res) => {
 
 router.get("/reset-password/:passwordToken", async (req, res) => {
   const { passwordToken } = req.params;
-  const redirect_url = `${process.env.API_URL3}/reset-password/${passwordToken}`;
+  let api_url = process.env.API_URL1;
+  if (process.env.NODE_ENV === "production") {
+    api_url = process.env.API_URL3;
+  }
+  const redirect_url = `${api_url}/reset-password/${passwordToken}`;
   res.redirect(redirect_url);
 });
 
@@ -660,8 +674,12 @@ const sendPasswordMail = async (email, uniqueToken) => {
 
   var mailOptions;
 
+  let api_url = process.env.API_URL2;
+  if (process.env.NODE_ENV === "production") {
+    api_url = process.env.API_URL3;
+  }
 
-  const password_api = `${process.env.API_URL3}/api/user/reset-password/${uniqueToken}`;
+  const password_api = `${api_url}/api/user/reset-password/${uniqueToken}`;
 
   mailOptions = {
     from: 'no-reply@macaddictstore.com',

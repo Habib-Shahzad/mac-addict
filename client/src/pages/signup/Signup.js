@@ -45,7 +45,9 @@ function Signup(props) {
             setShowVerifyComponent(true);
         }
         else {
+            setDisable(false);
             setEmailTaken(true);
+            console.log(content?.error);
             setTimeout(() => {
                 setEmailTaken(false);
             }, 5000);
@@ -154,7 +156,7 @@ function Signup(props) {
                                                     validate: (value) => {
                                                         const passwReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_])(?=.{8,})/;
                                                         if (!value.match(passwReg)) {
-                                                            return 'Password must contain atleast 1 lowercase alhpabetical character, atleast 1 uppercase alhpabetical character, atleast 1 numerical character, 1 special character and must be of atleast 8 characters';
+                                                            return 'Password must contain atleast 1 lowercase alphabetical character, atleast 1 uppercase alphabetical character, atleast 1 numerical character, 1 special character and must be of atleast 8 characters';
                                                         }
                                                     },
                                                 })}
