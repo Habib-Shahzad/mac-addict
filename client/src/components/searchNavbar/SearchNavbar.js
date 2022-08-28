@@ -150,6 +150,7 @@ function SearchNavbar(props) {
                     </Nav>
 
                     <Nav className="icons">
+
                         <div className="user-name hide-992">
                             {
                                 user.userState ? (
@@ -185,7 +186,7 @@ function SearchNavbar(props) {
                                             bold="MAC Addict!"
                                             classes=" text-center"
                                         />
-                                        <div className="margin-global-top-2" />
+                                        <div className="margin-global-top-1" />
 
                                         <div className='text-center' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                             <div>
@@ -197,7 +198,7 @@ function SearchNavbar(props) {
                                                 />
                                             </div>
 
-                                            <div style={{ paddingLeft: '2rem' }}>
+                                            <div style={{ paddingLeft: '0.5rem' }}>
                                                 <LinkButton
                                                     text="Log Out"
                                                     button={false}
@@ -220,7 +221,7 @@ function SearchNavbar(props) {
                                             bold="MAC Addict!"
                                             classes=" text-center"
                                         />
-                                        <div className="margin-global-top-2" />
+                                        <div className="margin-global-top-1" />
 
                                         <div className='text-center' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                             <div>
@@ -232,7 +233,7 @@ function SearchNavbar(props) {
                                                 />
                                             </div>
 
-                                            <div style={{ paddingLeft: '2rem' }}>
+                                            <div style={{ paddingLeft: '1rem' }}>
                                                 <LinkButton
                                                     text="Sign Up"
                                                     button={false}

@@ -53,15 +53,22 @@
       color: black;
     }
     .user-icon {
-      font-size: 2.7rem;
+      position: relative;
+      top: 0.4rem;
+      font-size: 2.5rem;
     }
     .heart-icon {
-      font-size: 2.7rem;
-      top: 0.1rem;
+      position: relative;
+      top: 0.4rem;
+
+      font-size: 2.5rem;
       position: relative;
     }
     .bag-icon {
-      font-size: 2.7rem;
+      position: relative;
+      top: 0.3rem;
+
+      font-size: 2.5rem;
     }
     .middle {
       margin: 0 1rem;
